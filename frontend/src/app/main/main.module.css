@@ -1,0 +1,37 @@
+/*
+ * 메인페이지 루트 — forest 팔레트를 CSS 변수로 노출.
+ * 하위 컴포넌트의 module CSS 가 var(--palette-*) 로 참조.
+ */
+.root {
+  --palette-bg: #F5F1E8;
+  --palette-surface: #FBF8F1;
+  --palette-primary: #2D4A3E;
+  --palette-secondary: #7A8B6F;
+  --palette-accent: #C9A96E;
+  --palette-ink: #2A2520;
+  --palette-muted: #6B5F52;
+  --palette-line: rgba(42, 37, 32, 0.12);
+
+  background: var(--palette-bg);
+  min-height: 100vh;
+  color: var(--palette-ink);
+}
+
+/* 브레이크포인트: 900px 이상 = 데스크톱, 미만 = 모바일.
+   디자인 원본은 1440 / 402 두 지점만 정의되어 그 사이는 단일 토글. */
+.desktopOnly {
+  display: none;
+}
+
+.mobileOnly {
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .desktopOnly {
+    display: block;
+  }
+  .mobileOnly {
+    display: none;
+  }
+}

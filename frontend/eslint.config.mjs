@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 디자인 원본 번들(gitignore). React 18 CDN/Babel 환경 기준이라 React 19 strict 룰과 충돌.
+    "_design/**",
   ]),
 ]);
 

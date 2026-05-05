@@ -1,0 +1,8 @@
+.shell {
+  background: var(--palette-bg);
+  min-height: 100%;
+}
+
+.heroWrap {
+  position: relative;
+}

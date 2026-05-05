@@ -1,0 +1,5 @@
+.shell {
+  position: relative;
+  background: var(--palette-bg);
+  min-height: 100%;
+}
