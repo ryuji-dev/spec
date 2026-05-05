@@ -1,16 +1,26 @@
+"use client";
+
+import { useState } from "react";
 import { BOTTOM_TABS } from "@/lib/main-page-data";
 import styles from "./BottomTabBar.module.css";
 
 /**
- * 바텀 탭바 — Phase 1: active=0 고정, 클릭 인터랙션 X.
+ * 바텀 탭바 — 클릭 시 활성 탭 전환 (라우팅은 v2 범위, 시각 토글만).
+ * 디자인 원본 `_design/.../app.jsx:1211` 동작.
  */
 export default function BottomTabBar() {
-  const active = 0;
+  const [active, setActive] = useState(0);
 
   return (
     <div className={styles.bar}>
       {BOTTOM_TABS.map((t, i) => (
-        <button key={t.key} type="button" className={styles.tab} data-active={i === active ? "true" : "false"}>
+        <button
+          key={t.key}
+          type="button"
+          className={styles.tab}
+          data-active={i === active ? "true" : "false"}
+          onClick={() => setActive(i)}
+        >
           <TabIcon name={t.key} active={i === active} />
           <span className={styles.label}>{t.label}</span>
         </button>

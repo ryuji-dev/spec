@@ -15,6 +15,7 @@
 
 .slide[data-active="true"] {
   opacity: 1;
+  transform: scale(1.06);
 }
 
 .overlay {
@@ -124,6 +125,7 @@
   height: 2px;
   background: rgba(255,255,255,0.4);
   transition: all 0.4s;
+  cursor: pointer;
 }
 
 .dot[data-active="true"] {

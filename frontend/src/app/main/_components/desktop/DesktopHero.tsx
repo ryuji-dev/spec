@@ -1,13 +1,24 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { HERO_SLIDES } from "@/lib/main-page-data";
 import { HERO_SLIDE_COMPONENTS } from "../HeroSlides";
 import styles from "./DesktopHero.module.css";
 
+const SLIDE_INTERVAL_MS = 5500;
+
 /**
- * 데스크톱 히어로 — Phase 1: 첫 슬라이드 정지. 자동 루프/켄번스는 Phase 2.
+ * 데스크톱 히어로 — 자동 슬라이드(5.5초) + 켄번스 + 점 수동 전환.
+ * 디자인 원본 `_design/.../desktop.jsx:4-22` 동작 그대로.
  */
 export default function DesktopHero() {
-  const idx = 0;
+  const [idx, setIdx] = useState(0);
   const total = HERO_SLIDES.length;
+
+  useEffect(() => {
+    const t = setInterval(() => setIdx((i) => (i + 1) % total), SLIDE_INTERVAL_MS);
+    return () => clearInterval(t);
+  }, [total]);
 
   return (
     <section className={styles.hero}>
@@ -39,7 +50,21 @@ export default function DesktopHero() {
       <div className={styles.indicator}>
         <div className={styles.dots}>
           {HERO_SLIDES.map((_, i) => (
-            <span key={i} className={styles.dot} data-active={i === idx ? "true" : "false"} />
+            <span
+              key={i}
+              className={styles.dot}
+              data-active={i === idx ? "true" : "false"}
+              role="button"
+              tabIndex={0}
+              aria-label={`슬라이드 ${i + 1}로 이동`}
+              onClick={() => setIdx(i)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setIdx(i);
+                }
+              }}
+            />
           ))}
         </div>
         <div className={styles.counter}>

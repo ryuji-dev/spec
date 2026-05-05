@@ -1,0 +1,74 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 20px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  z-index: 25;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.header[data-scrolled="true"] {
+  background: rgba(251, 248, 241, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--palette-line);
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandMark {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--palette-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--palette-surface);
+}
+
+.brandText {
+  line-height: 1.2;
+}
+
+.brandEn {
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  opacity: 0.7;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 500;
+  color: var(--palette-ink);
+}
+
+.brandKo {
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--palette-ink);
+  letter-spacing: -0.02em;
+  margin-top: 1px;
+}
+
+.searchBtn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

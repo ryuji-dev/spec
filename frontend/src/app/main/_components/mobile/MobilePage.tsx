@@ -1,4 +1,5 @@
 import HeroMobile from "./HeroMobile";
+import MobileStickyHeader from "./MobileStickyHeader";
 import AnnouncementStrip from "./AnnouncementStrip";
 import SectionHeader from "./SectionHeader";
 import MenuCardGrid from "./MenuCardGrid";
@@ -9,13 +10,12 @@ import BottomTabBar from "./BottomTabBar";
 import styles from "./MobilePage.module.css";
 
 /**
- * 모바일 페이지 — Phase 1: 정적 레이아웃.
- * 디자인 원본 `app.jsx:47-96` (MobilePage) 의 섹션 순서를 그대로 따른다.
- * 헤더 스크롤 효과(StickyHeader)는 Phase 2.
+ * 모바일 페이지. 디자인 원본 `app.jsx:47-96` 섹션 순서를 그대로 따른다.
  */
 export default function MobilePage() {
   return (
     <div className={styles.shell}>
+      <MobileStickyHeader />
       <HeroMobile />
       <AnnouncementStrip />
 
