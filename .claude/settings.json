@@ -1,8 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run *)",
-      "Bash(npm install:*)",
+      "Bash(pnpm *)",
+      "Bash(pnpm dlx *)",
       "Bash(npx *)",
       "Bash(git status)",
       "Bash(git diff:*)",

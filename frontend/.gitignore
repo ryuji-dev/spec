@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 디자인 원본 자산 (handoff zip 추출 결과 — git에 올리지 않음)
+/_design/

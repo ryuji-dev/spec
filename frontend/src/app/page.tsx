@@ -1,65 +1,85 @@
-import Image from "next/image";
+import styles from "./page.module.css";
+import ScrollToEnter from "./scroll-to-enter";
 
-export default function Home() {
+/**
+ * 랜딩페이지 (서경노회 교육위원회 웹진)
+ * 원본 디자인:
+ *   _design/seogyeong-presbytery-education-committee/project/서경노회 교육위원회 랜딩페이지.html
+ * 헌법 [7]: 마크업·디자인은 임의 변경 금지. 데이터/라우팅/인터랙션만 추가.
+ * 메뉴 링크는 메인페이지(별도 PR)가 만들어지기 전까지 placeholder("/main")으로 둠.
+ */
+export default function LandingPage() {
+  const MAIN_PAGE_HREF = "/main";
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className={styles.stage}>
+      <ScrollToEnter href={MAIN_PAGE_HREF} />
+      <div className={styles.bgPan} />
+      <div className={styles.bgOverlay} />
+      <div className={styles.bgGrain} />
+
+      {/* 컨텐츠 */}
+      <div className={styles.content}>
+        <div className={styles.top}>
+          <div className={styles.brand}>
+            <div className={styles.brandMark}>
+              <svg width="12" height="20" viewBox="0 0 12 20">
+                <rect x="5" y="0" width="2" height="20" fill="#fff" />
+                <rect x="0" y="5" width="12" height="2" fill="#fff" />
+              </svg>
+            </div>
+            <div className={styles.brandText}>
+              <div className={styles.en}>SEOGYEONG · WEBZINE</div>
+              <div className={styles.ko}>서경노회 교육위원회 웹진</div>
+            </div>
+          </div>
+          <div className={styles.topMeta}>
+            <div className={styles.ko}>교육 · 공동체 · 신앙</div>
+          </div>
+        </div>
+
+        <div className={styles.center}>
+          <div className={styles.label}>EDUCATION COMMITTEE WEBZINE</div>
+          <h1>
+            Seogyeong Presbytery
+            <br />
+            <em>Education Committee</em>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <div className={styles.koTitle}>
+            <b>서경노회 교육위원회 웹진</b>
+          </div>
+
+          <nav className={styles.menus}>
+            <a href={MAIN_PAGE_HREF}>신학원웹진</a>
+            <a href={MAIN_PAGE_HREF}>교육위원회</a>
+            <a href={MAIN_PAGE_HREF}>교역자수련회</a>
+            <a href={MAIN_PAGE_HREF}>자유게시판</a>
+            <a href={MAIN_PAGE_HREF}>자료공유</a>
+            <a href={MAIN_PAGE_HREF}>한국교회</a>
+          </nav>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+
+        <div className={styles.bottom}>
+          <div className={styles.scrollHint}>
+            <span>SCROLL</span>
+            <div className={styles.line} />
+          </div>
+          <a className={styles.enter} href={MAIN_PAGE_HREF}>
+            <div className={styles.arr}>
+              <span>ENTER</span>
+              <svg width="40" height="10" viewBox="0 0 40 10">
+                <line x1="0" y1="5" x2="36" y2="5" stroke="#fff" strokeWidth="1" />
+                <path d="M30 1 L36 5 L30 9" stroke="#fff" strokeWidth="1" fill="none" />
+              </svg>
+            </div>
+            <div className={styles.ko}>메인 페이지로 들어가기</div>
           </a>
         </div>
-      </main>
+      </div>
+
+      <div className={styles.copyright}>
+        © 2026 SEOGYEONG PRESBYTERY EDUCATION COMMITTEE
+      </div>
     </div>
   );
 }
