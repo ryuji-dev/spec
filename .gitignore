@@ -1,0 +1,17 @@
+# Claude Code — 개인 로컬 설정 (팀 공유 X)
+.claude/settings.local.json
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# 환경 변수
+.env
+.env.*.local
+.env.local
+
+# 백업/임시
+*.bak
+*.tmp

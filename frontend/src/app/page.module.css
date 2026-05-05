@@ -1,0 +1,355 @@
+/*
+ * 서경노회 교육위원회 — 랜딩페이지
+ * 원본 디자인:
+ *   _design/seogyeong-presbytery-education-committee/project/서경노회 교육위원회 랜딩페이지.html
+ * 헌법 [7]: 디자인(마크업·CSS)은 임의 변경 금지.
+ *   - 폰트 family는 원본의 'Noto Sans KR' 등을 next/font의 CSS 변수로 치환 (자체 호스팅).
+ *   - 배경 이미지 경로는 'assets/background.jpg' → '/background.jpg' (frontend/public/).
+ *   - html, body 글로벌 셀렉터는 globals.css로 분리 (CSS Modules는 글로벌 셀렉터 미지원).
+ */
+
+.stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* 흐르는 배경 — 단일 이미지 슬로우 패닝 */
+.bgPan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 140%;
+  height: 100%;
+  z-index: 1;
+  background: url("/background.webp") center center / cover no-repeat;
+  animation: bgPan 50s ease-in-out infinite alternate;
+  will-change: transform;
+  transform: translateZ(0);
+}
+@keyframes bgPan {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-28%, 0, 0);
+  }
+}
+
+/* 위 어둡게 */
+.bgOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(10, 14, 21, 0.2) 0%, rgba(10, 14, 21, 0.7) 100%),
+    linear-gradient(180deg, rgba(10, 14, 21, 0.55) 0%, rgba(10, 14, 21, 0.35) 40%, rgba(10, 14, 21, 0.85) 100%);
+}
+
+/* 그레인 */
+.bgGrain {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.04) 1px, transparent 0);
+  background-size: 3px 3px;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* 페더 마스크 양쪽 (현재 사용처 없음 — 원본 보존을 위해 정의만 유지) */
+.feather {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 16vw;
+  z-index: 5;
+  pointer-events: none;
+}
+.featherL {
+  left: 0;
+  background: linear-gradient(90deg, rgba(10, 14, 21, 1) 0%, rgba(10, 14, 21, 0) 100%);
+}
+.featherR {
+  right: 0;
+  background: linear-gradient(270deg, rgba(10, 14, 21, 1) 0%, rgba(10, 14, 21, 0) 100%);
+}
+
+/* 컨텐츠 레이어 (절대 위치 — 상단/중앙/하단 각각 화면 좌표에 고정) */
+.content {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  color: #fff;
+}
+
+/* 상단 노회 마크 + 우측 메타 — 좌상단 고정 */
+.top {
+  position: absolute;
+  top: 36px;
+  left: 56px;
+  right: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brandMark {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.brandText .en {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.26em;
+  opacity: 0.85;
+  font-weight: 500;
+}
+.brandText .ko {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+.topMeta {
+  text-align: right;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  opacity: 0.7;
+}
+.topMeta .div {
+  width: 32px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.35);
+  margin: 8px 0 8px auto;
+}
+.topMeta .ko {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  letter-spacing: 0.04em;
+}
+
+/* 중앙 타이틀 — 화면 정중앙 (수학적 중심: top/left 50% + translate -50%) */
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 1100px;
+  padding: 0 56px;
+  box-sizing: border-box;
+  text-align: center;
+}
+.center .label {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  opacity: 0.7;
+  margin-bottom: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.center .label::before,
+.center .label::after {
+  content: "";
+  width: 36px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.45);
+}
+.center h1 {
+  margin: 0;
+  font-family: var(--font-cormorant), var(--font-noto-serif-kr), serif;
+  font-weight: 400;
+  font-size: 84px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: #fff;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.45);
+}
+.center h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: #d4b896;
+}
+.center .koTitle {
+  margin-top: 18px;
+  font-family: var(--font-noto-serif-kr), serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  opacity: 0.92;
+}
+.center .koTitle b {
+  font-weight: 600;
+  color: #d4b896;
+}
+
+/* 6개 메뉴 */
+.menus {
+  margin-top: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.menus a {
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  padding: 6px 18px;
+  opacity: 0.78;
+  transition:
+    opacity 0.2s,
+    color 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.menus a:hover {
+  opacity: 1;
+  color: #d4b896;
+}
+.menus a + a::before {
+  content: "·";
+  position: absolute;
+  left: -3px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* 하단 — 절대 위치 컨테이너. SCROLL은 화면 정중앙, ENTER는 우측 끝 */
+.bottom {
+  position: absolute;
+  bottom: 36px;
+  left: 56px;
+  right: 56px;
+}
+.scrollHint {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  opacity: 0.6;
+}
+.scrollHint .line {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scaleY(0.7);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scaleY(1);
+  }
+}
+.copyright {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  opacity: 0.45;
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  z-index: 11;
+}
+.enter {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+.enter .arr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  transition: gap 0.3s;
+}
+.enter:hover .arr {
+  gap: 16px;
+}
+.enter .ko {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 11.5px;
+  opacity: 0.75;
+  letter-spacing: 0.02em;
+}
+
+/* 작은 화면 */
+@media (max-width: 900px) {
+  .top {
+    top: 28px;
+    left: 24px;
+    right: 24px;
+  }
+  .center {
+    padding: 0 24px;
+  }
+  .bottom {
+    bottom: 28px;
+    left: 24px;
+    right: 24px;
+  }
+  .center h1 {
+    font-size: 44px;
+  }
+  .center .koTitle {
+    font-size: 16px;
+  }
+  .topMeta,
+  .scrollHint {
+    display: none;
+  }
+  .menus {
+    font-size: 11px;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .menus a + a::before {
+    display: none;
+  }
+  .feather {
+    width: 24vw;
+  }
+}
