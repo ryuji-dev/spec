@@ -1,0 +1,151 @@
+.section {
+  padding: 60px 80px 80px;
+  background: var(--palette-surface);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 40px;
+}
+
+.kicker {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: var(--palette-secondary);
+  font-weight: 600;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  margin-bottom: 12px;
+}
+
+.title {
+  margin: 0;
+  font-size: 38px;
+  font-weight: 500;
+  font-family: var(--font-noto-serif-kr), serif;
+  color: var(--palette-ink);
+  letter-spacing: -0.02em;
+}
+
+.allBtn {
+  background: transparent;
+  border: 1px solid var(--palette-ink);
+  color: var(--palette-ink);
+  padding: 11px 22px;
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.featuredRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.featuredCard {
+  height: 380px;
+  position: relative;
+  overflow: hidden;
+}
+
+.featuredCaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 60px 24px 22px;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.7));
+  color: #fff;
+}
+
+.featuredKicker {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  opacity: 0.85;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  margin-bottom: 6px;
+}
+
+.featuredTitle {
+  font-family: var(--font-noto-serif-kr), serif;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.featuredDate {
+  font-size: 11px;
+  margin-top: 4px;
+  opacity: 0.8;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.midCard {
+  height: 380px;
+  position: relative;
+  overflow: hidden;
+}
+
+.midCaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px 18px 18px;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.7));
+  color: #fff;
+}
+
+.midKicker {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  opacity: 0.85;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.midTitle {
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.smallCard {
+  height: 220px;
+  position: relative;
+  overflow: hidden;
+}
+
+.smallCaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 28px 14px 14px;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.65));
+  color: #fff;
+}
+
+.smallTitle {
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.smallDate {
+  font-size: 10px;
+  opacity: 0.8;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  margin-top: 2px;
+}

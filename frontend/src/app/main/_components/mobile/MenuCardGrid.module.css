@@ -1,0 +1,80 @@
+.grid {
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.card {
+  background: var(--palette-surface);
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid var(--palette-line);
+  height: 168px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 2px rgba(42,37,32,0.04);
+}
+
+.iconBox {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.en {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--palette-secondary);
+  font-weight: 600;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--palette-ink);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.sub {
+  font-size: 11.5px;
+  color: var(--palette-muted);
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.metaRow {
+  margin-top: auto;
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: var(--palette-primary);
+  font-family: var(--font-inter), var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--palette-accent);
+}

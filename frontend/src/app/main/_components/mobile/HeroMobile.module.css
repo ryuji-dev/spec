@@ -1,0 +1,158 @@
+.hero {
+  position: relative;
+  height: 720px;
+  overflow: hidden;
+  background: #1A1410;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.6s ease-in-out, transform 7s linear;
+  transform: scale(1.0);
+}
+
+.slide[data-active="true"] {
+  opacity: 1;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(26,20,16,0.35) 0%, rgba(26,20,16,0.45) 50%, rgba(26,20,16,0.85) 100%);
+  z-index: 1;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0);
+  background-size: 3px 3px;
+  z-index: 2;
+  mix-blend-mode: overlay;
+}
+
+.content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 60px 28px 40px;
+  color: #fff;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandMark {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  background: rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.brandText {
+  line-height: 1.2;
+  min-width: 0;
+  flex: 1;
+}
+
+.brandKo {
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.brandEn {
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+  opacity: 0.8;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.kicker {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  opacity: 0.75;
+  margin-bottom: 18px;
+  font-weight: 500;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.title {
+  margin: 0;
+  font-size: 38px;
+  line-height: 1.18;
+  font-weight: 500;
+  font-family: var(--font-noto-serif-kr), "Nanum Myeongjo", serif;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.titleEm {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--palette-accent);
+}
+
+.lead {
+  margin-top: 18px;
+  margin-bottom: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  opacity: 0.85;
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-weight: 300;
+  max-width: 320px;
+  text-wrap: pretty;
+}
+
+.indicatorRow {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.4);
+  transition: all 0.4s ease;
+}
+
+.dot[data-active="true"] {
+  width: 22px;
+  background: var(--palette-accent);
+}
+
+.caption {
+  font-size: 11px;
+  opacity: 0.7;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  letter-spacing: 0.1em;
+}

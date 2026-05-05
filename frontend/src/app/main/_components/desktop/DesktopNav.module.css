@@ -1,0 +1,96 @@
+.nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  padding: 22px 56px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  background: transparent;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+}
+
+.brandMark {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.08);
+}
+
+.brandText {
+  line-height: 1.2;
+}
+
+.brandKo {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.brandEn {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  opacity: 0.8;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  margin-top: 2px;
+}
+
+.menu {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+.menuItem {
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  opacity: 0.92;
+  white-space: nowrap;
+}
+
+.utils {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.searchBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.loginBtn {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 8px 16px;
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
