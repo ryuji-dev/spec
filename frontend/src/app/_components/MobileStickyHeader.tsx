@@ -6,9 +6,8 @@ import styles from "./MobileStickyHeader.module.css";
 const SCROLL_THRESHOLD = 80;
 
 /**
- * 모바일 상단 sticky 헤더 — 80px 이상 스크롤 시 페이드인.
+ * 사이트 모바일 상단 sticky 헤더 — 80px 이상 스크롤 시 페이드인.
  * 디자인 원본 `_design/.../app.jsx:1238-1294` (StickyHeader_DISABLED) 마크업·스타일을 그대로 옮겼다.
- * 원본은 모바일 프레임 내 absolute였으나 실제 페이지에서는 viewport-fixed 가 자연스러움.
  */
 export default function MobileStickyHeader() {
   const [scrolled, setScrolled] = useState(false);

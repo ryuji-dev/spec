@@ -1,4 +1,4 @@
-import DesktopNav from "./DesktopNav";
+import DesktopNav from "@/app/_components/DesktopNav";
 import DesktopHero from "./DesktopHero";
 import DesktopMenuGrid from "./DesktopMenuGrid";
 import DesktopSchedule from "./DesktopSchedule";
