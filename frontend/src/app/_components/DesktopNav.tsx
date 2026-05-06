@@ -14,7 +14,7 @@ type Props = {
 export default function DesktopNav({ variant = "transparent" }: Props) {
   return (
     <div className={styles.nav} data-variant={variant}>
-      <div className={styles.brand}>
+      <Link href="/main" className={styles.brand} aria-label="메인페이지로 이동">
         <div className={styles.brandMark}>
           <svg width="11" height="18" viewBox="0 0 12 20">
             <rect x="5" y="0" width="2" height="20" fill="currentColor" />
@@ -25,7 +25,7 @@ export default function DesktopNav({ variant = "transparent" }: Props) {
           <div className={styles.brandKo}>서경노회 교육위원회 웹진</div>
           <div className={styles.brandEn}>Seogyeong Presbytery Education Committee</div>
         </div>
-      </div>
+      </Link>
       <div className={styles.menu}>
         {NAV_ITEMS.map((item) =>
           item.href ? (
