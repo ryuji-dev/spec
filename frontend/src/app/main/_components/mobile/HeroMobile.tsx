@@ -1,18 +1,34 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { HERO_SLIDE_COMPONENTS } from "../HeroSlides";
 import { HERO_SLIDES } from "@/lib/main-page-data";
 import styles from "./HeroMobile.module.css";
 
+const SLIDE_INTERVAL_MS = 5500;
+
 /**
- * 모바일 히어로 — Phase 1: 첫 슬라이드 정지. 자동 루프/켄번스는 Phase 2.
+ * 모바일 히어로 — 자동 슬라이드(5.5초) + 켄번스 + 점 수동 전환.
+ * 디자인 원본 `_design/.../app.jsx:276-308` 의 동작을 그대로 옮겼다.
  */
 export default function HeroMobile() {
-  const idx = 0;
+  const [idx, setIdx] = useState(0);
   const total = HERO_SLIDES.length;
+
+  useEffect(() => {
+    const t = setInterval(() => setIdx((i) => (i + 1) % total), SLIDE_INTERVAL_MS);
+    return () => clearInterval(t);
+  }, [total]);
 
   return (
     <section className={styles.hero}>
       {HERO_SLIDE_COMPONENTS.map((Component, i) => (
-        <div key={i} className={styles.slide} data-active={i === idx ? "true" : "false"}>
+        <div
+          key={i}
+          className={styles.slide}
+          data-active={i === idx ? "true" : "false"}
+          data-origin={i % 2 === 0 ? "a" : "b"}
+        >
           <Component />
         </div>
       ))}
@@ -50,7 +66,21 @@ export default function HeroMobile() {
           <div className={styles.indicatorRow}>
             <div className={styles.dots}>
               {HERO_SLIDES.map((_, i) => (
-                <span key={i} className={styles.dot} data-active={i === idx ? "true" : "false"} />
+                <span
+                  key={i}
+                  className={styles.dot}
+                  data-active={i === idx ? "true" : "false"}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`슬라이드 ${i + 1}로 이동`}
+                  onClick={() => setIdx(i)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setIdx(i);
+                    }
+                  }}
+                />
               ))}
             </div>
             <div className={styles.caption}>
