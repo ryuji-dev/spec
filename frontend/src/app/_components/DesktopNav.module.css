@@ -1,32 +1,58 @@
 .nav {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
   z-index: 30;
   padding: 22px 56px;
   display: flex;
   align-items: center;
   gap: 32px;
+}
+
+/* 메인 히어로 위 오버레이 — 디자인 원본 그대로 보존 */
+.nav[data-variant="transparent"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   background: transparent;
+  color: #fff;
+}
+
+/* 라이트 페이지 상단 sticky — 웹진 등 밝은 배경에서 사용 */
+.nav[data-variant="solid"] {
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--palette-line);
+  color: var(--palette-ink);
 }
 
 .brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #fff;
+  color: inherit;
+  text-decoration: none;
 }
 
 .brandMark {
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.08);
+}
+
+.nav[data-variant="transparent"] .brandMark {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav[data-variant="solid"] .brandMark {
+  border: 1px solid var(--palette-line);
+  background: var(--palette-surface);
+  color: var(--palette-primary);
 }
 
 .brandText {
@@ -57,7 +83,7 @@
 }
 
 .menuItem {
-  color: #fff;
+  color: inherit;
   text-decoration: none;
   font-size: 13px;
   font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
@@ -79,12 +105,10 @@
   border: none;
   cursor: pointer;
   padding: 4px;
+  color: inherit;
 }
 
 .loginBtn {
-  background: rgba(255,255,255,0.12);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.3);
   padding: 8px 16px;
   border-radius: 2px;
   font-size: 12px;
@@ -93,4 +117,16 @@
   cursor: pointer;
   letter-spacing: -0.01em;
   white-space: nowrap;
+}
+
+.nav[data-variant="transparent"] .loginBtn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.nav[data-variant="solid"] .loginBtn {
+  background: var(--palette-primary);
+  color: #fff;
+  border: 1px solid var(--palette-primary);
 }

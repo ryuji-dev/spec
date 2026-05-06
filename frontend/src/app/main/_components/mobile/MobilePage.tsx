@@ -1,5 +1,5 @@
 import HeroMobile from "./HeroMobile";
-import MobileStickyHeader from "./MobileStickyHeader";
+import MobileStickyHeader from "@/app/_components/MobileStickyHeader";
 import AnnouncementStrip from "./AnnouncementStrip";
 import SectionHeader from "./SectionHeader";
 import MenuCardGrid from "./MenuCardGrid";

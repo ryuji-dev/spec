@@ -3,6 +3,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* 사이트 공통 팔레트 — 디자인 원본 `_design/.../app.jsx` PALETTE 상수 기준 */
+  --palette-bg: #F5F1E8;
+  --palette-surface: #FBF8F1;
+  --palette-primary: #2D4A3E;
+  --palette-secondary: #7A8B6F;
+  --palette-accent: #C9A96E;
+  --palette-ink: #2A2520;
+  --palette-muted: #6B5F52;
+  --palette-line: rgba(42, 37, 32, 0.12);
 }
 
 @theme inline {

@@ -1,17 +1,7 @@
 /*
- * 메인페이지 루트 — forest 팔레트를 CSS 변수로 노출.
- * 하위 컴포넌트의 module CSS 가 var(--palette-*) 로 참조.
+ * 메인페이지 루트 — 팔레트 CSS 변수는 `globals.css :root`에서 사이트 공통으로 정의.
  */
 .root {
-  --palette-bg: #F5F1E8;
-  --palette-surface: #FBF8F1;
-  --palette-primary: #2D4A3E;
-  --palette-secondary: #7A8B6F;
-  --palette-accent: #C9A96E;
-  --palette-ink: #2A2520;
-  --palette-muted: #6B5F52;
-  --palette-line: rgba(42, 37, 32, 0.12);
-
   background: var(--palette-bg);
   min-height: 100vh;
   color: var(--palette-ink);
