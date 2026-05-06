@@ -12,14 +12,15 @@ export type WebzinePalette = {
   line: string;
 };
 
-export type WebzineCoverType =
-  | "wilderness"
+export type WebzineArticleCoverType =
   | "book"
   | "rural"
   | "book2"
   | "child"
   | "history"
   | "dialogue";
+
+export type WebzineFeaturedCoverType = "wilderness";
 
 export type WebzineFeatured = {
   issue: string;
@@ -30,7 +31,7 @@ export type WebzineFeatured = {
   authorRole: string;
   date: string;
   read: string;
-  cover: WebzineCoverType;
+  cover: WebzineFeaturedCoverType;
 };
 
 export type WebzineArticle = {
@@ -42,7 +43,7 @@ export type WebzineArticle = {
   author: string;
   date: string;
   read: string;
-  cover: WebzineCoverType;
+  cover: WebzineArticleCoverType;
 };
 
 export type WebzineCategory = {

@@ -1,16 +1,8 @@
 import type { ReactNode } from "react";
-import type { WebzinePalette } from "@/lib/webzine-data";
-
-export type CoverArtType =
-  | "book"
-  | "rural"
-  | "book2"
-  | "child"
-  | "history"
-  | "dialogue";
+import type { WebzineArticleCoverType, WebzinePalette } from "@/lib/webzine-data";
 
 type Props = {
-  type: CoverArtType;
+  type: WebzineArticleCoverType;
   palette: WebzinePalette;
 };
 
