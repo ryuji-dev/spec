@@ -6,12 +6,11 @@
   font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
 }
 
-.headline {
-  font-family: var(--font-noto-serif-kr), serif;
-  font-size: 18px;
-  margin-bottom: 18px;
-  letter-spacing: -0.02em;
-  line-height: 1.4;
+.signature {
+  width: 220px;
+  height: auto;
+  display: block;
+  margin-bottom: 4px;
 }
 
 .divider {

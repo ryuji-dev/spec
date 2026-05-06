@@ -12,12 +12,11 @@
   margin-bottom: 48px;
 }
 
-.headline {
-  font-family: var(--font-noto-serif-kr), serif;
-  font-size: 26px;
-  margin-bottom: 18px;
-  letter-spacing: -0.02em;
-  line-height: 1.4;
+.signature {
+  width: 320px;
+  height: auto;
+  margin-bottom: 24px;
+  display: block;
 }
 
 .address {

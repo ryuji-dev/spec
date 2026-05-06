@@ -1,13 +1,17 @@
+import Image from "next/image";
 import styles from "./FooterMobile.module.css";
 
 export default function FooterMobile() {
   return (
     <footer className={styles.footer}>
-      <div className={styles.headline}>
-        함께 가르치고
-        <br />
-        함께 자라는 자리.
-      </div>
+      <Image
+        src="/signature-seogyeong.png"
+        alt="대한예수교장로회 서경노회"
+        width={1600}
+        height={398}
+        className={styles.signature}
+        sizes="220px"
+      />
       <div className={styles.divider} />
       <div className={styles.address}>
         대한예수교장로회 서경노회 교육위원회
