@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FOOTER_COLUMNS } from "@/lib/main-page-data";
 import styles from "./DesktopFooter.module.css";
 
@@ -6,11 +7,14 @@ export default function DesktopFooter() {
     <footer className={styles.footer}>
       <div className={styles.grid}>
         <div>
-          <div className={styles.headline}>
-            함께 가르치고
-            <br />
-            함께 자라는 자리.
-          </div>
+          <Image
+            src="/signature-seogyeong.png"
+            alt="대한예수교장로회 서경노회"
+            width={1600}
+            height={398}
+            className={styles.signature}
+            sizes="(max-width: 1280px) 280px, 320px"
+          />
           <div className={styles.address}>
             대한예수교장로회 서경노회 교육위원회
             <br />
