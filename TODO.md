@@ -19,6 +19,9 @@
 - [x] **랜딩페이지 이식** — `frontend/src/app/page.tsx` (PR #1)
   - 4개 폰트 self-host, 정중앙 정렬 보정, 휠 스크롤 → `/main` 진입, 배경 WebP 교체 포함
 - [ ] 메인페이지 이식 — `frontend/_design/.../서경노회 교육위원회 메인페이지.html` + `app.jsx` 컴포넌트 활용
+- [x] **신학원웹진 이식** — `frontend/src/app/webzine/`
+  - SSR UA 판정으로 desktop/ios/android 분기, mock 데이터 기반 정적 화면
+  - 후속: `/webzine/print` (A3 가로 2페이지 인쇄 라우트), 백엔드 연동
 - [ ] 공통 레이아웃(헤더/푸터/네비게이션) 분리
 - [ ] 모바일 반응형 검증
 
@@ -28,6 +31,7 @@
 
 - [x] `/` 랜딩
 - [ ] `/main` 메인 (게시물 카드·일정 위젯)
+- [x] `/webzine` 신학원웹진 (mock 단계)
 - [ ] `/about` 노회 교육부 소개
 - [ ] `/notice` 공지사항
 - [ ] `/schedule` 일정 (강습회·성경고사·찬양대회)
