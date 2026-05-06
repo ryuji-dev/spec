@@ -1,6 +1,18 @@
-import { MENU_ITEMS } from "@/lib/main-page-data";
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { MENU_ITEMS, type MenuItem } from "@/lib/main-page-data";
 import MenuIcon from "../MenuIcons";
 import styles from "./DesktopMenuGrid.module.css";
+
+function CardShell({ item, children }: { item: MenuItem; children: ReactNode }) {
+  return item.href ? (
+    <Link href={item.href} className={styles.card}>
+      {children}
+    </Link>
+  ) : (
+    <div className={styles.card}>{children}</div>
+  );
+}
 
 export default function DesktopMenuGrid() {
   return (
@@ -21,7 +33,7 @@ export default function DesktopMenuGrid() {
       </div>
       <div className={styles.grid}>
         {MENU_ITEMS.map((m) => (
-          <div key={m.key} className={styles.card}>
+          <CardShell key={m.key} item={m}>
             <div className={styles.iconBox}>
               <MenuIcon menuKey={m.key} />
             </div>
@@ -39,7 +51,7 @@ export default function DesktopMenuGrid() {
                 </svg>
               </div>
             </div>
-          </div>
+          </CardShell>
         ))}
       </div>
     </div>

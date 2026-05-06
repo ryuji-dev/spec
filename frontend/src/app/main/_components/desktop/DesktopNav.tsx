@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { NAV_ITEMS } from "@/lib/main-page-data";
 import styles from "./DesktopNav.module.css";
 
@@ -20,9 +21,15 @@ export default function DesktopNav() {
         </div>
       </div>
       <div className={styles.menu}>
-        {NAV_ITEMS.map((t) => (
-          <a key={t} className={styles.menuItem}>{t}</a>
-        ))}
+        {NAV_ITEMS.map((item) =>
+          item.href ? (
+            <Link key={item.label} href={item.href} className={styles.menuItem}>
+              {item.label}
+            </Link>
+          ) : (
+            <a key={item.label} className={styles.menuItem}>{item.label}</a>
+          ),
+        )}
       </div>
       <div className={styles.utils}>
         <button type="button" className={styles.searchBtn} aria-label="검색">

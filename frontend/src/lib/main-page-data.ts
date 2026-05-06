@@ -22,6 +22,7 @@ export type MenuItem = {
   title: string;
   sub: string;
   meta: string;
+  href?: string;
 };
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -31,6 +32,7 @@ export const MENU_ITEMS: MenuItem[] = [
     title: "신학원웹진",
     sub: "신학원 소식과 글 모음",
     meta: "최신 호 · 2026.04",
+    href: "/webzine",
   },
   {
     key: "edu",
@@ -111,13 +113,15 @@ export const PHOTO_TILES: PhotoTile[] = [
 
 export const ANNOUNCEMENT_TEXT = "2026년 상반기 교사 수련회 신청이 시작되었습니다.";
 
-export const NAV_ITEMS: ReadonlyArray<string> = [
-  "신학원웹진",
-  "교육위원회",
-  "교역자수련회",
-  "자유게시판",
-  "자료공유",
-  "한국교회",
+export type NavItem = { label: string; href?: string };
+
+export const NAV_ITEMS: ReadonlyArray<NavItem> = [
+  { label: "신학원웹진", href: "/webzine" },
+  { label: "교육위원회" },
+  { label: "교역자수련회" },
+  { label: "자유게시판" },
+  { label: "자료공유" },
+  { label: "한국교회" },
 ];
 
 export type FooterColumn = { title: string; items: ReadonlyArray<string> };
