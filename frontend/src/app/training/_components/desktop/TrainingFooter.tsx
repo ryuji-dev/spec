@@ -3,16 +3,16 @@ import type { Palette } from "@/app/_components/shared/palette";
 type Props = { palette: Palette };
 
 const FOOTER_GROUPS = [
-  { t: "게시판", items: ["공지사항", "회의록", "수련회", "자료실", "나눔"] },
-  { t: "교육위원회", items: ["위원회 소개", "연혁", "조직도", "연락처"] },
+  { t: "교역자수련회", items: ["다가오는 일정", "신청하기", "강사진", "아카이브"] },
+  { t: "교육위원회", items: ["위원회 소개", "게시판", "연혁", "연락처"] },
   { t: "신학원", items: ["신학원 안내", "웹진", "교수진", "입학 문의"] },
 ];
 
-export default function CommitteeFooter({ palette }: Props) {
+export default function TrainingFooter({ palette }: Props) {
   return (
     <footer
       style={{
-        marginTop: 40,
+        marginTop: 80,
         background: palette.ink,
         color: "#F5F1E8",
         padding: "56px 80px 36px",
@@ -38,16 +38,16 @@ export default function CommitteeFooter({ palette }: Props) {
               lineHeight: 1.4,
             }}
           >
-            함께 가르치고
+            잠시 멈추어,
             <br />
-            함께 자라는 자리.
+            다시 듣는 자리.
           </div>
           <div style={{ fontSize: 11, lineHeight: 1.7, opacity: 0.6 }}>
             대한예수교장로회 서경노회 교육위원회
             <br />
             서울특별시 서대문구 충정로 00-00 · 02-000-0000
             <br />
-            edu@seogyeong.or.kr
+            training@seogyeong.or.kr
           </div>
         </div>
         {FOOTER_GROUPS.map((g) => (
@@ -64,9 +64,14 @@ export default function CommitteeFooter({ palette }: Props) {
             >
               {g.t.toUpperCase()}
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: 8 }}
+            >
               {g.items.map((i) => (
-                <div key={i} style={{ fontSize: 12.5, opacity: 0.85, cursor: "pointer" }}>
+                <div
+                  key={i}
+                  style={{ fontSize: 12.5, opacity: 0.85, cursor: "pointer" }}
+                >
                   {i}
                 </div>
               ))}

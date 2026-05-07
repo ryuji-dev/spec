@@ -28,7 +28,7 @@ export default function Pagination({ palette }: Props) {
       >
         ‹
       </button>
-      {[1, 2, 3, 4, 5, 6].map((n) => (
+      {[1, 2, 3, 4].map((n) => (
         <button
           key={n}
           type="button"
@@ -47,22 +47,6 @@ export default function Pagination({ palette }: Props) {
           {n}
         </button>
       ))}
-      <span style={{ padding: "0 6px", color: palette.muted, fontSize: 12 }}>···</span>
-      <button
-        type="button"
-        style={{
-          background: "transparent",
-          border: `1px solid ${palette.line}`,
-          width: 36,
-          height: 36,
-          borderRadius: 2,
-          fontSize: 12.5,
-          color: palette.ink,
-          cursor: "pointer",
-        }}
-      >
-        15
-      </button>
       <button
         type="button"
         style={{

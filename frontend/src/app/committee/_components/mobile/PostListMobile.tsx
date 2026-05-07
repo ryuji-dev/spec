@@ -1,7 +1,8 @@
-import type { Palette } from "../shared/palette";
+import type { Palette } from "@/app/_components/shared/palette";
 import type { Post } from "@/lib/committee-data";
-import CatLabel from "../shared/CatLabel";
-import StatRow from "../shared/StatRow";
+import CatLabel from "@/app/_components/shared/CatLabel";
+import StatRow from "@/app/_components/shared/StatRow";
+import { catTone } from "../catTone";
 
 type Props = { post: Post; palette: Palette };
 
@@ -17,7 +18,7 @@ export default function PostListMobile({ post, palette }: Props) {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <CatLabel cat={post.cat} palette={palette} />
+        <CatLabel label={post.cat} tone={catTone(post.cat, palette)} />
         <span
           style={{
             fontSize: 10.5,

@@ -1,10 +1,9 @@
-import type { Palette } from "./palette";
+import type { Palette } from "@/app/_components/shared/palette";
+import type { CatTone } from "@/app/_components/shared/catTone";
 import type { PostCategoryKo } from "@/lib/committee-data";
 
-export type CatTone = { bg: string; fg: string; soft: string };
-
 /**
- * 카테고리별 색상 매핑 — 디자인 원본 board.jsx 의 catTone() 그대로.
+ * 교육위원회 카테고리별 색상 매핑 — 디자인 원본 board.jsx 의 catTone() 그대로.
  */
 export function catTone(cat: PostCategoryKo, palette: Palette): CatTone {
   const map: Record<PostCategoryKo, CatTone> = {

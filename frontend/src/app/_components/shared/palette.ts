@@ -1,5 +1,5 @@
 /**
- * 교육위원회 게시판에서 사용하는 forest 팔레트.
+ * 게시판 공용 forest 팔레트.
  * 디자인 원본 `_design/.../app.jsx` PALETTES.forest 와 globals.css `:root` 변수 모두와 일치.
  * inline style 환경에서 객체로 전달하기 위해 모듈로 노출.
  */

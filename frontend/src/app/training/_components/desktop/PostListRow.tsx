@@ -1,16 +1,14 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import type { Post } from "@/lib/committee-data";
-import AuthorChip from "@/app/_components/shared/AuthorChip";
+import type { TrainingPost } from "@/lib/training-data";
 import CatLabel from "@/app/_components/shared/CatLabel";
 import StatRow from "@/app/_components/shared/StatRow";
 import { catTone } from "../catTone";
 
 type Props = {
-  post: Post;
+  post: TrainingPost;
   palette: Palette;
 };
 
-/** 리스트형 — 미디엄/노션 스타일. */
 export default function PostListRow({ post, palette }: Props) {
   return (
     <article
@@ -83,11 +81,11 @@ export default function PostListRow({ post, palette }: Props) {
             color: palette.muted,
             fontWeight: 300,
             fontFamily: '"Noto Sans KR", system-ui',
-            textWrap: "pretty",
             display: "-webkit-box",
             WebkitLineClamp: 1,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
+            textWrap: "pretty",
           }}
         >
           {post.excerpt}
@@ -101,12 +99,35 @@ export default function PostListRow({ post, palette }: Props) {
           gap: 10,
         }}
       >
-        <AuthorChip
-          name={post.author.split(" ").slice(0, 2).join(" ")}
-          init={post.authorInit}
-          palette={palette}
-          size={26}
-        />
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 999,
+              background: palette.secondary,
+              color: "#fff",
+              fontSize: 12,
+              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: '"Noto Sans KR", system-ui',
+            }}
+          >
+            {post.authorInit}
+          </div>
+          <span
+            style={{
+              fontSize: 12,
+              color: palette.muted,
+              fontFamily: '"Noto Sans KR", system-ui',
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {post.author.split(" ").slice(0, 2).join(" ")}
+          </span>
+        </div>
         <StatRow post={post} palette={palette} />
       </div>
     </article>

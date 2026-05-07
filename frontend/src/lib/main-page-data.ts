@@ -118,7 +118,7 @@ export type NavItem = { label: string; href?: string };
 export const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { label: "신학원웹진", href: "/webzine" },
   { label: "교육위원회", href: "/committee" },
-  { label: "교역자수련회" },
+  { label: "교역자수련회", href: "/training" },
   { label: "자유게시판" },
   { label: "자료공유" },
   { label: "한국교회" },

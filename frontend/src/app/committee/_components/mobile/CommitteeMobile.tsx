@@ -9,7 +9,7 @@ import {
   BD_TAGS,
 } from "@/lib/committee-data";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
-import { FOREST_PALETTE } from "../shared/palette";
+import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import PostCardMobile from "./PostCardMobile";
 import PostListMobile from "./PostListMobile";
 
