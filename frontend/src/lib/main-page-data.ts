@@ -120,7 +120,7 @@ export const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { label: "교육위원회", href: "/committee" },
   { label: "교역자수련회", href: "/training" },
   { label: "자유게시판", href: "/board" },
-  { label: "자료공유" },
+  { label: "자료공유", href: "/resources" },
   { label: "한국교회" },
 ];
 
