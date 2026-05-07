@@ -65,8 +65,8 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     key: "church",
     en: "CHURCH",
-    title: "한국교회",
-    sub: "한국교회 소식과 자료",
+    title: "신학원교수소개",
+    sub: "신학원교수소개 소식과 자료",
     meta: "연합 자료 모음",
   },
 ];
@@ -121,7 +121,7 @@ export const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { label: "교역자수련회", href: "/training" },
   { label: "자유게시판", href: "/board" },
   { label: "자료공유", href: "/resources" },
-  { label: "한국교회" },
+  { label: "신학원교수소개" },
 ];
 
 export type FooterColumn = { title: string; items: ReadonlyArray<string> };
