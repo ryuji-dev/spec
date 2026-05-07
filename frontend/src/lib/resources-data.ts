@@ -210,6 +210,18 @@ export type ResourceTopItem = {
   type: ResourceFileType;
 };
 
+export type ResourcesSort = "recent" | "downloads" | "name";
+export type ResourcesView = "grid" | "list";
+
+export const RESOURCES_SORTS: ReadonlyArray<{
+  v: ResourcesSort;
+  label: string;
+}> = [
+  { v: "recent", label: "최신순" },
+  { v: "downloads", label: "다운로드순" },
+  { v: "name", label: "이름순" },
+];
+
 export const LB_TOP: ReadonlyArray<ResourceTopItem> = [
   {
     rank: 1,
