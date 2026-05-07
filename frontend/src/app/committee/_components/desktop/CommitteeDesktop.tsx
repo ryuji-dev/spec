@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { BD_CATEGORIES, BD_PINNED, BD_POSTS } from "@/lib/committee-data";
-import { FOREST_PALETTE } from "../shared/palette";
+import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import PinnedCard from "./PinnedCard";
 import PostCard from "./PostCard";
 import PostListRow from "./PostListRow";

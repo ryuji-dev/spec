@@ -1,6 +1,7 @@
-import type { Palette } from "../shared/palette";
+import type { Palette } from "@/app/_components/shared/palette";
 import type { Post } from "@/lib/committee-data";
-import CatLabel from "../shared/CatLabel";
+import CatLabel from "@/app/_components/shared/CatLabel";
+import { catTone } from "../catTone";
 
 type Props = {
   post: Post;
@@ -34,7 +35,7 @@ export default function PostTableRow({ post, palette, index }: Props) {
         {String(index).padStart(3, "0")}
       </div>
       <div>
-        <CatLabel cat={post.cat} palette={palette} />
+        <CatLabel label={post.cat} tone={catTone(post.cat, palette)} />
       </div>
       <div
         style={{

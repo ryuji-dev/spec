@@ -1,4 +1,4 @@
-import type { Palette } from "../shared/palette";
+import type { Palette } from "@/app/_components/shared/palette";
 
 type Props = { palette: Palette };
 

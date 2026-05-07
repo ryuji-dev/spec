@@ -1,8 +1,13 @@
 import type { Palette } from "./palette";
-import type { Post } from "@/lib/committee-data";
+
+type PostStats = {
+  views: number;
+  comments: number;
+  attach?: number;
+};
 
 type Props = {
-  post: Pick<Post, "views" | "comments" | "attach">;
+  post: PostStats;
   palette: Palette;
   size?: number;
 };
