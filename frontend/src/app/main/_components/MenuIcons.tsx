@@ -74,16 +74,15 @@ const ICONS: Record<string, ReactElement> = {
       <path d="M38.5 38 L38.5 30" stroke={C.accent} strokeWidth="1.2" />
     </svg>
   ),
-  church: (
+  professor: (
     <svg viewBox="0 0 60 60" width="100%" height="100%">
-      <circle cx="30" cy="30" r="30" fill={C.primary} opacity="0.08" />
-      <rect x="18" y="32" width="24" height="16" fill={C.primary} />
-      <path d="M18 32 L30 22 L42 32 Z" fill={C.secondary} />
-      <rect x="29" y="14" width="2" height="10" fill={C.primary} />
-      <rect x="26" y="17" width="8" height="2" fill={C.primary} />
-      <rect x="27" y="38" width="6" height="10" fill={C.bg} />
-      <rect x="22" y="36" width="4" height="5" fill={C.bg} />
-      <rect x="34" y="36" width="4" height="5" fill={C.bg} />
+      <circle cx="30" cy="30" r="30" fill={C.accent} opacity="0.18" />
+      <rect x="16" y="13" width="28" height="34" rx="2" fill={C.surface} stroke={C.primary} strokeWidth="1.4" />
+      <rect x="20" y="17" width="20" height="18" fill={C.primary} opacity="0.1" />
+      <circle cx="30" cy="24" r="4" fill={C.primary} />
+      <path d="M22 35 Q22 28 30 28 Q38 28 38 35 Z" fill={C.primary} />
+      <line x1="20" y1="40" x2="40" y2="40" stroke={C.muted} strokeWidth="1" strokeLinecap="round" />
+      <line x1="20" y1="43" x2="34" y2="43" stroke={C.muted} strokeWidth="0.8" strokeLinecap="round" />
     </svg>
   ),
 };

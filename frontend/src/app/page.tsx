@@ -55,7 +55,7 @@ export default function LandingPage() {
             <a href={MAIN_PAGE_HREF}>교역자수련회</a>
             <a href={MAIN_PAGE_HREF}>자유게시판</a>
             <a href={MAIN_PAGE_HREF}>자료공유</a>
-            <a href={MAIN_PAGE_HREF}>한국교회</a>
+            <a href={MAIN_PAGE_HREF}>신학원교수소개</a>
           </nav>
         </div>
 

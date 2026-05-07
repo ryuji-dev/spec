@@ -63,11 +63,11 @@ export const MENU_ITEMS: MenuItem[] = [
     meta: "신규 24건",
   },
   {
-    key: "church",
-    en: "CHURCH",
-    title: "한국교회",
-    sub: "한국교회 소식과 자료",
-    meta: "연합 자료 모음",
+    key: "professor",
+    en: "PROFESSOR",
+    title: "신학원교수소개",
+    sub: "교수진 프로필과 사역",
+    meta: "교수진 소개",
   },
 ];
 
@@ -120,8 +120,8 @@ export const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { label: "교육위원회", href: "/committee" },
   { label: "교역자수련회", href: "/training" },
   { label: "자유게시판", href: "/board" },
-  { label: "자료공유" },
-  { label: "한국교회" },
+  { label: "자료공유", href: "/resources" },
+  { label: "신학원교수소개" },
 ];
 
 export type FooterColumn = { title: string; items: ReadonlyArray<string> };
