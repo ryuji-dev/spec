@@ -91,6 +91,22 @@
   cursor: pointer;
   opacity: 0.92;
   white-space: nowrap;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+/* active 메뉴 — 디자인 원본 board.jsx BoardDesktopNav와 동일한 강조 */
+.nav[data-variant="solid"] .menuItem[data-active="true"] {
+  font-weight: 700;
+  color: var(--palette-primary);
+  border-bottom: 2px solid var(--palette-primary);
+  opacity: 1;
+}
+
+.nav[data-variant="transparent"] .menuItem[data-active="true"] {
+  font-weight: 700;
+  border-bottom: 2px solid #fff;
+  opacity: 1;
 }
 
 .utils {
