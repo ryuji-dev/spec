@@ -3,6 +3,7 @@
 import { useState } from "react";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
+import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
   LB_CATEGORIES,
   LB_COLLECTIONS,
@@ -132,53 +133,27 @@ export default function ResourcesMobile({ deviceType = "ios" }: Props) {
         </button>
       </div>
 
-      {/* Hero — stat + headline */}
+      <PageHeroMobile
+        kicker="RESOURCE LIBRARY"
+        title={
+          <>
+            자료를 함께,
+            <br />
+            <em>사역의 무게를 나누다</em>
+          </>
+        }
+      />
+
+      {/* 통계 + 검색 — hero 아래 별도 섹션 */}
       <section
         style={{
-          padding: "26px 20px 24px",
+          padding: "20px 20px 22px",
           background: palette.surface,
           borderBottom: `1px solid ${palette.line}`,
         }}
       >
         <div
           style={{
-            fontSize: 10,
-            letterSpacing: "0.28em",
-            color: palette.secondary,
-            fontWeight: 600,
-            fontFamily: "Inter, system-ui",
-            marginBottom: 10,
-          }}
-        >
-          RESOURCE LIBRARY
-        </div>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: '"Noto Serif KR", serif',
-            fontSize: 30,
-            fontWeight: 500,
-            color: palette.ink,
-            letterSpacing: "-0.025em",
-            lineHeight: 1.2,
-          }}
-        >
-          자료를 함께,
-          <br />
-          <em
-            style={{
-              fontStyle: "italic",
-              fontWeight: 300,
-              color: palette.primary,
-              fontSize: 22,
-            }}
-          >
-            사역의 무게를 나누다
-          </em>
-        </h1>
-        <div
-          style={{
-            marginTop: 22,
             display: "grid",
             gridTemplateColumns: "1fr 1fr 1fr",
             gap: 0,
@@ -232,35 +207,11 @@ export default function ResourcesMobile({ deviceType = "ios" }: Props) {
             borderRadius: 999,
           }}
         >
-          <svg
-            width="13"
-            height="13"
-            viewBox="0 0 14 14"
-            style={{ color: palette.muted }}
-          >
-            <circle
-              cx="6"
-              cy="6"
-              r="4.5"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              fill="none"
-            />
-            <path
-              d="M9.5 9.5 L13 13"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-            />
+          <svg width="13" height="13" viewBox="0 0 14 14" style={{ color: palette.muted }}>
+            <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.4" fill="none" />
+            <path d="M9.5 9.5 L13 13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
           </svg>
-          <span
-            style={{
-              fontSize: 12,
-              color: palette.muted,
-              letterSpacing: "-0.01em",
-              flex: 1,
-            }}
-          >
+          <span style={{ fontSize: 12, color: palette.muted, letterSpacing: "-0.01em", flex: 1 }}>
             설교 본문, 곡명, 학년 검색
           </span>
         </div>
