@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import CatLabel from "@/app/_components/shared/CatLabel";
+import { PageHeroMobile } from "@/app/_components/PageHero";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
 import {
   TR_BOARD,
@@ -129,43 +130,17 @@ export default function TrainingMobile() {
           </div>
         </header>
 
-        {/* 페이지 타이틀 */}
-        <div style={{ padding: "24px 22px 14px" }}>
-          <div
-            style={{
-              fontSize: 10,
-              letterSpacing: "0.28em",
-              color: palette.secondary,
-              fontWeight: 600,
-              fontFamily: "Inter, system-ui",
-              marginBottom: 8,
-            }}
-          >
-            EDUCATION · TRAINING
-          </div>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: '"Noto Serif KR", serif',
-              fontSize: 28,
-              fontWeight: 500,
-              letterSpacing: "-0.025em",
-              lineHeight: 1.18,
-            }}
-          >
-            잠시 멈추어,
-            <br />
-            <em
-              style={{
-                fontStyle: "italic",
-                fontWeight: 300,
-                color: palette.primary,
-              }}
-            >
-              다시 듣다
-            </em>
-          </h1>
-        </div>
+        <PageHeroMobile
+          kicker="EDUCATION · TRAINING"
+          title={
+            <>
+              잠시 멈추어,
+              <br />
+              <em>다시 듣다</em>
+            </>
+          }
+          rightAccent={"EST. 1998 · 47회째"}
+        />
 
         {/* 카운트다운 + 신청 카드 */}
         <div style={{ padding: "8px 22px 0" }}>
