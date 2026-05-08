@@ -1,3 +1,4 @@
+import { PageHeroDesktop } from "@/app/_components/PageHero";
 import {
   WZ_ARTICLES,
   WZ_BACK_ISSUES,
@@ -10,97 +11,34 @@ import CoverWilderness from "../illustrations/CoverWilderness";
 
 type Props = { palette: WebzinePalette };
 
-// 원본 _design/.../webzine.jsx::WebzineDesktop 그대로.
-// 사용자 결정에 따라 글로벌 DesktopNav·Footer는 생략하고 매거진 마스트헤드부터 렌더.
 export default function WebzineDesktop({ palette }: Props) {
   return (
     <div style={{ background: palette.bg, minHeight: "100%" }}>
-      {/* 페이지 타이틀 — 매거진 마스트헤드 */}
-      <div
-        style={{
-          padding: "110px 80px 60px",
-          borderBottom: `1px solid ${palette.line}`,
-          background: palette.surface,
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 40 }}>
-          <div>
-            <div
-              style={{
-                fontSize: 11,
-                letterSpacing: "0.32em",
-                color: palette.secondary,
-                fontWeight: 600,
-                fontFamily: "Inter",
-                marginBottom: 16,
-              }}
-            >
-              SEOGYEONG · WEBZINE
-            </div>
-            <h1
-              style={{
-                margin: 0,
-                fontFamily: '"Noto Serif KR", serif',
-                fontSize: 68,
-                fontWeight: 500,
-                color: palette.ink,
-                letterSpacing: "-0.03em",
-                lineHeight: 1.05,
-              }}
-            >
-              신학원웹진
-            </h1>
-            <div
-              style={{
-                marginTop: 18,
-                fontSize: 14,
-                color: palette.muted,
-                fontFamily: '"Noto Sans KR"',
-                maxWidth: 560,
-                lineHeight: 1.7,
-              }}
-            >
-              서경신학원과 노회의 글들을 한자리에 모읍니다. 신학의 사색, 현장의 목소리,
-              그리고 가르침의 자리에서 길어 올린 작은 이야기들.
-            </div>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <div
-              style={{
-                fontSize: 10,
-                letterSpacing: "0.24em",
-                color: palette.muted,
-                fontFamily: "Inter",
-                marginBottom: 8,
-              }}
-            >
+      <PageHeroDesktop
+        kicker="SEOGYEONG · WEBZINE"
+        title="신학원웹진"
+        lead="서경신학원과 노회의 글들을 한자리에 모읍니다. 신학의 사색, 현장의 목소리, 그리고 가르침의 자리에서 길어 올린 작은 이야기들."
+        rightAccent={
+          <>
+            <div style={{ fontSize: 10, letterSpacing: "0.24em", marginBottom: 8, opacity: 0.85 }}>
               CURRENT ISSUE
             </div>
             <div
               style={{
                 fontFamily: '"Noto Serif KR", serif',
                 fontSize: 22,
-                color: palette.primary,
                 letterSpacing: "-0.02em",
                 fontWeight: 500,
               }}
             >
               {WZ_FEATURED.issue}
             </div>
-            <div
-              style={{
-                marginTop: 12,
-                fontSize: 12,
-                color: palette.secondary,
-                fontFamily: "Inter",
-                letterSpacing: "0.1em",
-              }}
-            >
+            <div style={{ marginTop: 12, fontSize: 11, letterSpacing: "0.1em", opacity: 0.7 }}>
               EST. 2014 · 봄·여름·가을·겨울 · 연 4회
             </div>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* 카테고리 nav */}
       <div
