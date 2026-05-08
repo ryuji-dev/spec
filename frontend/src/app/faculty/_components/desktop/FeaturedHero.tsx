@@ -1,4 +1,5 @@
 import type { Palette } from "@/app/_components/shared/palette";
+import { PageHeroDesktop } from "@/app/_components/PageHero";
 import { FACULTY_COVER } from "@/lib/faculty-data";
 import FacultyPortrait from "../shared/FacultyPortrait";
 
@@ -14,136 +15,95 @@ const MAST_LABELS = ["커버 스토리", "학장 인터뷰", "2026 봄학기"];
 
 export default function FeaturedHero({ palette }: Props) {
   return (
-    <section
-      style={{
-        padding: "0 80px 56px",
-        background: palette.surface,
-        borderBottom: `1px solid ${palette.line}`,
-      }}
-    >
-      <header style={{ padding: "60px 0 36px" }}>
+    <>
+      <PageHeroDesktop
+        kicker="FACULTY · 가르치는 자리에 선 사람들"
+        title={
+          <>
+            신학원교수소개,
+            <br />
+            <em style={{ fontSize: 44 }}>책상의 깊이가 강단의 무게가 되도록</em>
+          </>
+        }
+        lead="서경노회 신학원의 전임 14인 교수진을 소개합니다. 한 학기의 강의 계획, 교수 한 분의 한 줄, 그리고 그 자리를 채우는 시간들."
+      />
+
+      {/* VOL.07 · SPRING 2026 통계 — hero 아래 별도 섹션 */}
+      <section
+        style={{
+          padding: "32px 80px",
+          background: palette.surface,
+          borderBottom: `1px solid ${palette.line}`,
+        }}
+      >
         <div
           style={{
+            background: palette.ink,
+            color: "#F5F1E8",
+            padding: "22px 28px",
+            borderRadius: 4,
             display: "grid",
-            gridTemplateColumns: "1.4fr 1fr",
-            gap: 56,
-            alignItems: "flex-end",
+            gridTemplateColumns: "auto 1fr",
+            gap: 40,
+            alignItems: "center",
           }}
         >
-          <div>
-            <div
-              style={{
-                fontSize: 11,
-                letterSpacing: "0.32em",
-                color: palette.secondary,
-                fontWeight: 600,
-                fontFamily: "Inter, system-ui",
-                marginBottom: 14,
-              }}
-            >
-              FACULTY · 가르치는 자리에 선 사람들
-            </div>
-            <h1
-              style={{
-                margin: 0,
-                fontFamily: '"Noto Serif KR", "Nanum Myeongjo", serif',
-                fontSize: 56,
-                fontWeight: 500,
-                letterSpacing: "-0.025em",
-                lineHeight: 1.12,
-                color: palette.ink,
-              }}
-            >
-              신학원교수소개,
-              <br />
-              <em
-                style={{
-                  fontStyle: "italic",
-                  fontWeight: 300,
-                  color: palette.primary,
-                  fontSize: 38,
-                }}
-              >
-                책상의 깊이가 강단의 무게가 되도록
-              </em>
-            </h1>
-            <p
-              style={{
-                marginTop: 22,
-                marginBottom: 0,
-                maxWidth: 560,
-                fontSize: 15,
-                lineHeight: 1.75,
-                color: palette.muted,
-                fontFamily: '"Noto Sans KR", system-ui',
-                fontWeight: 400,
-              }}
-            >
-              서경노회 신학원의 전임 14인 교수진을 소개합니다. 한 학기의 강의
-              계획, 교수 한 분의 한 줄, 그리고 그 자리를 채우는 시간들.
-            </p>
-          </div>
           <div
             style={{
-              background: palette.ink,
-              color: "#F5F1E8",
-              padding: "22px 24px",
-              borderRadius: 4,
+              fontSize: 9.5,
+              letterSpacing: "0.28em",
+              opacity: 0.55,
+              fontFamily: "Inter, system-ui",
+              fontWeight: 600,
             }}
           >
-            <div
-              style={{
-                fontSize: 9.5,
-                letterSpacing: "0.28em",
-                opacity: 0.55,
-                fontFamily: "Inter, system-ui",
-                fontWeight: 600,
-                marginBottom: 14,
-              }}
-            >
-              VOL.07 · SPRING 2026
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-              {VOL_STATS.map((s, i) => (
+            VOL.07 · SPRING 2026
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+            {VOL_STATS.map((s, i) => (
+              <div
+                key={s.l}
+                style={{
+                  paddingLeft: i === 0 ? 0 : 14,
+                  borderLeft: i === 0 ? "none" : "1px solid rgba(245,241,232,0.18)",
+                }}
+              >
                 <div
-                  key={s.l}
                   style={{
-                    paddingLeft: i === 0 ? 0 : 14,
-                    borderLeft:
-                      i === 0
-                        ? "none"
-                        : `1px solid rgba(245,241,232,0.18)`,
+                    fontFamily: '"Noto Serif KR", serif',
+                    fontSize: 26,
+                    fontWeight: 500,
+                    color: palette.accent,
+                    letterSpacing: "-0.025em",
+                    lineHeight: 1,
                   }}
                 >
-                  <div
-                    style={{
-                      fontFamily: '"Noto Serif KR", serif',
-                      fontSize: 26,
-                      fontWeight: 500,
-                      color: palette.accent,
-                      letterSpacing: "-0.025em",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {s.k}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 10.5,
-                      opacity: 0.7,
-                      marginTop: 6,
-                      fontFamily: '"Noto Sans KR", system-ui',
-                    }}
-                  >
-                    {s.l}
-                  </div>
+                  {s.k}
                 </div>
-              ))}
-            </div>
+                <div
+                  style={{
+                    fontSize: 10.5,
+                    opacity: 0.7,
+                    marginTop: 6,
+                    fontFamily: '"Noto Sans KR", system-ui',
+                  }}
+                >
+                  {s.l}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </header>
+      </section>
 
+      {/* 이번 호의 교수 — 커버 스토리 섹션 */}
+      <section
+        style={{
+          padding: "40px 80px 56px",
+          background: palette.surface,
+          borderBottom: `1px solid ${palette.line}`,
+        }}
+      >
       <div
         style={{
           display: "flex",
@@ -413,6 +373,7 @@ export default function FeaturedHero({ palette }: Props) {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

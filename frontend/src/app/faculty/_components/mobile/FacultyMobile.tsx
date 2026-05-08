@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
+import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
   FACULTY_COVER,
   FACULTY_DEPTS,
@@ -138,69 +139,17 @@ export default function FacultyMobile({ deviceType }: Props) {
         </button>
       </div>
 
-      {/* 한글 폼 마스트 */}
-      <section
-        style={{
-          padding: "24px 20px 22px",
-          background: palette.surface,
-          borderBottom: `1px solid ${palette.line}`,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 10,
-            letterSpacing: "0.28em",
-            color: palette.secondary,
-            fontWeight: 600,
-            fontFamily: "Inter, system-ui",
-            marginBottom: 10,
-          }}
-        >
-          FACULTY · 가르치는 자리
-        </div>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: '"Noto Serif KR", serif',
-            fontSize: 28,
-            fontWeight: 500,
-            color: palette.ink,
-            letterSpacing: "-0.025em",
-            lineHeight: 1.22,
-          }}
-        >
-          신학원교수소개,
-          <br />
-          <em
-            style={{
-              fontStyle: "italic",
-              fontWeight: 300,
-              color: palette.primary,
-              fontSize: 21,
-            }}
-          >
-            책상의 깊이가 강단의 무게로
-          </em>
-        </h1>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            fontSize: 9,
-            letterSpacing: "0.24em",
-            fontWeight: 600,
-            fontFamily: "Inter, system-ui",
-            color: palette.muted,
-            marginTop: 18,
-            paddingTop: 14,
-            borderTop: `1px solid ${palette.line}`,
-          }}
-        >
-          <span>전임 14인</span>
-          <span>2026 봄학기</span>
-          <span>커버 인터뷰</span>
-        </div>
-      </section>
+      <PageHeroMobile
+        kicker="FACULTY · 가르치는 자리"
+        title={
+          <>
+            신학원교수소개,
+            <br />
+            <em>책상의 깊이가 강단의 무게로</em>
+          </>
+        }
+        rightAccent={"전임 14인 · 2026 봄학기"}
+      />
 
       {/* Cover Story 모바일 */}
       <section style={{ padding: "24px 20px", background: palette.surface }}>
