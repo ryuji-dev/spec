@@ -1,16 +1,36 @@
+"use client";
+
+import { useState } from "react";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
+import {
+  FACULTY_MEMBERS,
+  type FacultyDept,
+  type FacultyView,
+} from "@/lib/faculty-data";
+import FeaturedHero from "./FeaturedHero";
+import QuoteStrip from "./QuoteStrip";
+import FilterStrip from "./FilterStrip";
+import FacultyGrid from "./FacultyGrid";
+import FacultyList from "./FacultyList";
+import ScheduleSection from "./ScheduleSection";
+import SeminaryCTA from "./SeminaryCTA";
+import FacultyFooter from "./FacultyFooter";
 
 const palette = FOREST_PALETTE;
 
 /**
- * 신학원교수소개 데스크톱 — 디자인 원본 faculty.jsx 의 FacultyDesktop 이식 골격.
+ * 신학원교수소개 데스크톱 — 디자인 원본 faculty.jsx 의 FacultyDesktop 그대로.
  * 글로벌 DesktopNav(solid)는 page 단에서 노출. 여기선 본문만.
- *
- * Step A: 라우트 동작 확인용 골격(팔레트 배경 + 안내 텍스트).
- * Step B 에서 FeaturedHero / QuoteStrip / FilterStrip / FacultyGrid / FacultyList /
- * ScheduleSection / SeminaryCTA / FacultyFooter 섹션을 채워 넣는다.
  */
 export default function FacultyDesktop() {
+  const [activeDept, setActiveDept] = useState<FacultyDept>("all");
+  const [view, setView] = useState<FacultyView>("grid");
+
+  const filtered =
+    activeDept === "all"
+      ? FACULTY_MEMBERS
+      : FACULTY_MEMBERS.filter((p) => p.dept === activeDept);
+
   return (
     <div
       style={{
@@ -19,33 +39,28 @@ export default function FacultyDesktop() {
         minHeight: "100%",
       }}
     >
-      <section style={{ padding: "120px 80px" }}>
-        <div
-          style={{
-            fontSize: 11,
-            letterSpacing: "0.32em",
-            fontWeight: 600,
-            color: palette.muted,
-            fontFamily: "Inter, system-ui",
-            marginBottom: 18,
-          }}
-        >
-          FACULTY · 가르치는 자리에 선 사람들
-        </div>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: '"Noto Serif KR", serif',
-            fontSize: 44,
-            fontWeight: 500,
-            letterSpacing: "-0.03em",
-            lineHeight: 1.15,
-            color: palette.ink,
-          }}
-        >
-          신학원교수소개
-        </h1>
+      <FeaturedHero palette={palette} />
+      <QuoteStrip palette={palette} />
+      <FilterStrip
+        palette={palette}
+        activeDept={activeDept}
+        setActiveDept={setActiveDept}
+        view={view}
+        setView={setView}
+        filteredCount={filtered.length}
+      />
+
+      <section style={{ padding: "48px 80px 64px" }}>
+        {view === "grid" ? (
+          <FacultyGrid profs={filtered} palette={palette} />
+        ) : (
+          <FacultyList profs={filtered} palette={palette} />
+        )}
       </section>
+
+      <ScheduleSection palette={palette} />
+      <SeminaryCTA palette={palette} />
+      <FacultyFooter palette={palette} />
     </div>
   );
 }

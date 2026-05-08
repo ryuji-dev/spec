@@ -8,6 +8,8 @@ export type FacultyDept = "all" | "ot" | "nt" | "st" | "pt" | "ch" | "mn";
 
 export type FacultyTone = "forest" | "olive" | "pine" | "sage";
 
+export type FacultyView = "grid" | "list";
+
 export type FacultyDeptItem = {
   id: FacultyDept;
   ko: string;
