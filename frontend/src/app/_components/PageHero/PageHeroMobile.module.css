@@ -1,0 +1,81 @@
+.hero {
+  position: relative;
+  height: 720px;
+  overflow: hidden;
+  background: #1a1410;
+}
+
+.bgImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(26, 20, 16, 0.25) 0%,
+    rgba(26, 20, 16, 0.5) 55%,
+    rgba(26, 20, 16, 0.9) 100%
+  );
+}
+
+.content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px 28px 40px;
+  color: #fff;
+}
+
+.kicker {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  opacity: 0.75;
+  margin-bottom: 18px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.title {
+  margin: 0;
+  font-size: 44px;
+  line-height: 1.1;
+  font-weight: 500;
+  font-family: var(--font-noto-serif-kr), serif;
+  letter-spacing: -0.02em;
+}
+
+.title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--palette-accent, #c9a961);
+}
+
+.lead {
+  margin-top: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  opacity: 0.85;
+  font-family: var(--font-noto-sans-kr), system-ui, sans-serif;
+  font-weight: 300;
+}
+
+.rightAccent {
+  position: absolute;
+  right: 28px;
+  bottom: 40px;
+  z-index: 4;
+  text-align: right;
+  color: #fff;
+  opacity: 0.85;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
