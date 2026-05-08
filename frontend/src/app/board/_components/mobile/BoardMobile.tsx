@@ -3,6 +3,7 @@
 import { useState } from "react";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
+import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
   BOARD_SORTS,
   BOARD_STATS_MOBILE,
@@ -119,54 +120,27 @@ export default function BoardMobile({ deviceType = "ios" }: Props) {
         </button>
       </div>
 
-      {/* Hero */}
+      <PageHeroMobile
+        kicker="COMMUNITY"
+        title={
+          <>
+            자유게시판,
+            <br />
+            <em>오늘의 이야기를 나누다</em>
+          </>
+        }
+      />
+
+      {/* 말씀 카드 + 통계 — hero 아래 별도 섹션 */}
       <section
         style={{
-          padding: "24px 20px 22px",
+          padding: "20px 20px 22px",
           background: palette.surface,
           borderBottom: `1px solid ${palette.line}`,
         }}
       >
         <div
           style={{
-            fontSize: 10,
-            letterSpacing: "0.28em",
-            color: palette.secondary,
-            fontWeight: 600,
-            fontFamily: "Inter, system-ui",
-            marginBottom: 10,
-          }}
-        >
-          COMMUNITY
-        </div>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: '"Noto Serif KR", serif',
-            fontSize: 28,
-            fontWeight: 500,
-            color: palette.ink,
-            letterSpacing: "-0.025em",
-            lineHeight: 1.22,
-          }}
-        >
-          자유게시판,
-          <br />
-          <em
-            style={{
-              fontStyle: "italic",
-              fontWeight: 300,
-              color: palette.primary,
-              fontSize: 21,
-            }}
-          >
-            오늘의 이야기를 나누다
-          </em>
-        </h1>
-
-        <div
-          style={{
-            marginTop: 18,
             padding: "14px 16px",
             background: palette.ink,
             color: "#F5F1E8",

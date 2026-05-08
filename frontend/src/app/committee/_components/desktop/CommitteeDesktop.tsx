@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { BD_CATEGORIES, BD_PINNED, BD_POSTS } from "@/lib/committee-data";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
+import { PageHeroDesktop } from "@/app/_components/PageHero";
 import PinnedCard from "./PinnedCard";
 import PostCard from "./PostCard";
 import PostListRow from "./PostListRow";
@@ -30,112 +31,62 @@ export default function CommitteeDesktop() {
 
   return (
     <div style={{ background: palette.bg, minHeight: "100vh", color: palette.ink }}>
-      {/* 페이지 헤더 */}
-      <header
+      <PageHeroDesktop
+        kicker="EDUCATION COMMITTEE · BOARD"
+        title={
+          <>
+            교육위원회
+            <br />
+            <em style={{ fontSize: 44 }}>나누고, 기록하고, 함께</em>
+          </>
+        }
+      />
+
+      {/* 스탯 + 새 글 작성 — hero 아래 별도 행 */}
+      <div
         style={{
-          padding: "64px 80px 36px",
-          borderBottom: `1px solid ${palette.line}`,
+          padding: "24px 80px",
           background: palette.surface,
+          borderBottom: `1px solid ${palette.line}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 40,
+          fontFamily: '"Noto Sans KR", system-ui',
         }}
       >
-        <div
+        <div style={{ fontSize: 13, color: palette.muted, lineHeight: 1.6 }}>
+          이번 달 새 글{" "}
+          <strong style={{ color: palette.primary, fontWeight: 700 }}>
+            {BD_POSTS.filter((p) => p.isNew).length + 1}
+          </strong>
+          건 · 총 게시글{" "}
+          <strong style={{ color: palette.ink, fontWeight: 700 }}>142</strong>건 ·
+          작성자 <strong style={{ color: palette.ink, fontWeight: 700 }}>38</strong>명
+        </div>
+        <button
+          type="button"
           style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            gap: 40,
+            background: palette.ink,
+            color: "#fff",
+            border: "none",
+            padding: "11px 22px",
+            borderRadius: 2,
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+            letterSpacing: "-0.01em",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
           }}
         >
-          <div>
-            <div
-              style={{
-                fontSize: 11,
-                letterSpacing: "0.32em",
-                color: palette.secondary,
-                fontWeight: 600,
-                fontFamily: "Inter, system-ui",
-                marginBottom: 14,
-              }}
-            >
-              EDUCATION COMMITTEE · BOARD
-            </div>
-            <h1
-              style={{
-                margin: 0,
-                fontFamily: '"Noto Serif KR", "Nanum Myeongjo", serif',
-                fontSize: 56,
-                fontWeight: 500,
-                letterSpacing: "-0.025em",
-                lineHeight: 1.12,
-              }}
-            >
-              교육위원회
-              <br />
-              <em
-                style={{
-                  fontStyle: "italic",
-                  fontWeight: 300,
-                  color: palette.primary,
-                  fontSize: 38,
-                }}
-              >
-                나누고, 기록하고, 함께
-              </em>
-            </h1>
-          </div>
-          <div
-            style={{
-              textAlign: "right",
-              fontFamily: '"Noto Sans KR", system-ui',
-              fontSize: 13,
-              color: palette.muted,
-              lineHeight: 1.6,
-            }}
-          >
-            <div>
-              이번 달 새 글{" "}
-              <strong style={{ color: palette.primary, fontWeight: 700 }}>
-                {BD_POSTS.filter((p) => p.isNew).length + 1}
-              </strong>
-              건
-            </div>
-            <div>
-              총 게시글 <strong style={{ color: palette.ink, fontWeight: 700 }}>142</strong>건 ·
-              작성자 <strong style={{ color: palette.ink, fontWeight: 700 }}>38</strong>명
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <button
-                type="button"
-                style={{
-                  background: palette.ink,
-                  color: "#fff",
-                  border: "none",
-                  padding: "11px 22px",
-                  borderRadius: 2,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  fontFamily: '"Noto Sans KR", system-ui',
-                  letterSpacing: "-0.01em",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                <svg width="11" height="11" viewBox="0 0 12 12">
-                  <path
-                    d="M6 1 V11 M1 6 H11"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                새 글 작성
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+          <svg width="11" height="11" viewBox="0 0 12 12">
+            <path d="M6 1 V11 M1 6 H11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+          새 글 작성
+        </button>
+      </div>
 
       {/* 필터 바 — sticky. 글로벌 nav(solid, sticky) 아래에 위치하도록 top offset. */}
       <div

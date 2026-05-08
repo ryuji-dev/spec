@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
   WZ_ARTICLES,
   WZ_BACK_ISSUES,
@@ -16,14 +17,8 @@ type Props = {
   deviceType: "ios" | "android";
 };
 
-// 원본 _design/.../webzine.jsx::WebzineMobile 그대로.
-// 사용자 결정에 따라 Footer·BottomTabBar는 생략. tab 상태는 향후 하단 탭 도입 시 사용.
-export default function WebzineMobile({ palette, deviceType }: Props) {
-  const [_tab, _setTab] = useState(0);
+export default function WebzineMobile({ palette }: Props) {
   const [cat, setCat] = useState("전체");
-
-  void _tab;
-  void _setTab;
 
   return (
     <div
@@ -35,125 +30,19 @@ export default function WebzineMobile({ palette, deviceType }: Props) {
         paddingBottom: 80,
       }}
     >
-      {/* 매거진 마스트헤드 */}
-      <div
-        style={{
-          background: palette.surface,
-          padding: deviceType === "ios" ? "60px 22px 22px" : "24px 22px 22px",
-          borderBottom: `1px solid ${palette.line}`,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 18,
-          }}
-        >
-          <button
-            style={{
-              background: "none",
-              border: "none",
-              padding: 4,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              color: palette.ink,
-              fontFamily: '"Noto Sans KR"',
-              fontSize: 13,
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14">
-              <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-            </svg>
-            메인
-          </button>
-          <button
-            style={{
-              background: "none",
-              border: "none",
-              padding: 4,
-              cursor: "pointer",
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18">
-              <circle cx="8" cy="8" r="6" stroke={palette.ink} strokeWidth="1.5" fill="none" />
-              <path d="M13 13L17 17" stroke={palette.ink} strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
-        <div
-          style={{
-            fontSize: 9.5,
-            letterSpacing: "0.32em",
-            color: palette.secondary,
-            fontWeight: 600,
-            fontFamily: "Inter",
-            marginBottom: 10,
-          }}
-        >
-          SEOGYEONG · WEBZINE
-        </div>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: '"Noto Serif KR", serif',
-            fontSize: 36,
-            fontWeight: 500,
-            color: palette.ink,
-            letterSpacing: "-0.025em",
-            lineHeight: 1.1,
-          }}
-        >
-          신학원웹진
-        </h1>
-        <div
-          style={{
-            marginTop: 12,
-            fontSize: 12.5,
-            color: palette.muted,
-            fontFamily: '"Noto Sans KR"',
-            lineHeight: 1.65,
-            fontWeight: 300,
-          }}
-        >
-          서경신학원과 노회의 글들을 한자리에. 신학의 사색과 현장의 목소리.
-        </div>
-        <div
-          style={{
-            marginTop: 18,
-            paddingTop: 14,
-            borderTop: `1px solid ${palette.line}`,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              fontFamily: '"Noto Serif KR", serif',
-              fontSize: 14,
-              color: palette.primary,
-              fontWeight: 500,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            {WZ_FEATURED.issue}
-          </div>
-          <div
-            style={{
-              fontSize: 9,
-              letterSpacing: "0.16em",
-              color: palette.muted,
-              fontFamily: "Inter",
-            }}
-          >
-            EST. 2014
-          </div>
-        </div>
-      </div>
+      <PageHeroMobile
+        kicker="SEOGYEONG · WEBZINE"
+        title="신학원웹진"
+        lead="서경신학원과 노회의 글들을 한자리에. 신학의 사색과 현장의 목소리."
+        rightAccent={
+          <>
+            <div style={{ fontSize: 13, fontFamily: '"Noto Serif KR", serif', fontWeight: 500, letterSpacing: "-0.02em", marginBottom: 6 }}>
+              {WZ_FEATURED.issue}
+            </div>
+            <div style={{ fontSize: 9, letterSpacing: "0.16em", opacity: 0.7 }}>EST. 2014</div>
+          </>
+        }
+      />
 
       {/* 카테고리 가로 스크롤 */}
       <div

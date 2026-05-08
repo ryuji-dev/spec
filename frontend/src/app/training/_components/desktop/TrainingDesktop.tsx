@@ -34,7 +34,7 @@ export default function TrainingDesktop() {
         color: palette.ink,
       }}
     >
-      <HeroSection palette={palette} />
+      <HeroSection />
       <UpcomingHero palette={palette} />
       <ScheduleSection palette={palette} />
       <SpeakersSection palette={palette} />

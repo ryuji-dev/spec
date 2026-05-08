@@ -10,6 +10,7 @@ import {
 } from "@/lib/committee-data";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
+import { PageHeroMobile } from "@/app/_components/PageHero";
 import PostCardMobile from "./PostCardMobile";
 import PostListMobile from "./PostListMobile";
 
@@ -103,45 +104,17 @@ export default function CommitteeMobile() {
         </div>
       </header>
 
-      {/* 페이지 타이틀 */}
-      <div style={{ padding: "28px 22px 16px" }}>
-        <div
-          style={{
-            fontSize: 10,
-            letterSpacing: "0.28em",
-            color: palette.secondary,
-            fontWeight: 600,
-            fontFamily: "Inter, system-ui",
-            marginBottom: 8,
-          }}
-        >
-          EDUCATION · BOARD
-        </div>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: '"Noto Serif KR", "Nanum Myeongjo", serif',
-            fontSize: 30,
-            fontWeight: 500,
-            letterSpacing: "-0.025em",
-            lineHeight: 1.18,
-          }}
-        >
-          나누고, 기록하고,
-          <br />
-          <em style={{ fontStyle: "italic", fontWeight: 300, color: palette.primary }}>함께</em>
-        </h1>
-        <div
-          style={{
-            marginTop: 14,
-            fontSize: 11.5,
-            color: palette.muted,
-            fontFamily: '"Noto Sans KR", system-ui',
-          }}
-        >
-          총 142건 · 이번 달 새 글 4건
-        </div>
-      </div>
+      <PageHeroMobile
+        kicker="EDUCATION · BOARD"
+        title={
+          <>
+            나누고, 기록하고,
+            <br />
+            <em>함께</em>
+          </>
+        }
+        rightAccent={"총 142건 · 이번 달 새 글 4건"}
+      />
 
       {/* 카테고리 핀 — 가로 스크롤 */}
       <div
