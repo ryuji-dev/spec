@@ -63,8 +63,8 @@ export const MENU_ITEMS: MenuItem[] = [
     meta: "신규 24건",
   },
   {
-    key: "professor",
-    en: "PROFESSOR",
+    key: "faculty",
+    en: "FACULTY",
     title: "신학원교수소개",
     sub: "교수진 프로필과 사역",
     meta: "교수진 소개",

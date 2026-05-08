@@ -74,7 +74,7 @@ const ICONS: Record<string, ReactElement> = {
       <path d="M38.5 38 L38.5 30" stroke={C.accent} strokeWidth="1.2" />
     </svg>
   ),
-  professor: (
+  faculty: (
     <svg viewBox="0 0 60 60" width="100%" height="100%">
       <circle cx="30" cy="30" r="30" fill={C.accent} opacity="0.18" />
       <rect x="16" y="13" width="28" height="34" rx="2" fill={C.surface} stroke={C.primary} strokeWidth="1.4" />
