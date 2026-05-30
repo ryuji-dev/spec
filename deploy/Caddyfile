@@ -1,0 +1,6 @@
+# Caddy 리버스 프록시 — web 컨테이너로 프록시, 도메인 지정 시 자동 HTTPS
+# SITE_ADDRESS 미지정 시 :80(로컬 HTTP), 지정 시 해당 도메인 + Let's Encrypt 자동 발급
+{$SITE_ADDRESS::80} {
+	encode gzip zstd
+	reverse_proxy web:3000
+}

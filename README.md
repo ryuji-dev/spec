@@ -4,25 +4,34 @@
 
 ## 기술 스택
 
-- **프론트엔드**: Next.js 16 (App Router, TypeScript strict, Tailwind CSS, src/, pnpm)
-- **백엔드**: PHP 8.x + MySQL — 로컬 APM 서버(`recpc`)에 배포 예정
-- **호스팅**: 프론트는 Vercel, 백엔드는 `recpc`(Cloudflare Tunnel로 외부 노출)
-- **통신 규약**: REST/JSON + JWT(Bearer) + CORS 화이트리스트 (자세한 사항은 [`CLAUDE.md`](./CLAUDE.md) 참조)
+- **앱**: Next.js 16 풀스택 (App Router, TypeScript strict, Tailwind CSS, src/, pnpm) — 프론트·백엔드 단일 앱
+- **백엔드**: 같은 앱 안의 Server Actions·Route Handlers + `src/server/` 서버 전용 계층
+- **DB**: PostgreSQL (Drizzle ORM)
+- **인증**: 경량 커스텀 세션 (httpOnly 쿠키 + JWT)
+- **배포**: Oracle Cloud Always Free ARM VM 1대에 Docker Compose(`web` + `postgres` + `caddy`)
+- 자세한 규약·보안 기본기는 [`CLAUDE.md`](./CLAUDE.md) 참조
 
 ## 빠른 시작
 
 ```bash
 # 의존성 설치
-cd frontend
+cd web
 pnpm install   # pnpm 미설치 시: corepack enable && corepack prepare pnpm@latest --activate
 
-# 개발 서버
-pnpm dev       # http://localhost:3000
+# 로컬 DB (Docker 불필요 — PGlite를 PG 서버로 띄움, 최초 1회 마이그레이션+admin 시드)
+pnpm dev:db    # 별도 터미널에서 유지. admin@seogyeong.kr / admin1234
 
-# 빌드 / 린트
+# 개발 서버
+pnpm dev       # http://localhost:3000  (.env.local의 DATABASE_URL로 위 DB에 접속)
+
+# 빌드 / 린트 / 검증
 pnpm build
 pnpm lint
+pnpm db:verify    # 스키마 마이그레이션 스모크 테스트
+pnpm auth:verify  # 인증 원시 함수 검증
 ```
+
+> 로컬 개발은 **Docker 없이** 동작한다(PGlite). 운영은 Oracle VM에서 docker compose로 실제 PostgreSQL을 쓴다.
 
 ## 폴더 구조
 
@@ -31,24 +40,28 @@ spec/
 ├── CLAUDE.md          ← 프로젝트 헌법·규칙 (Claude Code 자동 로드)
 ├── README.md          ← 이 파일
 ├── TODO.md            ← 작업 큐 + 후속 작업 프롬프트
+├── docker-compose.yml ← web + postgres + caddy 오케스트레이션
+├── deploy/            ← 배포 자산 (Caddyfile, OCI VM 셋업 메모)
 ├── docs/
 │   └── superpowers/
 │       ├── plans/     ← 작업 plan 기록 (날짜별)
 │       └── specs/     ← 설계 문서 (브레인스토밍 결과)
-├── frontend/          ← Next.js 16
-│   ├── src/app/       ← App Router 페이지
-│   ├── public/        ← 정적 자산 (이미지·폰트 등)
-│   └── _design/       ← Claude Design 핸드오프 원본 (gitignore)
-└── backend/           ← (예정) PHP 8.x + MySQL
+└── web/               ← Next.js 16 풀스택 앱
+    └── src/
+        ├── app/       ← App Router (UI 라우트 + api/ Route Handlers)
+        ├── server/    ← 서버 전용(백엔드): db/ · auth/ · services/ · actions/
+        └── lib/       ← 클라이언트·공용 (api.ts 래퍼, dto/, 유틸)
 ```
 
 ## 진행 현황
 
-- [x] **랜딩페이지** — `frontend/src/app/page.tsx` (PR #1, 디자인 100% 보존, 휠 스크롤로 메인 진입)
-- [ ] 메인페이지 (다음 PR)
-- [ ] 백엔드 골격 (`backend/` PHP) — TODO #3
-- [ ] DB 스키마, 인증, 게시물 CRUD — TODO #4–6
-- [ ] 배포 (Vercel + recpc + Cloudflare Tunnel) — TODO #8
+- [x] **랜딩페이지** — `web/src/app/page.tsx` (디자인 100% 보존, 휠 스크롤로 메인 진입)
+- [x] **신학원웹진** — `web/src/app/webzine/` (mock 단계)
+- [ ] 메인페이지·공통 레이아웃 (디자인 이식 진행 중)
+- [x] **아키텍처 재설계** — Oracle VM + Next.js 풀스택 + PostgreSQL/Drizzle
+- [ ] 인프라 골격 (docker-compose · Caddy) — Phase 1
+- [ ] DB 스키마·인증·게시물 CRUD — Phase 2~4 (디자인 이식 완료 후)
+- [ ] Oracle ARM VM 배포 — Phase 5
 
 전체 작업 큐는 [`TODO.md`](./TODO.md) 참조.
 

@@ -6,20 +6,24 @@
 
 ---
 
-## 0. 백엔드 구조 (확정)
+## 0. 아키텍처 (확정 — 2026-05 재설계)
 
-✅ **(B) 로컬 APM + Cloudflare Tunnel** — PHP 8.x + MySQL on `recpc`. 자세한 통신 규약·보안 기본기는 `CLAUDE.md` 참조.
+✅ **Next.js 풀스택 단일 앱 + PostgreSQL/Drizzle + Oracle Cloud ARM VM 올인원(Docker Compose)**.
+- 프론트·백엔드를 한 앱(`web/`)으로 통합. 별도 PHP 없음.
+- 인증은 경량 커스텀 세션(httpOnly 쿠키 + jose JWT).
+- 배포는 Oracle Always Free ARM VM 1대에 `web` + `postgres` + `caddy`(자동 HTTPS).
+- 배경·근거·폴더 구조: `docs/superpowers/plans/2026-05-30-oracle-nextjs-fullstack.md`, 규약은 `CLAUDE.md`.
 
-> 무료 운영 + 기존 자산 활용을 동시에 만족하는 (B)로 결정. Cloudflare Tunnel 셋업은 배포 시점에.
+> ⚠️ **게이트**: 디자인 이식이 끝나기 전까지 백엔드 작업(Phase 2~4)은 시작하지 않는다. 인프라 골격(Phase 1)·문서까지는 선행 가능.
 
 ---
 
 ## 1. 디자인 이식 (Claude Design HTML → Next.js)
 
-- [x] **랜딩페이지 이식** — `frontend/src/app/page.tsx` (PR #1)
+- [x] **랜딩페이지 이식** — `web/src/app/page.tsx`
   - 4개 폰트 self-host, 정중앙 정렬 보정, 휠 스크롤 → `/main` 진입, 배경 WebP 교체 포함
-- [ ] 메인페이지 이식 — `frontend/_design/.../서경노회 교육위원회 메인페이지.html` + `app.jsx` 컴포넌트 활용
-- [x] **신학원웹진 이식** — `frontend/src/app/webzine/`
+- [ ] 메인페이지 이식 — `web/_design/.../서경노회 교육위원회 메인페이지.html` + `app.jsx` 컴포넌트 활용
+- [x] **신학원웹진 이식** — `web/src/app/webzine/`
   - SSR UA 판정으로 desktop/ios/android 분기, mock 데이터 기반 정적 화면
   - 후속: `/webzine/print` (A3 가로 2페이지 인쇄 라우트), 백엔드 연동
 - [ ] 공통 레이아웃(헤더/푸터/네비게이션) 분리
@@ -40,131 +44,142 @@
 
 ---
 
-## 3. 백엔드 골격 (Phase 0 후반부)
+## 3. 인프라 골격 (Phase 1 — 지금 가능, 게이트 무관)
 
-> 헌법 [3][4][6] 통신 규약·폴더 구조·응답 스키마를 따른다.
-
-```
-backend/ 폴더에 PHP 백엔드 골격을 만든다.
-
-1) backend/index.php : 라우팅 디스패처 (단순 switch 라우터)
-2) backend/lib/cors.php : CORS 헤더 + OPTIONS 200 종료. 허용 Origin은 config에서 가져옴.
-3) backend/lib/db.php  : PDO 인스턴스 반환 (ERRMODE_EXCEPTION).
-4) backend/lib/jwt.php : jwt_encode / jwt_decode (HS256). 외부 라이브러리 사용한다면 이유와 설치 명령 안내.
-5) backend/lib/respond.php : json_ok($data) / json_err($code, $message, $http=400) 헬퍼.
-6) backend/config.example.php : DB 접속·JWT_SECRET·ALLOWED_ORIGINS 예시. 실제 config.php는 .gitignore.
-7) backend/.htaccess : 모든 요청을 index.php로 리라이트.
-8) backend/routes/health.php : GET /health → { ok: true, data: { status: "ok", time: <ISO> } }
-
-동시에 frontend/ 쪽:
-9) frontend/src/lib/api.ts : apiGet<T>/apiPost<T> 단일 래퍼. 응답 스키마 파싱, 실패 시 ApiError(code, message) throw. 베이스 URL은 NEXT_PUBLIC_API_BASE_URL.
-10) frontend/.env.local.example : NEXT_PUBLIC_API_BASE_URL 키 예시.
-
-작업 후 알려줄 것:
-- 헬스체크 curl 한 줄
-- 채워야 하는 환경변수/설정값 목록
-```
-
-- [ ] backend/ 골격 + frontend API 래퍼
-- [ ] 로컬 APM에서 health 엔드포인트 동작 확인
-
----
-
-## 4. DB 스키마와 시드 (헌법 Phase 1)
+> 헌법 "아키텍처 한눈에"·"기술 스택"을 따른다. 백엔드 로직은 만들지 않고, 컨테이너 스택만 세운다.
 
 ```
-backend/sql/001_init.sql 작성:
-- churches: id, name, region, created_at
-- users: id, email(unique), password_hash, name, role(enum: 'admin','teacher','viewer'),
-         church_id(FK churches.id, nullable), created_at, updated_at
-- posts: id, category(enum: 'notice','training','exam','choir','resource'),
-         title, body(LONGTEXT), author_id(FK users.id), is_published(bool),
-         event_date(nullable), created_at, updated_at
-- attachments: id, post_id(FK), original_name, stored_name, mime, size_bytes, created_at
-- 모든 테이블 utf8mb4_unicode_ci.
+루트에 인프라 골격을 만든다.
 
-backend/sql/002_seed.sql : admin 1, 샘플 교회 2, 샘플 공지 2.
-비밀번호는 password_hash 결과를 직접 박지 말고 "여기에 password_hash 결과를 붙여넣을 것" 주석.
-
-backend/scripts/make_admin_password.php : CLI 인자로 평문 받아 해시 출력하는 1회용 스크립트.
-
-알려줄 것:
-- recpc phpMyAdmin/mysql CLI에서 실행할 정확한 순서
-- make_admin_password.php 사용 예시
-```
-
-- [ ] 001_init.sql, 002_seed.sql, make_admin_password.php
-
----
-
-## 5. 인증 (헌법 Phase 2)
-
-```
-인증 API:
-- POST /auth/login   body: {email, password} → {ok, data:{token, user}} / 실패 401
-- GET  /auth/me      header: Authorization Bearer → {ok, data:{user}}
-- POST /auth/register : admin role JWT만 허용. body: {email, password, name, role, church_id?}
-- 토큰 만료 7일.
-- 잘못된/만료 토큰 에러코드: AUTH_INVALID, AUTH_EXPIRED.
-
-backend/routes/ 아래 auth_login.php, auth_me.php, auth_register.php 분리.
-backend/index.php 라우터에 등록.
-
-frontend:
-- frontend/src/lib/auth.ts : login(email,password) / logout / getStoredToken / setStoredToken.
-  토큰은 localStorage(레벨 1). README에 "추후 httpOnly 쿠키로 강화" 메모.
-- frontend/src/app/(auth)/login/page.tsx : 임시 디자인. 로그인 후 /dashboard 이동.
-- frontend/src/app/dashboard/page.tsx : 임시. /auth/me 결과 출력.
-- 인증 가드 패턴(middleware.ts vs layout) 한 가지 결정 + 이유를 README 1단락.
+1) docker-compose.yml : 세 서비스
+   - web   : web/Dockerfile 빌드, env DATABASE_URL·JWT_SECRET 주입, expose 3000
+   - postgres : 공식 이미지, named volume(pgdata)로 영속, healthcheck, 포트는 내부 네트워크만
+   - caddy : 80/443 노출, deploy/Caddyfile 마운트, web:3000 프록시, 자동 TLS
+   - uploads 디렉터리는 web 컨테이너에 named volume(uploads)로 마운트
+2) web/Dockerfile : 멀티스테이지
+   - deps(설치) → build(pnpm build, output:'standalone') → runner(.next/standalone 복사, 경량 node)
+3) deploy/Caddyfile : <도메인> { reverse_proxy web:3000 }  — 도메인은 배포 시 확정, 로컬은 :80
+4) deploy/README.md : OCI ARM VM 프로비저닝·Docker 설치·배포 절차 메모(스텁)
+5) .gitignore : web/uploads/ 추가 (.env 이미 포함되어 있는지 확인)
 
 확인:
-- curl /auth/login → 토큰
-- curl /auth/me → 본인 정보
-- 브라우저 로그인 → 대시보드 진입
+- docker compose config 로 구성 검증
+- docker compose up -d → postgres healthy + web :3000 응답 + caddy 경유 접속
+- docker compose down -v 로 정리
 ```
 
-- [ ] 인증 API + 클라이언트 + 가드
+- [ ] docker-compose.yml + web/Dockerfile + deploy/Caddyfile + deploy/README.md
+- [ ] 로컬 docker compose 기동 확인
 
 ---
 
-## 6. 게시물 CRUD + 파일 업로드 (헌법 Phase 3)
+## 4. DB 스키마와 시드 (Phase 2 — 게이트 후, Drizzle)
 
 ```
-API:
-- GET  /posts?category=&page=&q=     공개 (is_published=true 만)
-- GET  /posts/{id}                    공개 (attachments 포함)
-- POST /posts        teacher/admin    body: {category,title,body,event_date?,is_published?}
-- PATCH /posts/{id}  작성자 또는 admin
-- DELETE /posts/{id} 작성자 또는 admin
-- POST /posts/{id}/attachments  multipart/form-data, field=file
+백엔드 의존성 추가: pnpm add drizzle-orm postgres / pnpm add -D drizzle-kit
+
+web/drizzle.config.ts : schema 경로 src/server/db/schema, out src/server/db/migrations, dialect postgresql, DATABASE_URL 사용.
+
+web/src/server/db/index.ts : postgres.js 클라이언트 + drizzle 인스턴스 싱글톤. 'server-only'.
+
+web/src/server/db/schema/ (테이블별 파일):
+- users   : id, email(unique), passwordHash, name, role(enum: 'admin','member'), createdAt, updatedAt
+- posts   : id, category(enum: 'notice','training','exam','choir','resource'),
+            title, body(text), authorId(FK users), isPublished(bool),
+            eventDate(nullable), createdAt, updatedAt
+- attachments : id, postId(FK), originalName, storedName, mime, sizeBytes, createdAt
+
+시드 스크립트 web/src/server/db/seed.ts : admin 1, 샘플 공지 2. 비밀번호는 해시 함수로 생성.
+
+알려줄 것:
+- drizzle-kit generate / migrate 실행 순서
+- 시드 실행 명령
+```
+
+- [x] **핵심 스키마 + 파이프라인** — users·posts(통합)·attachments, drizzle.config, db 클라이언트, 마이그레이션 0000 생성. PGlite로 적용·FK·cascade·enum 검증 통과(`pnpm db:verify`).
+- [ ] 시드(admin·샘플) — 비밀번호 해시가 필요해 **Phase 3(인증)** 으로 이관
+- [ ] 콘텐츠별 추가 모델 — 교수(faculty)·자료 컬렉션 등은 해당 페이지 연동 시 증분 추가
+
+> 권한은 admin / member 두 등급으로만 (헌법). 기존 'teacher','viewer' 3등급 안은 폐기.
+> 통합 posts 설계: section(enum) + category(text) + meta(jsonb)로 게시판별 분기. 자세히는 `docs/superpowers/plans/2026-05-30-oracle-nextjs-fullstack.md`.
+
+---
+
+## 5. 인증 (Phase 3 — 게이트 후, 세션 쿠키)
+
+```
+백엔드 의존성: pnpm add jose zod / 비밀번호 해시(@node-rs/argon2 권장)
+
+web/src/server/auth/password.ts : hashPassword / verifyPassword.
+web/src/server/auth/session.ts  : jose로 JWT 발급·검증, httpOnly·Secure·SameSite=Lax 쿠키
+  read/write, getCurrentUser(). 'server-only'. 만료 7일.
+
+로그인/로그아웃:
+- web/src/server/actions/auth.ts : login(email,password) Server Action — 검증 후 세션 쿠키 설정.
+  logout() — 쿠키 삭제. zod로 입력 검증.
+- web/src/app/(public)/login/page.tsx : 로그인 폼(클라이언트), Server Action 호출.
+
+회원가입:
+- admin 세션만 허용하는 createUser Server Action (admin 전용 가입 정책).
+
+가드:
+- web/src/middleware.ts : (admin) 라우트 그룹 보호 — 미로그인/비admin이면 /login 리다이렉트.
+- Server Action·Route Handler 진입부에서도 세션·역할 재확인(서버 권한 체크).
+
+확인:
+- 로그인 → 쿠키 설정 → (admin) 진입 가능
+- 미로그인으로 (admin) 접근 → /login 리다이렉트
+- 로그아웃 → 쿠키 삭제
+```
+
+- [x] **3a 원시 함수** — password.ts(argon2)·session.ts(jose), `pnpm auth:verify` 9항목 통과
+- [x] **3b 배선** — login/logout Server Action(zod·httpOnly 쿠키), proxy.ts(`/admin` 가드, Next16 middleware→proxy), 로그인·관리자 임시 페이지, db 지연 초기화. tsc·lint·build 통과
+- [x] **로컬 DB(PGlite) + admin 시드 + 로그인 e2e** — `pnpm dev:db`로 Docker 없이 PG 서버 기동. curl로 검증: 올바른 자격→303+httpOnly 쿠키→/admin, 틀린 비번→에러, member/위조/미인증→/login. admin 쿠키로 /admin 200(사용자 렌더)
+- [ ] createUser(admin 전용 가입) Server Action — 다음
+
+---
+
+## 6. 게시물 CRUD + 파일 업로드 (Phase 4 — 게이트 후)
+
+```
+읽기는 Server Component가 services 직접 호출. 쓰기는 Server Action. 클라이언트 fetch가 필요한
+검색·무한스크롤만 Route Handler + lib/api.ts 래퍼.
+
+services (web/src/server/services/posts.ts):
+- listPosts({category,page,q})  공개 (isPublished=true)
+- getPost(id)                   공개 (attachments 포함)
+actions (web/src/server/actions/posts.ts):
+- createPost / updatePost / deletePost  — admin 또는 작성자. zod 검증.
+업로드:
+- web/src/app/api/uploads/route.ts (또는 Server Action) : multipart, field=file
     * 확장자 화이트리스트: jpg,jpeg,png,webp,pdf,hwp,docx,xlsx,pptx
-    * 최대 20MB
-    * 저장: /backend/uploads/posts/{post_id}/{uuid}.{ext}
-    * 응답에 다운로드 URL 포함. 다운로드는 GET /attachments/{id}/download (스트리밍, 원본 이름 Content-Disposition).
-    * /backend/uploads/.htaccess 에 php_flag engine off 추가 (PHP 실행 차단).
+    * 실제 MIME 검사 + 최대 20MB
+    * 저장: web/uploads/posts/{postId}/{uuid}.{ext}  (파일명 서버 재생성)
+    * 다운로드는 원본 이름 Content-Disposition으로 스트리밍
+    * 업로드 디렉터리에서 코드 실행 불가하도록 보관
 
 웹:
-- frontend/src/app/(public)/notice 등 카테고리별 라우트 그룹. 일단 notice만.
-- 목록(SSR) → 상세(SSR). 작성/수정 폼은 클라이언트 컴포넌트.
-- 디자인은 Claude Design export로 받아 컴포넌트 단위 이식 — 데이터 바인딩·폼 검증만 추가, 마크업 임의 변경 금지.
-- 이미지 표시는 next/image. next.config의 remotePatterns에 recpc 도메인 등록.
+- web/src/app/(public)/notice 등 카테고리별 라우트 그룹. 일단 notice만.
+- 목록·상세 SSR. 작성/수정 폼은 클라이언트 컴포넌트 + Server Action.
+- 디자인은 Claude Design export로 받아 컴포넌트 단위 이식 — 데이터 바인딩·폼 검증만, 마크업 임의 변경 금지.
+- 이미지 표시는 next/image. 업로드는 same-origin이라 remotePatterns 불필요(또는 자체 도메인만).
 
 확인:
 - 글 작성 → 목록 노출 → 첨부 업로드 → 다운로드 → 삭제 시 파일도 같이 삭제
 ```
 
-- [ ] posts CRUD + attachments + 이미지 표시
+- [ ] posts services·actions + attachments 업로드/다운로드 + 이미지 표시
 
 ---
 
-## 7. 운영자·일정·검색·페이지네이션 (헌법 Phase 4)
+## 7. 운영자·일정·검색·페이지네이션 (Phase 4 후반)
 
 ```
-- /admin 라우트 그룹: role=admin 만. 사용자 목록·역할 변경, 게시물 일괄 관리.
-- 메인에 다가오는 일정(event_date 미래) 위젯.
-- 검색은 LIKE %q% (FULLTEXT 전환 가능하도록 SQL 주석).
+- (admin) 라우트 그룹: role=admin 만. 사용자 목록·역할 변경, 게시물 일괄 관리.
+- 메인에 다가오는 일정(eventDate 미래) 위젯.
+- 검색은 ILIKE %q% (FULLTEXT/tsvector 전환 가능하도록 주석).
 - 페이지네이션: page/perPage.
-- 접근성: 폼 라벨, 키보드 포커스, 한국어 폰트(Noto Sans KR — 이미 layout에 적용).
+- 접근성: 폼 라벨, 키보드 포커스, 한국어 폰트(이미 layout 적용).
 
 Lighthouse 점수 + 개선 가능 지점 짧게 보고.
 ```
@@ -173,25 +188,23 @@ Lighthouse 점수 + 개선 가능 지점 짧게 보고.
 
 ---
 
-## 8. 배포 (헌법 Phase 5)
+## 8. 배포 — Oracle ARM VM (Phase 5)
 
 ```
-1) frontend → Vercel
-   - NEXT_PUBLIC_API_BASE_URL = https://<recpc 공개 도메인>/api (Cloudflare Tunnel 후 결정)
-   - 프리뷰 도메인을 PHP ALLOWED_ORIGINS에 추가하는 절차 안내
+1) OCI 콘솔: Always Free ARM VM(VM.Standard.A1.Flex, 4 OCPU/24GB) 프로비저닝
+   - Ubuntu LTS, 부팅 볼륨 + 블록 볼륨(업로드·DB용)
+   - 보안 목록/방화벽: 80·443만 개방, postgres 포트는 비공개(컨테이너 내부 네트워크만)
+2) 서버 셋업: Docker + docker compose plugin 설치, 저장소 clone
+3) .env 작성(서버에서 직접, 저장소 X): DATABASE_URL·JWT_SECRET·POSTGRES_PASSWORD 등
+4) docker compose up -d → drizzle 마이그레이션 적용 → 시드
+5) 도메인 연결 + Caddy 자동 HTTPS 발급 확인
+6) 운영 체크리스트(DB 백업 cron·로그 위치·JWT 시크릿 로테이션·업로드 볼륨 백업) → deploy/README
 
-2) backend → recpc
-   - 업로드 절차(SFTP/scp) README 정리
-   - config.php는 서버에서 직접 작성 (저장소 X)
-   - /backend/uploads 권한 설정
-   - .htaccess 동작 헬스체크
-
-3) 도메인 다른 경우 CORS, 같은 도메인 서브패스(리버스 프록시) 비교 권장안
-
-4) 운영 체크리스트(백업·로그 위치·JWT 시크릿 로테이션) → README "운영" 섹션
+확인:
+- 공개 도메인 HTTPS 접속, 로그인, 글 작성/업로드 end-to-end
 ```
 
-- [ ] Vercel + recpc 배포 + Cloudflare Tunnel 셋업
+- [ ] OCI VM 프로비저닝 + compose 배포 + 도메인·TLS + 운영 체크리스트
 
 ---
 
@@ -208,16 +221,17 @@ Lighthouse 점수 + 개선 가능 지점 짧게 보고.
 
 각 단계에서 점검:
 
-- **CORS**는 한 줄이 아니라 "Origin 화이트리스트 + Vary: Origin + OPTIONS 200" 세 가지 같이. 와일드카드 `*`는 JWT 쓰는 순간 안 됨.
-- **PHP가 어쩌다 HTML 한 글자라도 출력하면 JSON 파싱 깨짐.** `<?php` 앞 공백·BOM·`?>` 뒤 줄바꿈 모두 제거.
-- **next/image 사용 시** `next.config.ts`의 `images.remotePatterns`에 recpc 도메인 등록.
-- **JWT는 localStorage = 1단계 타협** (XSS 위험). 운영 단계에서 httpOnly 쿠키 + SameSite=Lax + CSRF 토큰으로 전환.
-- **파일 업로드 디렉터리는 PHP 실행 가능 영역과 분리.** `/backend/uploads/.htaccess`에 `php_flag engine off`.
+- **서버 전용 코드는 `web/src/server/**` 에 두고 `import 'server-only'`.** DB 클라이언트·시크릿·해시가 클라이언트 번들에 새지 않게.
+- **권한 체크는 서버에서.** middleware 가드만 믿지 말고 Server Action·Route Handler 진입부에서 세션·역할 재확인.
+- **세션 쿠키는 httpOnly·Secure·SameSite=Lax.** 토큰을 localStorage에 두지 않는다(XSS).
+- **파일 업로드 디렉터리는 코드 실행 불가 영역.** 저장 파일명 서버 재생성, 실제 MIME 검사, 용량 제한.
+- **next/image**: 업로드가 same-origin이면 remotePatterns 불필요. 외부 이미지 쓸 때만 등록.
+- **`.env`는 커밋 금지.** 시크릿은 서버에서 직접 작성.
 
 ---
 
 ## 메모
 
-- 디자인 원본: `~/Downloads/Seogyeong Presbytery Education Committee-handoff.zip` → `frontend/_design/` (gitignore)
-- 로컬 APM 서버 별칭: `recpc`
+- 디자인 원본: `~/Downloads/Seogyeong Presbytery Education Committee-handoff.zip` → `web/_design/` (gitignore)
+- 배포 대상: Oracle Cloud Always Free ARM VM (구 `recpc` 로컬 APM 대체)
 - 헌법(원칙·규약·보안 등): **`CLAUDE.md`** 가 진실의 원천
