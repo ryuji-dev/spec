@@ -132,7 +132,9 @@ web/src/server/auth/session.ts  : jose로 JWT 발급·검증, httpOnly·Secure·
 - 로그아웃 → 쿠키 삭제
 ```
 
-- [ ] password·session + login/logout Action + 가드 + admin 전용 가입
+- [x] **3a 원시 함수** — password.ts(argon2)·session.ts(jose), `pnpm auth:verify` 9항목 통과
+- [x] **3b 배선** — login/logout Server Action(zod·httpOnly 쿠키), proxy.ts(`/admin` 가드, Next16 middleware→proxy), 로그인·관리자 임시 페이지, db 지연 초기화. tsc·lint·build 통과
+- [ ] admin 시드 + createUser(admin 전용) + **실제 로그인 e2e** — DB 기동(PGlite 로컬 or Docker) 후
 
 ---
 
