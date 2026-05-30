@@ -39,6 +39,9 @@ importers:
       '@electric-sql/pglite':
         specifier: ^0.4.6
         version: 0.4.6
+      '@electric-sql/pglite-socket':
+        specifier: ^0.1.6
+        version: 0.1.6(@electric-sql/pglite@0.4.6)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.2.4
@@ -145,6 +148,12 @@ packages:
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
+
+  '@electric-sql/pglite-socket@0.1.6':
+    resolution: {integrity: sha512-QAPUOwUdFnv3grJoLQbtkN8MywMK92kPfCeQ9QIJlB9DfPlExvU19cI2djxyffRF2WJL89eiZ1GAyfBDVH2xGQ==}
+    hasBin: true
+    peerDependencies:
+      '@electric-sql/pglite': 0.4.6
 
   '@electric-sql/pglite@0.4.6':
     resolution: {integrity: sha512-qmlmfN8UyKCee35qkV0r/MBp+Znl8FjBz7OpoglNvww3GJpw0/DLP0o1ZymvLNmcD5DTLOQdzKPtF8Hd3mdl1w==}
@@ -2776,6 +2785,10 @@ snapshots:
       '@babel/helper-validator-identifier': 7.28.5
 
   '@drizzle-team/brocli@0.10.2': {}
+
+  '@electric-sql/pglite-socket@0.1.6(@electric-sql/pglite@0.4.6)':
+    dependencies:
+      '@electric-sql/pglite': 0.4.6
 
   '@electric-sql/pglite@0.4.6': {}
 

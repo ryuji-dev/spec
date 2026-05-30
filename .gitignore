@@ -15,6 +15,9 @@ Thumbs.db
 # 업로드 (런타임 파일 저장소 — 컨테이너 볼륨에 보관)
 web/uploads/
 
+# 로컬 개발용 PGlite 데이터 (Docker 없이 쓰는 인메모리/영속 Postgres)
+web/.pglite/
+
 # 백업/임시
 *.bak
 *.tmp

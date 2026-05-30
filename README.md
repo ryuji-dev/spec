@@ -18,13 +18,20 @@
 cd web
 pnpm install   # pnpm 미설치 시: corepack enable && corepack prepare pnpm@latest --activate
 
-# 개발 서버
-pnpm dev       # http://localhost:3000
+# 로컬 DB (Docker 불필요 — PGlite를 PG 서버로 띄움, 최초 1회 마이그레이션+admin 시드)
+pnpm dev:db    # 별도 터미널에서 유지. admin@seogyeong.kr / admin1234
 
-# 빌드 / 린트
+# 개발 서버
+pnpm dev       # http://localhost:3000  (.env.local의 DATABASE_URL로 위 DB에 접속)
+
+# 빌드 / 린트 / 검증
 pnpm build
 pnpm lint
+pnpm db:verify    # 스키마 마이그레이션 스모크 테스트
+pnpm auth:verify  # 인증 원시 함수 검증
 ```
+
+> 로컬 개발은 **Docker 없이** 동작한다(PGlite). 운영은 Oracle VM에서 docker compose로 실제 PostgreSQL을 쓴다.
 
 ## 폴더 구조
 

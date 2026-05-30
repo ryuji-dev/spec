@@ -134,7 +134,8 @@ web/src/server/auth/session.ts  : jose로 JWT 발급·검증, httpOnly·Secure·
 
 - [x] **3a 원시 함수** — password.ts(argon2)·session.ts(jose), `pnpm auth:verify` 9항목 통과
 - [x] **3b 배선** — login/logout Server Action(zod·httpOnly 쿠키), proxy.ts(`/admin` 가드, Next16 middleware→proxy), 로그인·관리자 임시 페이지, db 지연 초기화. tsc·lint·build 통과
-- [ ] admin 시드 + createUser(admin 전용) + **실제 로그인 e2e** — DB 기동(PGlite 로컬 or Docker) 후
+- [x] **로컬 DB(PGlite) + admin 시드 + 로그인 e2e** — `pnpm dev:db`로 Docker 없이 PG 서버 기동. curl로 검증: 올바른 자격→303+httpOnly 쿠키→/admin, 틀린 비번→에러, member/위조/미인증→/login. admin 쿠키로 /admin 200(사용자 렌더)
+- [ ] createUser(admin 전용 가입) Server Action — 다음
 
 ---
 
