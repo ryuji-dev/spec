@@ -10,10 +10,13 @@
     "og:build": "node scripts/build-og-images.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:verify": "node scripts/verify-db.mjs"
+    "db:verify": "node scripts/verify-db.mjs",
+    "auth:verify": "node --conditions=react-server scripts/verify-auth.ts"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.0.2",
     "drizzle-orm": "^0.45.2",
+    "jose": "^6.2.3",
     "next": "16.2.4",
     "postgres": "^3.4.9",
     "react": "19.2.4",
