@@ -12,6 +12,9 @@ Thumbs.db
 .env.*.local
 .env.local
 
+# 업로드 (런타임 파일 저장소 — 컨테이너 볼륨에 보관)
+web/uploads/
+
 # 백업/임시
 *.bak
 *.tmp

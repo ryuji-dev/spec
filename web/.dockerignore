@@ -1,0 +1,9 @@
+# 빌드 컨텍스트에서 제외 — 이미지 경량화·캐시 적중률 향상
+node_modules
+.next
+.git
+_design
+uploads
+npm-debug.log*
+.DS_Store
+*.local

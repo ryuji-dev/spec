@@ -1,0 +1,57 @@
+# 서경노회 교육위원회 — 올인원 스택 (web + postgres + caddy)
+# 로컬: `docker compose up -d` (모든 값 기본값으로 동작, http://localhost)
+# 운영(Oracle VM): .env 에 SITE_ADDRESS·시크릿 지정 후 동일 명령
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-seogyeong}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-seogyeong}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-seogyeong} -d ${POSTGRES_DB:-seogyeong}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # 포트 비노출 — 내부 네트워크에서만 접근 (보안)
+
+  web:
+    build:
+      context: ./web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL:-postgres://seogyeong:devpassword@postgres:5432/seogyeong}
+      JWT_SECRET: ${JWT_SECRET:-dev-insecure-secret-change-me}
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # 포트 비노출 — caddy를 통해서만 외부 접근
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      # 로컬은 :80(HTTP), 운영은 도메인 지정 시 자동 HTTPS
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+
+volumes:
+  pgdata:
+  uploads:
+  caddy_data:
+  caddy_config:
