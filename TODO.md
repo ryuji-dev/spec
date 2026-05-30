@@ -96,9 +96,12 @@ web/src/server/db/schema/ (테이블별 파일):
 - 시드 실행 명령
 ```
 
-- [ ] schema + drizzle.config + db 클라이언트 + 시드
+- [x] **핵심 스키마 + 파이프라인** — users·posts(통합)·attachments, drizzle.config, db 클라이언트, 마이그레이션 0000 생성. PGlite로 적용·FK·cascade·enum 검증 통과(`pnpm db:verify`).
+- [ ] 시드(admin·샘플) — 비밀번호 해시가 필요해 **Phase 3(인증)** 으로 이관
+- [ ] 콘텐츠별 추가 모델 — 교수(faculty)·자료 컬렉션 등은 해당 페이지 연동 시 증분 추가
 
 > 권한은 admin / member 두 등급으로만 (헌법). 기존 'teacher','viewer' 3등급 안은 폐기.
+> 통합 posts 설계: section(enum) + category(text) + meta(jsonb)로 게시판별 분기. 자세히는 `docs/superpowers/plans/2026-05-30-oracle-nextjs-fullstack.md`.
 
 ---
 
