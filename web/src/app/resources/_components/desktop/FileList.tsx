@@ -8,6 +8,7 @@ import DownloadBtn from "../shared/DownloadBtn";
 type Props = {
   files: ReadonlyArray<ResourceFile>;
   palette: Palette;
+  onOpen?: (id: string) => void;
 };
 
 const COLS = "60px 1fr 110px 100px 100px 100px 110px";
@@ -16,7 +17,7 @@ const COL_LABELS = ["형식", "제목", "분류", "크기", "다운로드", "등
 /**
  * 자료 리스트 뷰 — 7열 테이블. 디자인 원본 library.jsx 의 list 분기 그대로.
  */
-export default function FileList({ files, palette }: Props) {
+export default function FileList({ files, palette, onOpen }: Props) {
   return (
     <div
       style={{
@@ -48,6 +49,7 @@ export default function FileList({ files, palette }: Props) {
       {files.map((f, i) => (
         <div
           key={f.id}
+          onClick={() => onOpen?.(f.id)}
           style={{
             display: "grid",
             gridTemplateColumns: COLS,

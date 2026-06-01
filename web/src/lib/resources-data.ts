@@ -51,7 +51,7 @@ export const LB_CATEGORIES: ReadonlyArray<ResourceCategory> = [
 export type ResourceFileCategory = Exclude<ResourceCategoryKo, "전체">;
 
 export type ResourceFile = {
-  id: number;
+  id: string;
   type: ResourceFileType;
   cat: ResourceFileCategory;
   title: string;
@@ -65,7 +65,7 @@ export type ResourceFile = {
 
 export const LB_FILES: ReadonlyArray<ResourceFile> = [
   {
-    id: 1,
+    id: "1",
     type: "ppt",
     cat: "설교PPT",
     title: "봄 부흥회 둘째 날 — 다시, 광야로 (PPT)",
@@ -77,7 +77,7 @@ export const LB_FILES: ReadonlyArray<ResourceFile> = [
     isNew: true,
   },
   {
-    id: 2,
+    id: "2",
     type: "pdf",
     cat: "교안",
     title: "주일학교 봄학기 초등부 공과 (1-13과)",
@@ -89,7 +89,7 @@ export const LB_FILES: ReadonlyArray<ResourceFile> = [
     isNew: true,
   },
   {
-    id: 3,
+    id: "3",
     type: "score",
     cat: "악보",
     title: "“주의 인자하심이” — 4부 합창 + 피아노 (PDF + 음원)",
@@ -100,7 +100,7 @@ export const LB_FILES: ReadonlyArray<ResourceFile> = [
     by: "찬양팀",
   },
   {
-    id: 4,
+    id: "4",
     type: "doc",
     cat: "문서",
     title: "교사 양육 매뉴얼 v3 — 신임 교사 6주 과정",
@@ -111,7 +111,7 @@ export const LB_FILES: ReadonlyArray<ResourceFile> = [
     by: "교사대학 운영팀",
   },
   {
-    id: 5,
+    id: "5",
     type: "video",
     cat: "영상",
     title: "제27회 성경고사 본선 — 진행 가이드 영상",
@@ -122,7 +122,7 @@ export const LB_FILES: ReadonlyArray<ResourceFile> = [
     by: "미디어팀 김도현 목사",
   },
   {
-    id: 6,
+    id: "6",
     type: "image",
     cat: "디자인",
     title: "여름 수련회 포스터 · SNS 카드 (Ai · PNG · PSD)",
@@ -133,7 +133,7 @@ export const LB_FILES: ReadonlyArray<ResourceFile> = [
     by: "디자인팀 오은혜 집사",
   },
   {
-    id: 7,
+    id: "7",
     type: "pdf",
     cat: "교안",
     title: "청년부 큐티 가이드 — 출애굽기 13주 일정",
@@ -144,7 +144,7 @@ export const LB_FILES: ReadonlyArray<ResourceFile> = [
     by: "청년부 박혜진 전도사",
   },
   {
-    id: 8,
+    id: "8",
     type: "ppt",
     cat: "설교PPT",
     title: "교사 헌신예배 설교 PPT — 가르치는 자의 자리",

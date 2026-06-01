@@ -1,9 +1,9 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { LB_TOP, type ResourceFileType } from "@/lib/resources-data";
+import { type ResourceFileType, type ResourceTopItem } from "@/lib/resources-data";
 import { fileTone } from "../fileTone";
 import DownloadStat from "../shared/DownloadStat";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; top: ResourceTopItem[] };
 
 const FILE_TYPE_LEGEND: ReadonlyArray<ResourceFileType> = [
   "ppt",
@@ -18,7 +18,7 @@ const FILE_TYPE_LEGEND: ReadonlyArray<ResourceFileType> = [
  * 자료공유 데스크톱 사이드바 — TOP DOWNLOADS / 업로드 가이드 / 파일타입 범례.
  * 디자인 원본 library.jsx 의 aside 영역 그대로.
  */
-export default function ResourcesSidebar({ palette }: Props) {
+export default function ResourcesSidebar({ palette, top }: Props) {
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 36 }}>
       <section>
@@ -42,7 +42,7 @@ export default function ResourcesSidebar({ palette }: Props) {
             padding: "6px 18px",
           }}
         >
-          {LB_TOP.map((t, i) => {
+          {top.map((t, i) => {
             const ft = fileTone(t.type, palette);
             return (
               <div
@@ -53,7 +53,7 @@ export default function ResourcesSidebar({ palette }: Props) {
                   gap: 14,
                   padding: "14px 0",
                   borderBottom:
-                    i < LB_TOP.length - 1
+                    i < top.length - 1
                       ? `1px solid ${palette.line}`
                       : "none",
                   cursor: "pointer",

@@ -3,6 +3,8 @@
 //   실행: pnpm dev:db  (next dev와 함께 별도 터미널에서)
 // 영속: web/.pglite (gitignore). 최초 1회 마이그레이션 적용 + admin 시드.
 import { readFileSync, readdirSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { PGlite } from "@electric-sql/pglite";
@@ -66,6 +68,38 @@ if (cExists.rows.length === 0) {
   console.log(`[dev-db] 교육위원회 글 ${seed.length}건 seed`);
 } else {
   console.log("[dev-db] 교육위원회 글 이미 존재");
+}
+
+// 자료공유 seed (없을 때만) — 카테고리별 글 + placeholder 파일 + 첨부 행
+const resourceDir = join(here, "../uploads/resource");
+const rExists = await db.query(`select 1 from posts where section='resource' limit 1`);
+if (rExists.rows.length === 0) {
+  await mkdir(resourceDir, { recursive: true });
+  const rseed = [
+    ["설교PPT", "봄 부흥회 둘째 날 — 다시, 광야로 (PPT)", "40슬라이드 · 16:9 · 본문 막 1:12-13", "sample.pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", 13002342, 142],
+    ["교안", "주일학교 봄학기 초등부 공과 (1-13과)", "인쇄용 · A4 · 학생용 + 교사용", "sample.pdf", "application/pdf", 9122611, 384],
+    ["악보", "“주의 인자하심이” — 4부 합창 + 피아노", "원곡 G장조 · MR 2분 38초", "score.pdf", "application/pdf", 25272320, 612],
+    ["문서", "교사 양육 매뉴얼 v3 — 신임 교사 6주 과정", "한글 + PDF 2종 · 평가지 포함", "manual.pdf", "application/pdf", 3355443, 218],
+    ["영상", "제27회 성경고사 본선 — 진행 가이드 영상", "4분 22초 · 1080p · 자막", "guide.mp4", "video/mp4", 148897792, 96],
+    ["디자인", "여름 수련회 포스터 · SNS 카드", "인쇄용 + 인스타 1080² 일괄", "poster.zip", "application/zip", 195035136, 174],
+  ];
+  for (const [cat, title, sub, oname, mime, sizeBytes, dl] of rseed) {
+    const p = await db.query(
+      `insert into posts (section, category, title, excerpt, body, author_id, view_count)
+       values ('resource', $1, $2, $3, '', $4, $5) returning id`,
+      [cat, title, sub, adminId, dl],
+    );
+    const storedName = `${randomUUID()}.${oname.split(".").pop()}`;
+    await writeFile(join(resourceDir, storedName), `placeholder for ${oname}`);
+    await db.query(
+      `insert into attachments (post_id, original_name, stored_name, mime, size_bytes)
+       values ($1,$2,$3,$4,$5)`,
+      [p.rows[0].id, oname, storedName, mime, sizeBytes],
+    );
+  }
+  console.log(`[dev-db] 자료공유 글 ${rseed.length}건 + 파일 seed`);
+} else {
+  console.log("[dev-db] 자료공유 글 이미 존재");
 }
 
 const server = new PGLiteSocketServer({ db, port: PORT, host: "127.0.0.1" });

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import {
-  LB_CATEGORIES,
-  LB_FILES,
   type ResourcesSort,
   type ResourcesView,
 } from "@/lib/resources-data";
+import type { ResourceFile, ResourceCategory, ResourceTopItem } from "@/lib/resources-data";
 import ResourcesHeader from "./ResourcesHeader";
 import CollectionsSection from "./CollectionsSection";
 import FilterStrip from "./FilterStrip";
@@ -22,15 +22,16 @@ const palette = FOREST_PALETTE;
  * 자료공유 데스크톱 — 디자인 원본 library.jsx 의 LibraryDesktop 그대로.
  * 글로벌 DesktopNav(solid)는 page 단에서 노출. 여기선 본문만.
  */
-export default function ResourcesDesktop() {
+type Props = { files: ResourceFile[]; categories: ResourceCategory[]; top: ResourceTopItem[] };
+
+export default function ResourcesDesktop({ files, categories, top }: Props) {
+  const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
   const [view, setView] = useState<ResourcesView>("grid");
   const [sort, setSort] = useState<ResourcesSort>("recent");
 
   const filtered =
-    activeCat === 0
-      ? LB_FILES
-      : LB_FILES.filter((f) => f.cat === LB_CATEGORIES[activeCat].ko);
+    activeCat === 0 ? files : files.filter((f) => f.cat === categories[activeCat].ko);
 
   return (
     <div
@@ -45,6 +46,7 @@ export default function ResourcesDesktop() {
 
       <FilterStrip
         palette={palette}
+        categories={categories}
         activeCat={activeCat}
         setActiveCat={setActiveCat}
         sort={sort}
@@ -86,13 +88,21 @@ export default function ResourcesDesktop() {
           </div>
 
           {view === "grid" ? (
-            <FileGrid files={filtered} palette={palette} />
+            <FileGrid
+              files={filtered}
+              palette={palette}
+              onOpen={(id) => router.push(`/resources/${id}`)}
+            />
           ) : (
-            <FileList files={filtered} palette={palette} />
+            <FileList
+              files={filtered}
+              palette={palette}
+              onOpen={(id) => router.push(`/resources/${id}`)}
+            />
           )}
         </main>
 
-        <ResourcesSidebar palette={palette} />
+        <ResourcesSidebar palette={palette} top={top} />
       </div>
 
       <ResourcesFooter palette={palette} />

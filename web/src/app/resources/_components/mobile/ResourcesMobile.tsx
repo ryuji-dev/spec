@@ -1,20 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroMobile } from "@/app/_components/PageHero";
-import {
-  LB_CATEGORIES,
-  LB_COLLECTIONS,
-  LB_FILES,
+import { LB_COLLECTIONS } from "@/lib/resources-data";
+import type {
+  ResourceFile,
+  ResourceCategory,
+  ResourceTopItem,
 } from "@/lib/resources-data";
 import CollectionCover from "../shared/CollectionCover";
 import FileIcon from "../shared/FileIcon";
 import LbCatLabel from "../shared/LbCatLabel";
 import DownloadStat from "../shared/DownloadStat";
 
-type Props = { deviceType?: "ios" | "android" };
+type Props = {
+  deviceType?: "ios" | "android";
+  files: ResourceFile[];
+  categories: ResourceCategory[];
+  top: ResourceTopItem[];
+};
 
 const palette = FOREST_PALETTE;
 
@@ -28,13 +35,18 @@ const STATS = [
  * 자료공유 모바일 — 디자인 원본 library.jsx 의 LibraryMobile 그대로.
  * 디바이스별 상단 패딩만 deviceType prop 으로 분기.
  */
-export default function ResourcesMobile({ deviceType = "ios" }: Props) {
+export default function ResourcesMobile({
+  deviceType = "ios",
+  files,
+  categories,
+}: Props) {
+  const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
 
   const filtered =
     activeCat === 0
-      ? LB_FILES
-      : LB_FILES.filter((f) => f.cat === LB_CATEGORIES[activeCat].ko);
+      ? files
+      : files.filter((f) => f.cat === categories[activeCat].ko);
 
   return (
     <div
@@ -380,7 +392,7 @@ export default function ResourcesMobile({ deviceType = "ios" }: Props) {
             scrollbarWidth: "none",
           }}
         >
-          {LB_CATEGORIES.map((c, i) => {
+          {categories.map((c, i) => {
             const active = activeCat === i;
             return (
               <button
@@ -433,6 +445,7 @@ export default function ResourcesMobile({ deviceType = "ios" }: Props) {
           {filtered.map((f) => (
             <article
               key={f.id}
+              onClick={() => router.push(`/resources/${f.id}`)}
               style={{
                 background: palette.surface,
                 border: `1px solid ${palette.line}`,
