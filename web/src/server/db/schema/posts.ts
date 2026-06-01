@@ -38,6 +38,8 @@ export const posts = pgTable(
     }),
     isPublished: boolean("is_published").notNull().default(true),
     viewCount: integer("view_count").notNull().default(0),
+    // 고정글(상단 핀) 여부 — 섹션 목록 최상단 노출
+    isPinned: boolean("is_pinned").notNull().default(false),
     // 일정·수련회 등 날짜성 콘텐츠용
     eventDate: timestamp("event_date", { withTimezone: true }),
     // 섹션별 추가 필드 (수련회 정원·강사, 자료 파일타입 등)

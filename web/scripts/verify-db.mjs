@@ -93,5 +93,22 @@ await db.query(`delete from posts where id = $1`, [postId]);
 const left = await db.query(`select count(*)::int as n from attachments`);
 assert(left.rows[0].n === 0, "게시글 삭제 시 첨부 cascade 삭제");
 
+// 9) comments 테이블 + isPinned 컬럼
+assert(names.includes("comments"), "comments 테이블 생성됨");
+const pin = await db.query(
+  `insert into posts (section, title, is_pinned) values ('committee','핀글', true) returning is_pinned`,
+);
+assert(pin.rows[0].is_pinned === true, "posts.is_pinned 저장됨");
+
+// 10) 댓글 cascade — 글 삭제 시 댓글도 삭제
+const cp = await db.query(
+  `insert into posts (section, title) values ('committee','댓글대상') returning id`,
+);
+const cpid = cp.rows[0].id;
+await db.query(`insert into comments (post_id, body) values ($1,'안녕')`, [cpid]);
+await db.query(`delete from posts where id=$1`, [cpid]);
+const cleft = await db.query(`select count(*)::int as n from comments`);
+assert(cleft.rows[0].n === 0, "글 삭제 시 댓글 cascade 삭제");
+
 console.log("\n✅ DB 스키마 검증 통과");
 await db.close();
