@@ -16,20 +16,24 @@ export default function AttachmentManager({ postId, initial }: { postId: string;
     if (files.length === 0) return;
     setError(null);
     setBusy(true);
-    try {
-      for (const f of files) {
-        const pre = preCheck(f.name, f.size);
-        if (pre) { setError(`${f.name}: ${pre}`); continue; }
+    const failed: string[] = [];
+    for (const f of files) {
+      const pre = preCheck(f.name, f.size);
+      if (pre) {
+        failed.push(`${f.name}: ${pre}`);
+        continue;
+      }
+      try {
         const form = new FormData();
         form.append("files", f);
         const added = await apiPostForm<Att[]>(`/api/committee/${postId}/uploads`, form);
         setItems((prev) => [...prev, ...added]);
+      } catch (err) {
+        failed.push(`${f.name}: ${err instanceof ApiError ? err.message : "업로드 실패"}`);
       }
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "업로드 실패");
-    } finally {
-      setBusy(false);
     }
+    setBusy(false);
+    setError(failed.length > 0 ? failed.join("\n") : null);
   }
 
   async function onDelete(id: string) {
@@ -47,7 +51,7 @@ export default function AttachmentManager({ postId, initial }: { postId: string;
       <h2 style={{ fontSize: 16 }}>첨부 ({items.length})</h2>
       <input type="file" multiple onChange={onPick} disabled={busy} />
       {busy && <span style={{ marginLeft: 8, fontSize: 13 }}>업로드 중…</span>}
-      {error && <p role="alert" style={{ color: "#c00" }}>{error}</p>}
+      {error && <p role="alert" style={{ color: "#c00", whiteSpace: "pre-wrap" }}>{error}</p>}
       <ul>
         {items.map((a) => (
           <li key={a.id} style={{ display: "flex", gap: 8, alignItems: "center" }}>
