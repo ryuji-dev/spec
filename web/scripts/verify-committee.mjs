@@ -1,6 +1,6 @@
 // 교육위원회 순수 매퍼 검증 — DB 없이 실행.
 //   실행: pnpm committee:verify
-import { toCommitteePostView, CATEGORY_EN, formatDate } from "../src/lib/committee.ts";
+import { toCommitteePostView, CATEGORY_EN } from "../src/lib/committee.ts";
 
 const assert = (cond, msg) => {
   if (!cond) throw new Error(`검증 실패: ${msg}`);

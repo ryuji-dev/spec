@@ -6,6 +6,7 @@ import {
   toCommitteePostView,
   COMMITTEE_CATEGORIES_KO,
   CATEGORY_EN,
+  formatAuthor,
   formatDate,
   type CommitteeRow,
 } from "@/lib/committee";
@@ -146,25 +147,21 @@ export async function getCommitteePost(id: string): Promise<CommitteeDetail | nu
     .where(eq(comments.postId, id))
     .orderBy(comments.createdAt);
 
-  const name = r.authorName ?? "익명";
   return {
     id: r.id,
     category: r.category,
     title: r.title,
     body: r.body,
-    author: r.authorTitle ? `${name} ${r.authorTitle}` : name,
+    author: formatAuthor(r.authorName, r.authorTitle),
     date: formatDate(r.createdAt),
     views: r.viewCount,
     attachments: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })),
-    comments: cms.map((c) => {
-      const cn = c.authorName ?? "익명";
-      return {
-        id: c.id,
-        author: c.authorTitle ? `${cn} ${c.authorTitle}` : cn,
-        date: formatDate(c.createdAt),
-        body: c.body,
-      };
-    }),
+    comments: cms.map((c) => ({
+      id: c.id,
+      author: formatAuthor(c.authorName, c.authorTitle),
+      date: formatDate(c.createdAt),
+      body: c.body,
+    })),
   };
 }
 
@@ -172,5 +169,5 @@ export async function incrementCommitteeView(id: string): Promise<void> {
   await getDb()
     .update(posts)
     .set({ viewCount: sql`${posts.viewCount} + 1` })
-    .where(and(eq(posts.id, id), eq(posts.section, SECTION)));
+    .where(and(eq(posts.id, id), eq(posts.section, SECTION), eq(posts.isPublished, true)));
 }

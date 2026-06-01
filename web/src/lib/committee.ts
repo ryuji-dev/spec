@@ -29,6 +29,12 @@ export function formatDate(d: Date): string {
   return `${y}.${m}.${day}`;
 }
 
+// 작성자 표시명 — 이름 + 직함(있으면). 이름 없으면 "익명".
+export function formatAuthor(name: string | null, title: string | null): string {
+  const n = name ?? "익명";
+  return title ? `${n} ${title}` : n;
+}
+
 const NEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
 // 서비스가 만든 평면 행 → 디자인 Post 뷰모델
@@ -50,14 +56,13 @@ export function toCommitteePostView(row: CommitteeRow, now: Date): Post {
     row.category && row.category in CATEGORY_EN ? row.category : "나눔"
   ) as PostCategoryKo;
   const name = row.authorName ?? "익명";
-  const author = row.authorTitle ? `${name} ${row.authorTitle}` : name;
   return {
     id: row.id,
     cat,
     catEn: CATEGORY_EN[cat],
     title: row.title,
     excerpt: row.excerpt ?? "",
-    author,
+    author: formatAuthor(row.authorName, row.authorTitle),
     authorInit: name.slice(0, 1),
     date: formatDate(row.createdAt),
     views: row.viewCount,
