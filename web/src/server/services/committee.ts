@@ -6,6 +6,7 @@ import {
   toCommitteePostView,
   COMMITTEE_CATEGORIES_KO,
   CATEGORY_EN,
+  formatDate,
   type CommitteeRow,
 } from "@/lib/committee";
 import type {
@@ -88,4 +89,88 @@ export async function getCommitteeListData(): Promise<CommitteeListData> {
   }));
 
   return { pinned, posts: list, categories, popular };
+}
+
+export type CommitteeDetail = {
+  id: string;
+  category: string | null;
+  title: string;
+  body: string | null;
+  author: string;
+  date: string;
+  views: number;
+  attachments: { id: string; name: string; sizeBytes: number; mime: string }[];
+  comments: { id: string; author: string; date: string; body: string }[];
+};
+
+export async function getCommitteePost(id: string): Promise<CommitteeDetail | null> {
+  const db = getDb();
+  const rows = await db
+    .select({
+      id: posts.id,
+      category: posts.category,
+      title: posts.title,
+      body: posts.body,
+      viewCount: posts.viewCount,
+      createdAt: posts.createdAt,
+      authorName: users.name,
+      authorTitle: users.title,
+    })
+    .from(posts)
+    .leftJoin(users, eq(users.id, posts.authorId))
+    .where(and(eq(posts.id, id), eq(posts.section, SECTION), eq(posts.isPublished, true)))
+    .limit(1);
+  const r = rows[0];
+  if (!r) return null;
+
+  const atts = await db
+    .select({
+      id: attachments.id,
+      name: attachments.originalName,
+      sizeBytes: attachments.sizeBytes,
+      mime: attachments.mime,
+    })
+    .from(attachments)
+    .where(eq(attachments.postId, id));
+
+  const cms = await db
+    .select({
+      id: comments.id,
+      body: comments.body,
+      createdAt: comments.createdAt,
+      authorName: users.name,
+      authorTitle: users.title,
+    })
+    .from(comments)
+    .leftJoin(users, eq(users.id, comments.authorId))
+    .where(eq(comments.postId, id))
+    .orderBy(comments.createdAt);
+
+  const name = r.authorName ?? "익명";
+  return {
+    id: r.id,
+    category: r.category,
+    title: r.title,
+    body: r.body,
+    author: r.authorTitle ? `${name} ${r.authorTitle}` : name,
+    date: formatDate(r.createdAt),
+    views: r.viewCount,
+    attachments: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })),
+    comments: cms.map((c) => {
+      const cn = c.authorName ?? "익명";
+      return {
+        id: c.id,
+        author: c.authorTitle ? `${cn} ${c.authorTitle}` : cn,
+        date: formatDate(c.createdAt),
+        body: c.body,
+      };
+    }),
+  };
+}
+
+export async function incrementCommitteeView(id: string): Promise<void> {
+  await getDb()
+    .update(posts)
+    .set({ viewCount: sql`${posts.viewCount} + 1` })
+    .where(and(eq(posts.id, id), eq(posts.section, SECTION)));
 }
