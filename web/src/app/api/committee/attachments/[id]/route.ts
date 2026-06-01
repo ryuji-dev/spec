@@ -1,3 +1,4 @@
+import { isUuid } from "@/lib/api";
 import { getCurrentUser } from "@/server/auth/current-user";
 import { deleteAttachment } from "@/server/uploads/committee";
 
@@ -14,6 +15,8 @@ export async function DELETE(
       { status: 403 },
     );
   const { id } = await params;
+  if (!isUuid(id))
+    return Response.json({ ok: false, error: { code: "INVALID_ID", message: "잘못된 ID입니다." } }, { status: 400 });
   await deleteAttachment(id);
   return Response.json({ ok: true, data: { id } });
 }

@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { eq } from "drizzle-orm";
+import { isUuid } from "@/lib/api";
 import { getDb } from "@/server/db";
 import { attachments } from "@/server/db/schema";
 import { uploadPath } from "@/server/uploads/committee";
@@ -11,6 +12,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
+  if (!isUuid(id)) return new Response("Not Found", { status: 404 });
   const [row] = await getDb()
     .select({
       storedName: attachments.storedName,

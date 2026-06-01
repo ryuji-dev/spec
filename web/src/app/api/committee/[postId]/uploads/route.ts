@@ -1,3 +1,4 @@
+import { isUuid } from "@/lib/api";
 import { getCurrentUser } from "@/server/auth/current-user";
 import {
   storeAttachment,
@@ -20,6 +21,7 @@ export async function POST(
     return err("FORBIDDEN", "권한이 없습니다.", 403);
 
   const { postId } = await params;
+  if (!isUuid(postId)) return err("INVALID_ID", "잘못된 게시물 ID입니다.", 400);
   const form = await req.formData();
   const files = form.getAll("files").filter((f): f is File => f instanceof File);
   if (files.length === 0) return err("NO_FILE", "파일이 없습니다.", 400);

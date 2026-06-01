@@ -35,3 +35,8 @@ export async function apiPostForm<T>(url: string, form: FormData): Promise<T> {
 export async function apiDelete<T>(url: string): Promise<T> {
   return parse<T>(await fetch(url, { method: "DELETE" }));
 }
+
+// UUID v4 형식 검사 — 잘못된 경로 세그먼트를 DB 조회 전에 차단(Postgres 22P02 500 방지).
+export function isUuid(s: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+}
