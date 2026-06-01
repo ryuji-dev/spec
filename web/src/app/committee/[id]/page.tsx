@@ -5,6 +5,8 @@ import {
   incrementCommitteeView,
 } from "@/server/services/committee";
 import { getCurrentUser } from "@/server/auth/current-user";
+import { deleteComment } from "@/server/actions/comments";
+import CommentForm from "../_components/CommentForm";
 
 // 최소 기능 상세 화면. 디자인 폴리시는 추후 Claude Design 핸드오프로 교체.
 export default async function CommitteePostPage({
@@ -58,15 +60,31 @@ export default async function CommitteePostPage({
 
       <section style={{ marginTop: 32 }}>
         <h2 style={{ fontSize: 15 }}>댓글 ({post.comments.length})</h2>
-        {post.comments.map((c) => (
-          <div key={c.id} style={{ borderTop: "1px solid #eee", padding: "10px 0" }}>
-            <p style={{ fontSize: 12, color: "#888", margin: 0 }}>
-              {c.author} · {c.date}
-            </p>
-            <p style={{ whiteSpace: "pre-wrap", margin: "4px 0 0" }}>{c.body}</p>
-          </div>
-        ))}
-        {/* 댓글 작성 폼은 Plan 3에서 추가 */}
+        {post.comments.map((c) => {
+          const canDelete = isAdmin || (user != null && c.authorId === user.id);
+          return (
+            <div key={c.id} style={{ borderTop: "1px solid #eee", padding: "10px 0" }}>
+              <p style={{ fontSize: 12, color: "#888", margin: 0 }}>
+                {c.author} · {c.date}
+              </p>
+              <p style={{ whiteSpace: "pre-wrap", margin: "4px 0 0" }}>{c.body}</p>
+              {canDelete && (
+                <form action={deleteComment.bind(null, c.id)} style={{ marginTop: 4 }}>
+                  <button type="submit" style={{ fontSize: 12, color: "#c00" }}>
+                    삭제
+                  </button>
+                </form>
+              )}
+            </div>
+          );
+        })}
+        {user ? (
+          <CommentForm postId={id} />
+        ) : (
+          <p style={{ fontSize: 13, color: "#888", marginTop: 16 }}>
+            댓글을 작성하려면 <Link href="/login" style={{ color: "#06c" }}>로그인</Link>이 필요합니다.
+          </p>
+        )}
       </section>
     </main>
   );
