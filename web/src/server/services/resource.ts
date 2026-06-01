@@ -38,7 +38,7 @@ export async function getResourceListData(): Promise<ResourceListData> {
       createdAt: posts.createdAt,
       authorName: users.name,
       authorTitle: users.title,
-      totalBytes: sql<number>`coalesce((select sum(${attachments.sizeBytes}) from ${attachments} a where a.post_id = ${posts.id}),0)::bigint`,
+      totalBytes: sql<number>`coalesce((select sum(a.size_bytes) from ${attachments} a where a.post_id = ${posts.id}),0)::bigint`,
     })
     .from(posts)
     .leftJoin(users, eq(users.id, posts.authorId))
