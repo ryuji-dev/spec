@@ -1,10 +1,10 @@
 "use server";
 // 댓글 작성/삭제. 작성은 로그인 회원(admin·member), 삭제는 작성자 본인 또는 admin.
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/server/db";
-import { comments } from "@/server/db/schema";
+import { comments, posts } from "@/server/db/schema";
 import { getCurrentUser } from "@/server/auth/current-user";
 
 const bodySchema = z
@@ -28,6 +28,13 @@ export async function addComment(
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "입력값을 확인해주세요." };
   }
+  // 대상 게시물이 실제 존재하는 committee 글인지 확인 (비정상 postId의 FK 500 방지)
+  const [target] = await getDb()
+    .select({ id: posts.id })
+    .from(posts)
+    .where(and(eq(posts.id, postId), eq(posts.section, "committee")))
+    .limit(1);
+  if (!target) return { error: "게시물을 찾을 수 없습니다." };
   await getDb()
     .insert(comments)
     .values({ postId, authorId: user.id, body: parsed.data });
