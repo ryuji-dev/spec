@@ -4,15 +4,17 @@ import type { Post } from "@/lib/committee-data";
 type Props = {
   post: Post;
   palette: Palette;
+  onOpen?: () => void;
 };
 
 /**
  * 게시판 핀 카드 (어두운 배경 + accent 글로우).
  * 디자인 원본 board.jsx PinnedCard.
  */
-export default function PinnedCard({ post, palette }: Props) {
+export default function PinnedCard({ post, palette, onOpen }: Props) {
   return (
     <article
+      onClick={onOpen}
       style={{
         background: palette.ink,
         color: "#F5F1E8",

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { BD_CATEGORIES, BD_PINNED, BD_POSTS } from "@/lib/committee-data";
+import { useRouter } from "next/navigation";
+import type { Post, PostCategory, PopularPost } from "@/lib/committee-data";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroDesktop } from "@/app/_components/PageHero";
 import PinnedCard from "./PinnedCard";
@@ -19,15 +20,23 @@ type ViewMode = "mixed" | "list";
  * 디자인 원본 board.jsx BoardDesktop. 카테고리 필터·뷰 토글·검색을 인터랙션으로 가짐.
  * 글로벌 DesktopNav(solid)을 함께 사용 — sticky 필터바는 nav 높이만큼 top offset.
  */
-export default function CommitteeDesktop() {
+type Props = {
+  pinned: Post | null;
+  posts: Post[];
+  categories: PostCategory[];
+  popular: PopularPost[];
+};
+
+export default function CommitteeDesktop({ pinned, posts, categories, popular }: Props) {
+  const router = useRouter();
   const palette = FOREST_PALETTE;
   const [activeCat, setActiveCat] = useState(0);
   const [view, setView] = useState<ViewMode>("mixed");
 
   const filtered =
     activeCat === 0
-      ? BD_POSTS
-      : BD_POSTS.filter((p) => p.cat === BD_CATEGORIES[activeCat].ko);
+      ? posts
+      : posts.filter((p) => p.cat === categories[activeCat].ko);
 
   return (
     <div style={{ background: palette.bg, minHeight: "100vh", color: palette.ink }}>
@@ -58,7 +67,7 @@ export default function CommitteeDesktop() {
         <div style={{ fontSize: 13, color: palette.muted, lineHeight: 1.6 }}>
           이번 달 새 글{" "}
           <strong style={{ color: palette.primary, fontWeight: 700 }}>
-            {BD_POSTS.filter((p) => p.isNew).length + 1}
+            {posts.filter((p) => p.isNew).length + 1}
           </strong>
           건 · 총 게시글{" "}
           <strong style={{ color: palette.ink, fontWeight: 700 }}>142</strong>건 ·
@@ -106,7 +115,7 @@ export default function CommitteeDesktop() {
         }}
       >
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {BD_CATEGORIES.map((c, i) => {
+          {categories.map((c, i) => {
             const active = activeCat === i;
             return (
               <button
@@ -238,7 +247,13 @@ export default function CommitteeDesktop() {
       >
         <main>
           {/* 핀 게시물 */}
-          <PinnedCard post={BD_PINNED} palette={palette} />
+          {pinned && (
+            <PinnedCard
+              post={pinned}
+              palette={palette}
+              onOpen={() => router.push(`/committee/${pinned.id}`)}
+            />
+          )}
 
           {view === "mixed" && (
             <>
@@ -252,7 +267,12 @@ export default function CommitteeDesktop() {
                 }}
               >
                 {filtered.slice(0, 2).map((p) => (
-                  <PostCard key={p.id} post={p} palette={palette} />
+                  <PostCard
+                    key={p.id}
+                    post={p}
+                    palette={palette}
+                    onOpen={() => router.push(`/committee/${p.id}`)}
+                  />
                 ))}
               </div>
 
@@ -290,7 +310,12 @@ export default function CommitteeDesktop() {
                   </div>
                 </div>
                 {filtered.slice(2).map((p) => (
-                  <PostListRow key={p.id} post={p} palette={palette} />
+                  <PostListRow
+                    key={p.id}
+                    post={p}
+                    palette={palette}
+                    onOpen={() => router.push(`/committee/${p.id}`)}
+                  />
                 ))}
               </div>
             </>
@@ -326,6 +351,7 @@ export default function CommitteeDesktop() {
                   post={p}
                   palette={palette}
                   index={filtered.length - i}
+                  onOpen={() => router.push(`/committee/${p.id}`)}
                 />
               ))}
             </div>
@@ -334,7 +360,7 @@ export default function CommitteeDesktop() {
           <Pagination palette={palette} />
         </main>
 
-        <Sidebar palette={palette} />
+        <Sidebar palette={palette} popular={popular} />
       </div>
 
       <CommitteeFooter palette={palette} />

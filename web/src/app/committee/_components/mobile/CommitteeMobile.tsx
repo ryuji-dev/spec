@@ -1,13 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import {
-  BD_CATEGORIES,
-  BD_PINNED,
-  BD_POPULAR,
-  BD_POSTS,
-  BD_TAGS,
-} from "@/lib/committee-data";
+import { useRouter } from "next/navigation";
+import { BD_TAGS } from "@/lib/committee-data";
+import type { Post, PostCategory, PopularPost } from "@/lib/committee-data";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroMobile } from "@/app/_components/PageHero";
@@ -19,14 +15,22 @@ import PostListMobile from "./PostListMobile";
  * 디자인 원본 board.jsx BoardMobile.
  * 자체 sticky 헤더 + 가로 스크롤 카테고리 핀 + 카드/리스트 혼합.
  */
-export default function CommitteeMobile() {
+type Props = {
+  pinned: Post | null;
+  posts: Post[];
+  categories: PostCategory[];
+  popular: PopularPost[];
+};
+
+export default function CommitteeMobile({ pinned, posts, categories, popular }: Props) {
+  const router = useRouter();
   const palette = FOREST_PALETTE;
   const [activeCat, setActiveCat] = useState(0);
 
   const filtered =
     activeCat === 0
-      ? BD_POSTS
-      : BD_POSTS.filter((p) => p.cat === BD_CATEGORIES[activeCat].ko);
+      ? posts
+      : posts.filter((p) => p.cat === categories[activeCat].ko);
 
   return (
     <div
@@ -126,7 +130,7 @@ export default function CommitteeMobile() {
         }}
       >
         <div style={{ display: "inline-flex", gap: 6, padding: "0 22px" }}>
-          {BD_CATEGORIES.map((c, i) => {
+          {categories.map((c, i) => {
             const active = activeCat === i;
             return (
               <button
@@ -167,8 +171,10 @@ export default function CommitteeMobile() {
       </div>
 
       {/* 핀 카드 (mobile) */}
+      {pinned && (
       <div style={{ padding: "4px 22px 0" }}>
         <article
+          onClick={() => router.push(`/committee/${pinned.id}`)}
           style={{
             background: palette.ink,
             color: "#F5F1E8",
@@ -219,7 +225,7 @@ export default function CommitteeMobile() {
                 lineHeight: 1.3,
               }}
             >
-              {BD_PINNED.title}
+              {pinned.title}
             </h2>
             <p
               style={{
@@ -235,7 +241,7 @@ export default function CommitteeMobile() {
                 overflow: "hidden",
               }}
             >
-              {BD_PINNED.excerpt}
+              {pinned.excerpt}
             </p>
             <div
               style={{
@@ -249,14 +255,15 @@ export default function CommitteeMobile() {
                 letterSpacing: "0.02em",
               }}
             >
-              <span>{BD_PINNED.author}</span>
+              <span>{pinned.author}</span>
               <span>
-                {BD_PINNED.date} · {BD_PINNED.views.toLocaleString()} views
+                {pinned.date} · {pinned.views.toLocaleString()} views
               </span>
             </div>
           </div>
         </article>
       </div>
+      )}
 
       {/* 게시글 카드 — 첫 글 강조 */}
       <div
@@ -303,14 +310,24 @@ export default function CommitteeMobile() {
         }}
       >
         {filtered.slice(0, 1).map((p) => (
-          <PostCardMobile key={p.id} post={p} palette={palette} />
+          <PostCardMobile
+            key={p.id}
+            post={p}
+            palette={palette}
+            onOpen={() => router.push(`/committee/${p.id}`)}
+          />
         ))}
       </div>
 
       {/* 리스트 */}
       <div style={{ padding: "8px 22px 32px" }}>
         {filtered.slice(1).map((p) => (
-          <PostListMobile key={p.id} post={p} palette={palette} />
+          <PostListMobile
+            key={p.id}
+            post={p}
+            palette={palette}
+            onOpen={() => router.push(`/committee/${p.id}`)}
+          />
         ))}
       </div>
 
@@ -357,7 +374,7 @@ export default function CommitteeMobile() {
               gap: 12,
             }}
           >
-            {BD_POPULAR.slice(0, 4).map((p, i) => (
+            {popular.slice(0, 4).map((p, i) => (
               <li
                 key={p.id}
                 style={{
