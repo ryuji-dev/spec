@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
+import { getResourceListData } from "@/server/services/resource";
 import DesktopNav from "@/app/_components/DesktopNav";
 import ResourcesDesktop from "./_components/desktop/ResourcesDesktop";
 import ResourcesMobile from "./_components/mobile/ResourcesMobile";
@@ -15,13 +16,21 @@ import ResourcesMobile from "./_components/mobile/ResourcesMobile";
 export default async function ResourcesPage() {
   const h = await headers();
   const device = getDeviceType(h.get("user-agent"));
+  const data = await getResourceListData();
   if (device === "desktop") {
     return (
       <>
         <DesktopNav variant="solid" />
-        <ResourcesDesktop />
+        <ResourcesDesktop files={data.files} categories={data.categories} top={data.top} />
       </>
     );
   }
-  return <ResourcesMobile deviceType={device} />;
+  return (
+    <ResourcesMobile
+      deviceType={device}
+      files={data.files}
+      categories={data.categories}
+      top={data.top}
+    />
+  );
 }

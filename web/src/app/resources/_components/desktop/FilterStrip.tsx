@@ -2,14 +2,15 @@
 
 import type { Palette } from "@/app/_components/shared/palette";
 import {
-  LB_CATEGORIES,
   RESOURCES_SORTS,
+  type ResourceCategory,
   type ResourcesSort,
   type ResourcesView,
 } from "@/lib/resources-data";
 
 type Props = {
   palette: Palette;
+  categories: ResourceCategory[];
   activeCat: number;
   setActiveCat: (i: number) => void;
   sort: ResourcesSort;
@@ -29,6 +30,7 @@ const VIEW_OPTIONS: ReadonlyArray<{ v: ResourcesView; label: string }> = [
  */
 export default function FilterStrip({
   palette,
+  categories,
   activeCat,
   setActiveCat,
   sort,
@@ -55,7 +57,7 @@ export default function FilterStrip({
       }}
     >
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {LB_CATEGORIES.map((c, i) => {
+        {categories.map((c, i) => {
           const active = activeCat === i;
           return (
             <button

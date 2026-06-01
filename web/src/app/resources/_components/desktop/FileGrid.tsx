@@ -9,12 +9,13 @@ import DownloadBtn from "../shared/DownloadBtn";
 type Props = {
   files: ReadonlyArray<ResourceFile>;
   palette: Palette;
+  onOpen?: (id: string) => void;
 };
 
 /**
  * 자료 그리드 뷰 — 3열 카드. 디자인 원본 library.jsx 의 grid 분기 그대로.
  */
-export default function FileGrid({ files, palette }: Props) {
+export default function FileGrid({ files, palette, onOpen }: Props) {
   return (
     <div
       style={{
@@ -28,6 +29,7 @@ export default function FileGrid({ files, palette }: Props) {
         return (
           <article
             key={f.id}
+            onClick={() => onOpen?.(f.id)}
             style={{
               background: palette.surface,
               border: `1px solid ${palette.line}`,
