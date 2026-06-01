@@ -13,6 +13,7 @@
     "db:verify": "node scripts/verify-db.mjs",
     "auth:verify": "node --conditions=react-server scripts/verify-auth.ts",
     "committee:verify": "node scripts/verify-committee.mjs",
+    "resource:verify": "node scripts/verify-resource.mjs",
     "uploads:verify": "node scripts/verify-uploads.mjs",
     "dev:db": "node scripts/dev-db.mjs"
   },
