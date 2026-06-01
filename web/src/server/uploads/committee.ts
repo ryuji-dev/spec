@@ -3,9 +3,9 @@ import { randomUUID } from "node:crypto";
 import { mkdir, writeFile, unlink } from "node:fs/promises";
 import { join } from "node:path";
 import { fileTypeFromBuffer } from "file-type";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/server/db";
-import { attachments } from "@/server/db/schema";
+import { attachments, posts } from "@/server/db/schema";
 import {
   extOf,
   preCheck,
@@ -54,6 +54,15 @@ export async function storeAttachment(postId: string, file: File): Promise<Store
   const ext = extOf(file.name);
   const pre = preCheck(file.name, file.size);
   if (pre) throw new UploadError("INVALID_FILE", pre);
+
+  // 대상 게시물이 실제 존재하는 committee 글인지 확인 (비정상 postId의 FK 500·타섹션 첨부 방지)
+  const [target] = await getDb()
+    .select({ id: posts.id })
+    .from(posts)
+    .where(and(eq(posts.id, postId), eq(posts.section, "committee")))
+    .limit(1);
+  if (!target) throw new UploadError("POST_NOT_FOUND", "게시물을 찾을 수 없습니다.");
+
   await ensureCapacity(postId, file.size);
 
   const buf = Buffer.from(await file.arrayBuffer());
