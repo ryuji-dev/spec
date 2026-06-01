@@ -101,7 +101,7 @@ export type CommitteeDetail = {
   date: string;
   views: number;
   attachments: { id: string; name: string; sizeBytes: number; mime: string }[];
-  comments: { id: string; author: string; date: string; body: string }[];
+  comments: { id: string; authorId: string | null; author: string; date: string; body: string }[];
 };
 
 export async function getCommitteePost(id: string): Promise<CommitteeDetail | null> {
@@ -137,6 +137,7 @@ export async function getCommitteePost(id: string): Promise<CommitteeDetail | nu
   const cms = await db
     .select({
       id: comments.id,
+      authorId: comments.authorId,
       body: comments.body,
       createdAt: comments.createdAt,
       authorName: users.name,
@@ -158,6 +159,7 @@ export async function getCommitteePost(id: string): Promise<CommitteeDetail | nu
     attachments: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })),
     comments: cms.map((c) => ({
       id: c.id,
+      authorId: c.authorId,
       author: formatAuthor(c.authorName, c.authorTitle),
       date: formatDate(c.createdAt),
       body: c.body,
