@@ -13,11 +13,13 @@
     "db:verify": "node scripts/verify-db.mjs",
     "auth:verify": "node --conditions=react-server scripts/verify-auth.ts",
     "committee:verify": "node scripts/verify-committee.mjs",
+    "uploads:verify": "node scripts/verify-uploads.mjs",
     "dev:db": "node scripts/dev-db.mjs"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.2",
     "drizzle-orm": "^0.45.2",
+    "file-type": "^22.0.1",
     "jose": "^6.2.3",
     "next": "16.2.4",
     "postgres": "^3.4.9",
