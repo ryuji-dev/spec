@@ -465,6 +465,7 @@ export default function CommitteeMobile({ pinned, posts, categories, popular }: 
       <button
         type="button"
         aria-label="새 글 작성"
+        onClick={() => router.push("/admin/committee/new")}
         style={{
           position: "fixed",
           bottom: 100,

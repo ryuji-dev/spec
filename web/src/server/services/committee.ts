@@ -171,3 +171,40 @@ export async function incrementCommitteeView(id: string): Promise<void> {
     .set({ viewCount: sql`${posts.viewCount} + 1` })
     .where(and(eq(posts.id, id), eq(posts.section, SECTION), eq(posts.isPublished, true)));
 }
+
+export type CommitteeEditData = {
+  id: string;
+  category: string | null;
+  title: string;
+  excerpt: string | null;
+  body: string | null;
+  isPinned: boolean;
+  attachments: { id: string; name: string; sizeBytes: number; mime: string }[];
+};
+
+export async function getCommitteePostForEdit(id: string): Promise<CommitteeEditData | null> {
+  const db = getDb();
+  const [r] = await db
+    .select({
+      id: posts.id,
+      category: posts.category,
+      title: posts.title,
+      excerpt: posts.excerpt,
+      body: posts.body,
+      isPinned: posts.isPinned,
+    })
+    .from(posts)
+    .where(and(eq(posts.id, id), eq(posts.section, SECTION)))
+    .limit(1);
+  if (!r) return null;
+  const atts = await db
+    .select({
+      id: attachments.id,
+      name: attachments.originalName,
+      sizeBytes: attachments.sizeBytes,
+      mime: attachments.mime,
+    })
+    .from(attachments)
+    .where(eq(attachments.postId, id));
+  return { ...r, attachments: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })) };
+}

@@ -75,6 +75,7 @@ export default function CommitteeDesktop({ pinned, posts, categories, popular }:
         </div>
         <button
           type="button"
+          onClick={() => router.push("/admin/committee/new")}
           style={{
             background: palette.ink,
             color: "#fff",
