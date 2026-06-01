@@ -1,10 +1,11 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { BD_POPULAR, BD_TAGS, SIDE_AUTHORS } from "@/lib/committee-data";
+import { BD_TAGS, SIDE_AUTHORS } from "@/lib/committee-data";
+import type { PopularPost } from "@/lib/committee-data";
 
 type SideProps = { palette: Palette };
 
 /** 사이드 — 인기 게시글. */
-function SidePopular({ palette }: SideProps) {
+function SidePopular({ palette, popular }: SideProps & { popular: PopularPost[] }) {
   return (
     <div>
       <div
@@ -52,7 +53,7 @@ function SidePopular({ palette }: SideProps) {
           gap: 14,
         }}
       >
-        {BD_POPULAR.map((p, i) => (
+        {popular.map((p, i) => (
           <li
             key={p.id}
             style={{
@@ -274,10 +275,10 @@ function SideAuthorsBlock({ palette }: SideProps) {
   );
 }
 
-export default function Sidebar({ palette }: SideProps) {
+export default function Sidebar({ palette, popular }: SideProps & { popular: PopularPost[] }) {
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      <SidePopular palette={palette} />
+      <SidePopular palette={palette} popular={popular} />
       <SideTags palette={palette} />
       <SideAuthorsBlock palette={palette} />
     </aside>

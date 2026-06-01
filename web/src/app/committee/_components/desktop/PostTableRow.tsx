@@ -7,12 +7,14 @@ type Props = {
   post: Post;
   palette: Palette;
   index: number;
+  onOpen?: () => void;
 };
 
 /** 테이블 행 — 전통적 게시판. */
-export default function PostTableRow({ post, palette, index }: Props) {
+export default function PostTableRow({ post, palette, index, onOpen }: Props) {
   return (
     <div
+      onClick={onOpen}
       style={{
         display: "grid",
         gridTemplateColumns: "60px 100px 1fr 180px 100px 90px",

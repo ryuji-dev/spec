@@ -8,12 +8,14 @@ import { catTone } from "../catTone";
 type Props = {
   post: Post;
   palette: Palette;
+  onOpen?: () => void;
 };
 
 /** 카드형 게시글 (top 2). */
-export default function PostCard({ post, palette }: Props) {
+export default function PostCard({ post, palette, onOpen }: Props) {
   return (
     <article
+      onClick={onOpen}
       style={{
         background: palette.surface,
         borderRadius: 12,

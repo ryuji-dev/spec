@@ -5,11 +5,12 @@ import CatLabel from "@/app/_components/shared/CatLabel";
 import StatRow from "@/app/_components/shared/StatRow";
 import { catTone } from "../catTone";
 
-type Props = { post: Post; palette: Palette };
+type Props = { post: Post; palette: Palette; onOpen?: () => void };
 
-export default function PostCardMobile({ post, palette }: Props) {
+export default function PostCardMobile({ post, palette, onOpen }: Props) {
   return (
     <article
+      onClick={onOpen}
       style={{
         background: palette.surface,
         border: `1px solid ${palette.line}`,

@@ -12,7 +12,7 @@ export type PostCategoryEn =
   | "SHARE";
 
 export type Post = {
-  id: number;
+  id: string;
   cat: PostCategoryKo;
   catEn: PostCategoryEn;
   title: string;
@@ -27,7 +27,7 @@ export type Post = {
 };
 
 export const BD_PINNED: Post = {
-  id: 0,
+  id: "0",
   cat: "공지",
   catEn: "NOTICE",
   title: "2026년 상반기 교육위원회 정기총회 안내",
@@ -43,7 +43,7 @@ export const BD_PINNED: Post = {
 
 export const BD_POSTS: Post[] = [
   {
-    id: 1,
+    id: "1",
     cat: "회의록",
     catEn: "MINUTES",
     title: "제 4차 임원회의 회의록 (2026.04.18)",
@@ -57,7 +57,7 @@ export const BD_POSTS: Post[] = [
     isNew: true,
   },
   {
-    id: 2,
+    id: "2",
     cat: "수련회",
     catEn: "TRAINING",
     title: "2026 봄 교사 수련회 — 사전 신청 마감 안내",
@@ -71,7 +71,7 @@ export const BD_POSTS: Post[] = [
     isNew: true,
   },
   {
-    id: 3,
+    id: "3",
     cat: "자료실",
     catEn: "LIBRARY",
     title: "주일학교 봄학기 공과 PDF 일괄 다운로드",
@@ -84,7 +84,7 @@ export const BD_POSTS: Post[] = [
     attach: 5,
   },
   {
-    id: 4,
+    id: "4",
     cat: "공지",
     catEn: "NOTICE",
     title: "제27회 성경고사 본선 진행 일정 변경 안내",
@@ -96,7 +96,7 @@ export const BD_POSTS: Post[] = [
     comments: 8,
   },
   {
-    id: 5,
+    id: "5",
     cat: "나눔",
     catEn: "SHARE",
     title: "주일학교 부서 운영, 작은 교회의 한 사례",
@@ -108,7 +108,7 @@ export const BD_POSTS: Post[] = [
     comments: 17,
   },
   {
-    id: 6,
+    id: "6",
     cat: "회의록",
     catEn: "MINUTES",
     title: "제 3차 임원회의 회의록 (2026.04.04)",
@@ -121,7 +121,7 @@ export const BD_POSTS: Post[] = [
     attach: 1,
   },
   {
-    id: 7,
+    id: "7",
     cat: "자료실",
     catEn: "LIBRARY",
     title: "교사 헌신예배 설교문 모음 (2020 - 2025)",
@@ -134,7 +134,7 @@ export const BD_POSTS: Post[] = [
     attach: 1,
   },
   {
-    id: 8,
+    id: "8",
     cat: "나눔",
     catEn: "SHARE",
     title: "아이가 처음 “기도해도 돼요?”라고 물었던 날",
@@ -146,7 +146,7 @@ export const BD_POSTS: Post[] = [
     comments: 41,
   },
   {
-    id: 9,
+    id: "9",
     cat: "공지",
     catEn: "NOTICE",
     title: "여름 수련회 사전 답사 동행 신청",
@@ -158,7 +158,7 @@ export const BD_POSTS: Post[] = [
     comments: 12,
   },
   {
-    id: 10,
+    id: "10",
     cat: "수련회",
     catEn: "TRAINING",
     title: "봄 수련회 강사 — 이정훈 교수 인터뷰 미리보기",
@@ -186,14 +186,14 @@ export const BD_CATEGORIES: PostCategory[] = [
   { ko: "나눔", en: "SHARE", count: 35 },
 ];
 
-export type PopularPost = { id: number; title: string; views: number };
+export type PopularPost = { id: string; title: string; views: number };
 
 export const BD_POPULAR: PopularPost[] = [
-  { id: 11, title: "주일학교 봄학기 공과 PDF 일괄 다운로드", views: 2104 },
-  { id: 12, title: "교사 헌신예배 설교문 모음 (2020-2025)", views: 1432 },
-  { id: 13, title: "2026년 상반기 정기총회 안내", views: 1248 },
-  { id: 14, title: "성경고사 본선 일정 변경 안내", views: 1056 },
-  { id: 15, title: "봄 교사 수련회 사전 신청", views: 894 },
+  { id: "11", title: "주일학교 봄학기 공과 PDF 일괄 다운로드", views: 2104 },
+  { id: "12", title: "교사 헌신예배 설교문 모음 (2020-2025)", views: 1432 },
+  { id: "13", title: "2026년 상반기 정기총회 안내", views: 1248 },
+  { id: "14", title: "성경고사 본선 일정 변경 안내", views: 1056 },
+  { id: "15", title: "봄 교사 수련회 사전 신청", views: 894 },
 ];
 
 export const BD_TAGS: ReadonlyArray<string> = [
