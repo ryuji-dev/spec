@@ -138,3 +138,37 @@ export async function incrementResourceDownload(postId: string): Promise<void> {
     .set({ viewCount: sql`${posts.viewCount} + 1` })
     .where(and(eq(posts.id, postId), eq(posts.section, SECTION)));
 }
+
+export type ResourceEditData = {
+  id: string;
+  category: string | null;
+  title: string;
+  sub: string;
+  attachments: { id: string; name: string; sizeBytes: number; mime: string }[];
+};
+
+export async function getResourcePostForEdit(id: string): Promise<ResourceEditData | null> {
+  const db = getDb();
+  const [r] = await db
+    .select({ id: posts.id, category: posts.category, title: posts.title, excerpt: posts.excerpt })
+    .from(posts)
+    .where(and(eq(posts.id, id), eq(posts.section, SECTION)))
+    .limit(1);
+  if (!r) return null;
+  const atts = await db
+    .select({
+      id: attachments.id,
+      name: attachments.originalName,
+      sizeBytes: attachments.sizeBytes,
+      mime: attachments.mime,
+    })
+    .from(attachments)
+    .where(eq(attachments.postId, id));
+  return {
+    id: r.id,
+    category: r.category,
+    title: r.title,
+    sub: r.excerpt ?? "",
+    attachments: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })),
+  };
+}
