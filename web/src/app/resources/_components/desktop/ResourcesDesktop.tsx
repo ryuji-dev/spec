@@ -102,7 +102,7 @@ export default function ResourcesDesktop({ files, categories, top }: Props) {
           )}
         </main>
 
-        <ResourcesSidebar palette={palette} top={top} />
+        <ResourcesSidebar palette={palette} top={top} onUpload={() => router.push("/admin/resources/new")} />
       </div>
 
       <ResourcesFooter palette={palette} />
