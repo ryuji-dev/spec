@@ -5,7 +5,7 @@ import { getCommitteePostForEdit } from "@/server/services/committee";
 import { updatePost, deletePost } from "@/server/actions/committee";
 import EditorForm from "../../EditorForm";
 import AttachmentManager from "@/app/_components/AttachmentManager";
-import { preCheck } from "@/lib/committee-upload";
+import { COMMITTEE_UPLOAD } from "@/lib/committee-upload";
 
 export default async function EditCommitteePostPage({
   params,
@@ -38,10 +38,8 @@ export default async function EditCommitteePostPage({
       <AttachmentManager
         postId={id}
         initial={post.attachments}
-        uploadUrl={(pid) => `/api/committee/${pid}/uploads`}
-        deleteUrl={(aid) => `/api/committee/attachments/${aid}`}
-        fileUrl={(aid) => `/api/committee/files/${aid}`}
-        preCheck={preCheck}
+        apiBase="/api/committee"
+        policy={COMMITTEE_UPLOAD}
       />
       <form action={remove} style={{ marginTop: 32 }}>
         <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>

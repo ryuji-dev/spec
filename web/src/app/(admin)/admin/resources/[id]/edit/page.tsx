@@ -5,7 +5,7 @@ import { getResourcePostForEdit } from "@/server/services/resource";
 import { updateResource, deleteResource } from "@/server/actions/resource";
 import ResourceEditorForm from "../../ResourceEditorForm";
 import AttachmentManager from "@/app/_components/AttachmentManager";
-import { preCheck } from "@/lib/resource-upload";
+import { RESOURCE_UPLOAD } from "@/lib/resource-upload";
 
 export default async function EditResourcePage({
   params,
@@ -32,10 +32,8 @@ export default async function EditResourcePage({
       <AttachmentManager
         postId={id}
         initial={resource.attachments}
-        uploadUrl={(pid) => `/api/resources/${pid}/uploads`}
-        deleteUrl={(aid) => `/api/resources/attachments/${aid}`}
-        fileUrl={(aid) => `/api/resources/files/${aid}`}
-        preCheck={preCheck}
+        apiBase="/api/resources"
+        policy={RESOURCE_UPLOAD}
       />
       <form action={remove} style={{ marginTop: 32 }}>
         <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>자료 삭제</button>
