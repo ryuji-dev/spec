@@ -1,9 +1,13 @@
 // 교육위원회 게시판 — 클라이언트 안전 순수 유틸. DB·server-only 의존 없음.
+import { formatDate, formatAuthor } from "./format.ts";
 import type {
   Post,
   PostCategoryKo,
   PostCategoryEn,
 } from "./committee-data";
+
+// 외부에서 @/lib/committee 경로로 import하던 호환 유지
+export { formatDate, formatAuthor } from "./format.ts";
 
 // 한국어 카테고리 → 영문 라벨 (디자인 뷰모델 catEn 용)
 export const CATEGORY_EN: Record<PostCategoryKo, PostCategoryEn> = {
@@ -21,19 +25,6 @@ export const COMMITTEE_CATEGORIES_KO: PostCategoryKo[] = [
   "자료실",
   "나눔",
 ];
-
-export function formatDate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}.${m}.${day}`;
-}
-
-// 작성자 표시명 — 이름 + 직함(있으면). 이름 없으면 "익명".
-export function formatAuthor(name: string | null, title: string | null): string {
-  const n = name ?? "익명";
-  return title ? `${n} ${title}` : n;
-}
 
 const NEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
