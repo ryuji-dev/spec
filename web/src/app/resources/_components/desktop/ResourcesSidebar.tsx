@@ -3,7 +3,7 @@ import { type ResourceFileType, type ResourceTopItem } from "@/lib/resources-dat
 import { fileTone } from "../fileTone";
 import DownloadStat from "../shared/DownloadStat";
 
-type Props = { palette: Palette; top: ResourceTopItem[] };
+type Props = { palette: Palette; top: ResourceTopItem[]; onUpload?: () => void };
 
 const FILE_TYPE_LEGEND: ReadonlyArray<ResourceFileType> = [
   "ppt",
@@ -18,7 +18,7 @@ const FILE_TYPE_LEGEND: ReadonlyArray<ResourceFileType> = [
  * 자료공유 데스크톱 사이드바 — TOP DOWNLOADS / 업로드 가이드 / 파일타입 범례.
  * 디자인 원본 library.jsx 의 aside 영역 그대로.
  */
-export default function ResourcesSidebar({ palette, top }: Props) {
+export default function ResourcesSidebar({ palette, top, onUpload }: Props) {
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 36 }}>
       <section>
@@ -158,6 +158,7 @@ export default function ResourcesSidebar({ palette, top }: Props) {
         </p>
         <button
           type="button"
+          onClick={onUpload}
           style={{
             background: "#F5F1E8",
             color: palette.ink,
