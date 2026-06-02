@@ -1,10 +1,14 @@
 // 자료공유 — 클라이언트 안전 순수 유틸. DB·server-only 의존 없음.
+import { formatDate, formatBytes, formatAuthor } from "./format.ts";
 import type {
   ResourceFile,
   ResourceFileType,
   ResourceFileCategory,
   ResourceCategoryEn,
 } from "./resources-data";
+
+// 상세 페이지가 @/lib/resource 경로로 import하던 호환 유지
+export { formatDate, formatBytes } from "./format.ts";
 
 export const RESOURCE_CATEGORY_EN: Record<ResourceFileCategory, ResourceCategoryEn> = {
   설교PPT: "SLIDES",
@@ -34,23 +38,6 @@ export function categoryToType(cat: string | null): ResourceFileType {
     : "doc";
 }
 
-export function formatDate(d: Date): string {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}.${m}.${day}`;
-}
-
-// bytes → "12.4 MB" / "186 MB" / "843 KB"
-export function formatBytes(n: number): string {
-  if (n < 1024) return `${n} B`;
-  const kb = n / 1024;
-  if (kb < 1024) return `${Math.round(kb)} KB`;
-  const mb = kb / 1024;
-  if (mb < 1024) return `${mb >= 100 ? Math.round(mb) : mb.toFixed(1)} MB`;
-  return `${(mb / 1024).toFixed(1)} GB`;
-}
-
 const NEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
 export type ResourceRow = {
@@ -66,7 +53,6 @@ export type ResourceRow = {
 };
 
 export function toResourceFileView(row: ResourceRow, now: Date): ResourceFile {
-  const name = row.authorName ?? "익명";
   const cat = (row.category && row.category in CATEGORY_TYPE
     ? row.category
     : "문서") as ResourceFileCategory;
@@ -79,7 +65,7 @@ export function toResourceFileView(row: ResourceRow, now: Date): ResourceFile {
     size: formatBytes(row.totalBytes),
     date: formatDate(row.createdAt),
     downloads: row.viewCount,
-    by: row.authorTitle ? `${name} ${row.authorTitle}` : name,
+    by: formatAuthor(row.authorName, row.authorTitle),
     isNew: now.getTime() - row.createdAt.getTime() < NEW_WINDOW_MS,
   };
 }

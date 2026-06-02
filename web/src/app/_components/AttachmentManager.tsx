@@ -1,11 +1,19 @@
 "use client";
 import { useState } from "react";
 import { apiPostForm, apiDelete, ApiError } from "@/lib/api";
-import { preCheck } from "@/lib/committee-upload";
+import { preCheck, type UploadPolicy } from "@/lib/upload-policy";
 
 type Att = { id: string; name: string; sizeBytes: number; mime: string };
 
-export default function AttachmentManager({ postId, initial }: { postId: string; initial: Att[] }) {
+type Props = {
+  postId: string;
+  initial: Att[];
+  // 직렬화 가능한 prop만 (Server → Client). 함수 prop 금지.
+  apiBase: string; // 예: "/api/committee" | "/api/resources"
+  policy: UploadPolicy;
+};
+
+export default function AttachmentManager({ postId, initial, apiBase, policy }: Props) {
   const [items, setItems] = useState<Att[]>(initial);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,15 +26,12 @@ export default function AttachmentManager({ postId, initial }: { postId: string;
     setBusy(true);
     const failed: string[] = [];
     for (const f of files) {
-      const pre = preCheck(f.name, f.size);
-      if (pre) {
-        failed.push(`${f.name}: ${pre}`);
-        continue;
-      }
+      const pre = preCheck(policy, f.name, f.size);
+      if (pre) { failed.push(`${f.name}: ${pre}`); continue; }
       try {
         const form = new FormData();
         form.append("files", f);
-        const added = await apiPostForm<Att[]>(`/api/committee/${postId}/uploads`, form);
+        const added = await apiPostForm<Att[]>(`${apiBase}/${postId}/uploads`, form);
         setItems((prev) => [...prev, ...added]);
       } catch (err) {
         failed.push(`${f.name}: ${err instanceof ApiError ? err.message : "업로드 실패"}`);
@@ -39,7 +44,7 @@ export default function AttachmentManager({ postId, initial }: { postId: string;
   async function onDelete(id: string) {
     setError(null);
     try {
-      await apiDelete(`/api/committee/attachments/${id}`);
+      await apiDelete(`${apiBase}/attachments/${id}`);
       setItems((prev) => prev.filter((a) => a.id !== id));
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "삭제 실패");
@@ -48,14 +53,14 @@ export default function AttachmentManager({ postId, initial }: { postId: string;
 
   return (
     <div style={{ marginTop: 24, maxWidth: 640 }}>
-      <h2 style={{ fontSize: 16 }}>첨부 ({items.length})</h2>
+      <h2 style={{ fontSize: 16 }}>첨부 파일 ({items.length})</h2>
       <input type="file" multiple onChange={onPick} disabled={busy} />
       {busy && <span style={{ marginLeft: 8, fontSize: 13 }}>업로드 중…</span>}
       {error && <p role="alert" style={{ color: "#c00", whiteSpace: "pre-wrap" }}>{error}</p>}
       <ul>
         {items.map((a) => (
           <li key={a.id} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <a href={`/api/committee/files/${a.id}`} target="_blank" rel="noreferrer">{a.name}</a>
+            <a href={`${apiBase}/files/${a.id}`} target="_blank" rel="noreferrer">{a.name}</a>
             <span style={{ fontSize: 12, color: "#888" }}>({Math.round(a.sizeBytes / 1024)} KB)</span>
             <button type="button" onClick={() => onDelete(a.id)} style={{ fontSize: 12 }}>삭제</button>
           </li>

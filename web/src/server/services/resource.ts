@@ -10,6 +10,7 @@ import {
   formatDate,
   type ResourceRow,
 } from "@/lib/resource";
+import { formatAuthor } from "@/lib/format";
 import type {
   ResourceFile,
   ResourceCategory,
@@ -119,13 +120,12 @@ export async function getResourcePost(id: string): Promise<ResourceDetail | null
     })
     .from(attachments)
     .where(eq(attachments.postId, id));
-  const name = r.authorName ?? "익명";
   return {
     id: r.id,
     category: r.category,
     title: r.title,
     sub: r.excerpt ?? "",
-    by: r.authorTitle ? `${name} ${r.authorTitle}` : name,
+    by: formatAuthor(r.authorName, r.authorTitle),
     date: formatDate(r.createdAt),
     downloads: r.viewCount,
     files: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })),
