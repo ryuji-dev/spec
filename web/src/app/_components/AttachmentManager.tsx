@@ -60,7 +60,7 @@ export default function AttachmentManager({ postId, initial, apiBase, policy }: 
       <ul>
         {items.map((a) => (
           <li key={a.id} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <a href={`${apiBase}/files/${a.id}`}>{a.name}</a>
+            <a href={`${apiBase}/files/${a.id}`} target="_blank" rel="noreferrer">{a.name}</a>
             <span style={{ fontSize: 12, color: "#888" }}>({Math.round(a.sizeBytes / 1024)} KB)</span>
             <button type="button" onClick={() => onDelete(a.id)} style={{ fontSize: 12 }}>삭제</button>
           </li>
