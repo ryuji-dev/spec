@@ -4,7 +4,8 @@ import { requireAdmin } from "@/server/auth/current-user";
 import { getCommitteePostForEdit } from "@/server/services/committee";
 import { updatePost, deletePost } from "@/server/actions/committee";
 import EditorForm from "../../EditorForm";
-import AttachmentManager from "../../AttachmentManager";
+import AttachmentManager from "@/app/_components/AttachmentManager";
+import { preCheck } from "@/lib/committee-upload";
 
 export default async function EditCommitteePostPage({
   params,
@@ -34,7 +35,14 @@ export default async function EditCommitteePostPage({
         }}
         submitLabel="수정 저장"
       />
-      <AttachmentManager postId={id} initial={post.attachments} />
+      <AttachmentManager
+        postId={id}
+        initial={post.attachments}
+        uploadUrl={(pid) => `/api/committee/${pid}/uploads`}
+        deleteUrl={(aid) => `/api/committee/attachments/${aid}`}
+        fileUrl={(aid) => `/api/committee/files/${aid}`}
+        preCheck={preCheck}
+      />
       <form action={remove} style={{ marginTop: 32 }}>
         <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>
           글 삭제

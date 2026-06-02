@@ -4,7 +4,8 @@ import { requireAdmin } from "@/server/auth/current-user";
 import { getResourcePostForEdit } from "@/server/services/resource";
 import { updateResource, deleteResource } from "@/server/actions/resource";
 import ResourceEditorForm from "../../ResourceEditorForm";
-import ResourceAttachmentManager from "../../ResourceAttachmentManager";
+import AttachmentManager from "@/app/_components/AttachmentManager";
+import { preCheck } from "@/lib/resource-upload";
 
 export default async function EditResourcePage({
   params,
@@ -28,7 +29,14 @@ export default async function EditResourcePage({
         initial={{ title: resource.title, category: resource.category ?? undefined, sub: resource.sub }}
         submitLabel="수정 저장"
       />
-      <ResourceAttachmentManager postId={id} initial={resource.attachments} />
+      <AttachmentManager
+        postId={id}
+        initial={resource.attachments}
+        uploadUrl={(pid) => `/api/resources/${pid}/uploads`}
+        deleteUrl={(aid) => `/api/resources/attachments/${aid}`}
+        fileUrl={(aid) => `/api/resources/files/${aid}`}
+        preCheck={preCheck}
+      />
       <form action={remove} style={{ marginTop: 32 }}>
         <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>자료 삭제</button>
       </form>
