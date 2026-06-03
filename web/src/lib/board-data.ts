@@ -38,7 +38,7 @@ export type BoardImageKind = "sunset" | "worship" | "congrats";
 export type BoardFeedKind = "story" | "prayer" | "question" | "discuss" | "news";
 
 export type HotThread = {
-  id: number;
+  id: string;
   cat: Exclude<BoardCategoryKo, "전체">;
   heat: number;
   title: string;
@@ -56,7 +56,7 @@ export type HotThread = {
 
 export const CM_HOT: ReadonlyArray<HotThread> = [
   {
-    id: 101,
+    id: "101",
     cat: "토론",
     heat: 92,
     title: "주일학교 출석 감소, 우리 교회만의 문제일까요?",
@@ -77,7 +77,7 @@ export const CM_HOT: ReadonlyArray<HotThread> = [
     },
   },
   {
-    id: 102,
+    id: "102",
     cat: "Q&A",
     heat: 78,
     title: "중고등부 큐티 교재, 요즘 뭐 쓰고 계신가요?",
@@ -100,7 +100,7 @@ export const CM_HOT: ReadonlyArray<HotThread> = [
 ];
 
 export type FeedPost = {
-  id: number;
+  id: string;
   cat: Exclude<BoardCategoryKo, "전체">;
   kind: BoardFeedKind;
   title: string;
@@ -120,7 +120,7 @@ export type FeedPost = {
 
 export const CM_FEED: ReadonlyArray<FeedPost> = [
   {
-    id: 1,
+    id: "1",
     cat: "나눔",
     kind: "story",
     title: "아이가 처음으로 “저도 기도해도 돼요?”라고 물었던 날",
@@ -137,7 +137,7 @@ export const CM_FEED: ReadonlyArray<FeedPost> = [
     isNew: true,
   },
   {
-    id: 2,
+    id: "2",
     cat: "기도",
     kind: "prayer",
     title: "봄학기 새가족 한 분 한 분을 위해 기도 부탁드립니다",
@@ -154,7 +154,7 @@ export const CM_FEED: ReadonlyArray<FeedPost> = [
     isNew: true,
   },
   {
-    id: 3,
+    id: "3",
     cat: "Q&A",
     kind: "question",
     title: "교사 헌신예배 — 어떤 형식이 좋을까요?",
@@ -170,7 +170,7 @@ export const CM_FEED: ReadonlyArray<FeedPost> = [
     isAnswered: true,
   },
   {
-    id: 4,
+    id: "4",
     cat: "소식",
     kind: "news",
     title: "서경교회 청년부 봄 맞이 워십나잇 — 4월 27일",
@@ -186,7 +186,7 @@ export const CM_FEED: ReadonlyArray<FeedPost> = [
     image: "worship",
   },
   {
-    id: 5,
+    id: "5",
     cat: "나눔",
     kind: "story",
     title: "“선생님은 왜 교회 다녀요?” — 8살의 질문 앞에서",
@@ -201,7 +201,7 @@ export const CM_FEED: ReadonlyArray<FeedPost> = [
     views: 567,
   },
   {
-    id: 6,
+    id: "6",
     cat: "토론",
     kind: "discuss",
     title: "주일학교 부서 통합 — 작은 교회의 경험을 듣고 싶습니다",
@@ -216,7 +216,7 @@ export const CM_FEED: ReadonlyArray<FeedPost> = [
     views: 712,
   },
   {
-    id: 7,
+    id: "7",
     cat: "Q&A",
     kind: "question",
     title: "아동부 절기 행사, 부모 참여형으로 바꾸신 분 계신가요?",
@@ -231,7 +231,7 @@ export const CM_FEED: ReadonlyArray<FeedPost> = [
     views: 498,
   },
   {
-    id: 8,
+    id: "8",
     cat: "소식",
     kind: "news",
     title: "제27회 성경고사 본선 진행 결과 — 우승: 강서동산교회",
@@ -247,7 +247,7 @@ export const CM_FEED: ReadonlyArray<FeedPost> = [
     image: "congrats",
   },
   {
-    id: 9,
+    id: "9",
     cat: "기도",
     kind: "prayer",
     title: "입원 중이신 한경수 목사님을 위해 함께 기도해주세요",
@@ -263,7 +263,7 @@ export const CM_FEED: ReadonlyArray<FeedPost> = [
     prayerCount: 287,
   },
   {
-    id: 10,
+    id: "10",
     cat: "나눔",
     kind: "story",
     title: "12년 만에 다시 만난 옛 제자가 청년부 리더가 되어 있었습니다",
