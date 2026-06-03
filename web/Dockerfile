@@ -34,6 +34,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# 운영 마이그레이션·시드 스크립트 + 마이그레이션 SQL (standalone에 미포함 → 별도 복사)
+COPY --from=builder /app/src/server/db/migrations ./migrations
+COPY --from=builder /app/scripts/migrate.mjs /app/scripts/seed-admin.mjs ./scripts/
+
 # 업로드 마운트 지점 (compose에서 named volume으로 덮어씀)
 RUN mkdir -p /app/uploads && chown nextjs:nodejs /app/uploads
 
