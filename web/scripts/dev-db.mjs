@@ -102,6 +102,45 @@ if (rExists.rows.length === 0) {
   console.log("[dev-db] 자료공유 글 이미 존재");
 }
 
+// member 유저 seed (없을 때만) — 자유게시판 작성자용
+const MEMBER_EMAIL = "member@seogyeong.kr";
+const mExists = await db.query(`select id from users where email=$1`, [MEMBER_EMAIL]);
+let memberId;
+if (mExists.rows.length === 0) {
+  const mhash = await argon2.hash("member1234");
+  const mr = await db.query(
+    `insert into users (email, password_hash, name, title, church, role) values ($1,$2,$3,$4,$5,'member') returning id`,
+    [MEMBER_EMAIL, mhash, "이수민", "전도사", "은혜로교회"],
+  );
+  memberId = mr.rows[0].id;
+  console.log(`[dev-db] member 시드: ${MEMBER_EMAIL} / member1234`);
+} else {
+  memberId = mExists.rows[0].id;
+  console.log(`[dev-db] member 이미 존재: ${MEMBER_EMAIL}`);
+}
+
+// 자유게시판 seed (없을 때만)
+const bExists = await db.query(`select 1 from posts where section='board' limit 1`);
+if (bExists.rows.length === 0) {
+  const bseed = [
+    ["나눔", "아이가 처음 “기도해도 돼요?”라고 물었던 날", memberId],
+    ["Q&A", "중고등부 큐티 교재, 요즘 뭐 쓰시나요?", memberId],
+    ["기도", "봄학기 새가족을 위해 기도 부탁드립니다", adminId],
+    ["토론", "주일학교 출석 감소, 우리 교회만의 문제일까요?", adminId],
+    ["소식", "청년부 봄 워십나잇 — 4월 27일", memberId],
+  ];
+  for (const [cat, title, author] of bseed) {
+    await db.query(
+      `insert into posts (section, category, title, excerpt, body, author_id)
+       values ('board', $1, $2, $3, $4, $5)`,
+      [cat, title, title + " (요약)", title + "\n\n(본문 예시)", author],
+    );
+  }
+  console.log(`[dev-db] 자유게시판 글 ${bseed.length}건 seed`);
+} else {
+  console.log("[dev-db] 자유게시판 글 이미 존재");
+}
+
 const server = new PGLiteSocketServer({ db, port: PORT, host: "127.0.0.1" });
 await server.start();
 console.log(`[dev-db] PGlite 서버 listening: postgres://127.0.0.1:${PORT}`);
