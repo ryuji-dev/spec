@@ -34,6 +34,22 @@ services:
         condition: service_healthy
     # 포트 비노출 — caddy를 통해서만 외부 접근
 
+  # 일회성 마이그레이션·초기 admin 시드. `docker compose run --rm migrate`로 실행.
+  # profiles로 일반 `up`에서는 기동하지 않음.
+  migrate:
+    build:
+      context: ./web
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://seogyeong:devpassword@postgres:5432/seogyeong}
+      MIGRATIONS_DIR: /app/migrations
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+    command: ["sh", "-c", "node scripts/migrate.mjs && node scripts/seed-admin.mjs"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles: ["migrate"]
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
