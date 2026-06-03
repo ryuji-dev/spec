@@ -15,7 +15,10 @@
     "committee:verify": "node scripts/verify-committee.mjs",
     "resource:verify": "node scripts/verify-resource.mjs",
     "uploads:verify": "node scripts/verify-uploads.mjs",
-    "dev:db": "node scripts/dev-db.mjs"
+    "dev:db": "node scripts/dev-db.mjs",
+    "migrate:prod": "node scripts/migrate.mjs",
+    "seed:admin": "node scripts/seed-admin.mjs",
+    "deploy:verify": "node scripts/verify-migrate.mjs"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.2",
