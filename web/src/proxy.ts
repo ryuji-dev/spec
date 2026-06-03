@@ -7,14 +7,20 @@ export async function proxy(request: NextRequest) {
   const token = request.cookies.get("session")?.value;
   const claims = token ? await verifySessionToken(token) : null;
 
-  if (!claims || claims.role !== "admin") {
+  const path = request.nextUrl.pathname;
+  // /admin: admin 역할 필요. /board: 로그인이면 역할 무관 허용.
+  const ok = path.startsWith("/admin")
+    ? claims?.role === "admin"
+    : claims != null; // /board (matcher로 한정)
+
+  if (!ok) {
     const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("next", request.nextUrl.pathname);
+    loginUrl.searchParams.set("next", path);
     return NextResponse.redirect(loginUrl);
   }
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/board/:path*"],
 };
