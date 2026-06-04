@@ -7,11 +7,13 @@ import { catTone } from "../catTone";
 type Props = {
   post: TrainingPost;
   palette: Palette;
+  onOpen?: () => void;
 };
 
-export default function PostListRow({ post, palette }: Props) {
+export default function PostListRow({ post, palette, onOpen }: Props) {
   return (
     <article
+      onClick={onOpen}
       style={{
         padding: "22px 4px",
         borderBottom: `1px solid ${palette.line}`,

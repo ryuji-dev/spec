@@ -1,29 +1,36 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import CatLabel from "@/app/_components/shared/CatLabel";
 import { PageHeroMobile } from "@/app/_components/PageHero";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
 import {
-  TR_BOARD,
-  TR_CATEGORIES,
   TR_PAST,
   TR_SCHEDULE,
   TR_SPEAKERS,
   TR_UPCOMING,
+  type TrainingPost,
+  type TrainingCategory,
 } from "@/lib/training-data";
 import CoverArt from "../shared/CoverArt";
 import { catTone } from "../catTone";
 
 const palette = FOREST_PALETTE;
 
-export default function TrainingMobile() {
+type Props = {
+  posts: TrainingPost[];
+  categories: TrainingCategory[];
+};
+
+export default function TrainingMobile({ posts, categories }: Props) {
+  const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
   const filtered =
     activeCat === 0
-      ? TR_BOARD
-      : TR_BOARD.filter((p) => p.cat === TR_CATEGORIES[activeCat].ko);
+      ? posts
+      : posts.filter((p) => p.cat === categories[activeCat].ko);
   const u = TR_UPCOMING;
   const pct = Math.round((u.registered / u.capacity) * 100);
 
@@ -676,7 +683,7 @@ export default function TrainingMobile() {
           <div
             style={{ display: "inline-flex", gap: 6, padding: "0 22px" }}
           >
-            {TR_CATEGORIES.map((c, i) => {
+            {categories.map((c, i) => {
               const active = activeCat === i;
               return (
                 <button
@@ -721,12 +728,14 @@ export default function TrainingMobile() {
           {filtered.slice(0, 1).map((p) => (
             <article
               key={p.id}
+              onClick={() => router.push(`/training/${p.id}`)}
               style={{
                 background: palette.surface,
                 border: `1px solid ${palette.line}`,
                 borderRadius: 12,
                 padding: "18px 18px 16px",
                 marginBottom: 8,
+                cursor: "pointer",
               }}
             >
               <div
@@ -819,6 +828,7 @@ export default function TrainingMobile() {
           {filtered.slice(1).map((p) => (
             <article
               key={p.id}
+              onClick={() => router.push(`/training/${p.id}`)}
               style={{
                 padding: "14px 0",
                 borderBottom: `1px solid ${palette.line}`,
