@@ -35,7 +35,7 @@ export type WebzineFeatured = {
 };
 
 export type WebzineArticle = {
-  id: number;
+  id: string;
   cat: string;
   tag: string;
   title: string;
@@ -86,7 +86,7 @@ export const WZ_FEATURED: WebzineFeatured = {
 
 export const WZ_ARTICLES: WebzineArticle[] = [
   {
-    id: 1,
+    id: "1",
     cat: "신학산책",
     tag: "THEOLOGY",
     title: "말씀을 가르친다는 것 — 칼뱅의 교사론 다시 읽기",
@@ -98,7 +98,7 @@ export const WZ_ARTICLES: WebzineArticle[] = [
     cover: "book",
   },
   {
-    id: 2,
+    id: "2",
     cat: "현장에서",
     tag: "FIELD",
     title: "시골 작은 교회의 주일학교, 무엇이 가능한가",
@@ -110,7 +110,7 @@ export const WZ_ARTICLES: WebzineArticle[] = [
     cover: "rural",
   },
   {
-    id: 3,
+    id: "3",
     cat: "북리뷰",
     tag: "REVIEW",
     title: "『가르치는 자의 영성』 — 파머의 오래된 질문",
@@ -121,7 +121,7 @@ export const WZ_ARTICLES: WebzineArticle[] = [
     cover: "book2",
   },
   {
-    id: 4,
+    id: "4",
     cat: "에세이",
     tag: "ESSAY",
     title: "아이의 한 마디가 나를 다시 세웁니다",
@@ -133,7 +133,7 @@ export const WZ_ARTICLES: WebzineArticle[] = [
     cover: "child",
   },
   {
-    id: 5,
+    id: "5",
     cat: "교회사",
     tag: "HISTORY",
     title: "한국교회 주일학교의 한 세기",
@@ -144,7 +144,7 @@ export const WZ_ARTICLES: WebzineArticle[] = [
     cover: "history",
   },
   {
-    id: 6,
+    id: "6",
     cat: "대담",
     tag: "DIALOGUE",
     title: "두 세대의 교사, 같은 자리에서 만나다",
