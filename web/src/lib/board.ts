@@ -44,6 +44,7 @@ export type BoardRow = {
   authorChurch: string | null;
   commentCount: number;
   likeCount: number;
+  likedByMe: boolean;
 };
 
 export function toFeedPostView(row: BoardRow, now: Date): FeedPost {
@@ -61,6 +62,7 @@ export function toFeedPostView(row: BoardRow, now: Date): FeedPost {
     date: formatDate(row.createdAt),
     comments: row.commentCount,
     likes: row.likeCount,
+    likedByMe: row.likedByMe,
     views: row.viewCount,
     isNew: now.getTime() - row.createdAt.getTime() < NEW_WINDOW_MS,
   };

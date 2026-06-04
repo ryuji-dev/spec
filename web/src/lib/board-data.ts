@@ -111,6 +111,7 @@ export type FeedPost = {
   date: string;
   comments: number;
   likes: number;
+  likedByMe?: boolean;
   views: number;
   image?: BoardImageKind;
   isNew?: boolean;
