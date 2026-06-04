@@ -27,9 +27,8 @@ export default async function WebzineArticlePage({
         ← 신학원웹진
       </Link>
       <p style={{ fontSize: 12, color: "#888", marginTop: 16 }}>
-        {article.tag} · {article.author}
-        {article.authorRole ? ` (${article.authorRole})` : ""} · {article.date} ·{" "}
-        {article.read} · 조회 {article.viewCount}
+        {article.tag} · {article.author} · {article.date} · {article.read} · 조회{" "}
+        {article.viewCount}
       </p>
       <h1 style={{ fontSize: 26, lineHeight: 1.3 }}>{article.title}</h1>
       {article.subtitle && (
