@@ -1,10 +1,11 @@
 "use client";
 
 import type { Palette } from "@/app/_components/shared/palette";
-import { BOARD_SORTS, CM_CATEGORIES, type BoardSort } from "@/lib/board-data";
+import { BOARD_SORTS, type BoardCategory, type BoardSort } from "@/lib/board-data";
 
 type Props = {
   palette: Palette;
+  categories: BoardCategory[];
   activeCat: number;
   setActiveCat: (i: number) => void;
   sort: BoardSort;
@@ -17,6 +18,7 @@ type Props = {
  */
 export default function CategoryStickyBar({
   palette,
+  categories,
   activeCat,
   setActiveCat,
   sort,
@@ -42,7 +44,7 @@ export default function CategoryStickyBar({
       }}
     >
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {CM_CATEGORIES.map((c, i) => {
+        {categories.map((c, i) => {
           const active = activeCat === i;
           return (
             <button

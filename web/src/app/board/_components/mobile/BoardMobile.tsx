@@ -1,24 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
   BOARD_SORTS,
   BOARD_STATS_MOBILE,
-  CM_CATEGORIES,
-  CM_FEED,
   CM_HOT,
   CM_VERSE,
+  type BoardCategory,
   type BoardSort,
+  type FeedPost,
 } from "@/lib/board-data";
 import CmAvatar from "../shared/CmAvatar";
 import CmCatChip from "../shared/CmCatChip";
 import HeatGauge from "../shared/HeatGauge";
 import FeedCover from "../shared/FeedCover";
 
-type Props = { deviceType?: "ios" | "android" };
+type Props = {
+  deviceType?: "ios" | "android";
+  posts: FeedPost[];
+  categories: BoardCategory[];
+};
 
 const palette = FOREST_PALETTE;
 
@@ -26,14 +31,19 @@ const palette = FOREST_PALETTE;
  * 자유게시판 모바일 — 디자인 원본 community.jsx 의 CommunityMobile 그대로.
  * 디바이스별 상단 패딩만 deviceType prop 으로 분기.
  */
-export default function BoardMobile({ deviceType = "ios" }: Props) {
+export default function BoardMobile({
+  deviceType = "ios",
+  posts,
+  categories,
+}: Props) {
+  const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
   const [sort, setSort] = useState<BoardSort>("recent");
 
   const filtered =
     activeCat === 0
-      ? CM_FEED
-      : CM_FEED.filter((p) => p.cat === CM_CATEGORIES[activeCat].ko);
+      ? posts
+      : posts.filter((p) => p.cat === categories[activeCat].ko);
 
   return (
     <div
@@ -376,7 +386,7 @@ export default function BoardMobile({ deviceType = "ios" }: Props) {
             scrollbarWidth: "none",
           }}
         >
-          {CM_CATEGORIES.map((c, i) => {
+          {categories.map((c, i) => {
             const active = activeCat === i;
             return (
               <button
@@ -663,6 +673,7 @@ export default function BoardMobile({ deviceType = "ios" }: Props) {
       {/* FAB */}
       <button
         type="button"
+        onClick={() => router.push("/board/new")}
         style={{
           position: "fixed",
           bottom: 110,
