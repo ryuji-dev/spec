@@ -15,6 +15,13 @@
       "when": 1780290551549,
       "tag": "0001_illegal_piledriver",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780560719198,
+      "tag": "0002_lowly_expediter",
+      "breakpoints": true
     }
   ]
 }

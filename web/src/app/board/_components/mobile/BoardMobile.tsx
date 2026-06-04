@@ -18,6 +18,7 @@ import CmAvatar from "../shared/CmAvatar";
 import CmCatChip from "../shared/CmCatChip";
 import HeatGauge from "../shared/HeatGauge";
 import FeedCover from "../shared/FeedCover";
+import LikeButton from "../LikeButton";
 
 type Props = {
   deviceType?: "ios" | "android";
@@ -609,23 +610,12 @@ export default function BoardMobile({
                     기도 {p.prayerCount}
                   </span>
                 ) : (
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                    }}
-                  >
-                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-                      <path
-                        d="M6 10 C6 10 1.5 7 1.5 4 a2.5 2.5 0 0 1 4.5 -1.5 a2.5 2.5 0 0 1 4.5 1.5 C10.5 7 6 10 6 10 Z"
-                        stroke="currentColor"
-                        strokeWidth="1.2"
-                        fill="none"
-                      />
-                    </svg>
-                    {p.likes}
-                  </span>
+                  <LikeButton
+                    postId={p.id}
+                    initialLiked={p.likedByMe ?? false}
+                    initialCount={p.likes}
+                    palette={palette}
+                  />
                 )}
                 <span
                   style={{

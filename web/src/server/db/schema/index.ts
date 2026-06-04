@@ -3,3 +3,4 @@ export * from "./users";
 export * from "./posts";
 export * from "./attachments";
 export * from "./comments";
+export * from "./post-likes";

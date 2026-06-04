@@ -1,7 +1,8 @@
 import "server-only";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/server/db";
-import { posts, comments, users } from "@/server/db/schema";
+import { posts, comments, users, postLikes } from "@/server/db/schema";
+import { getCurrentUser } from "@/server/auth/current-user";
 import { formatDate, formatAuthor } from "@/lib/format";
 import {
   toFeedPostView,
@@ -22,6 +23,7 @@ export type BoardListData = {
 export async function getBoardListData(): Promise<BoardListData> {
   const now = new Date();
   const db = getDb();
+  const user = await getCurrentUser();
   const rows = await db
     .select({
       id: posts.id,
@@ -33,12 +35,16 @@ export async function getBoardListData(): Promise<BoardListData> {
       authorName: users.name,
       authorChurch: users.church,
       commentCount: sql<number>`(select count(*)::int from ${comments} c where c.post_id = ${posts.id})`,
+      likeCount: sql<number>`(select count(*)::int from ${postLikes} pl where pl.post_id = ${posts.id})`,
+      likedByMe: user
+        ? sql<boolean>`exists(select 1 from ${postLikes} pl where pl.post_id = ${posts.id} and pl.user_id = ${user.id})`
+        : sql<boolean>`false`,
     })
     .from(posts)
     .leftJoin(users, eq(users.id, posts.authorId))
     .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)))
     .orderBy(desc(posts.createdAt));
-  const list = rows.map((r) => toFeedPostView({ ...r, likeCount: 0 } as BoardRow, now));
+  const list = rows.map((r) => toFeedPostView(r as BoardRow, now));
 
   const counts = await db
     .select({ category: posts.category, n: sql<number>`count(*)::int` })
@@ -66,12 +72,14 @@ export type BoardDetail = {
   date: string;
   views: number;
   likes: number;
+  likedByMe: boolean;
   authorId: string | null;
   comments: { id: string; authorId: string | null; author: string; date: string; body: string }[];
 };
 
 export async function getBoardPost(id: string): Promise<BoardDetail | null> {
   const db = getDb();
+  const user = await getCurrentUser();
   const [r] = await db
     .select({
       id: posts.id,
@@ -102,6 +110,19 @@ export async function getBoardPost(id: string): Promise<BoardDetail | null> {
     .leftJoin(users, eq(users.id, comments.authorId))
     .where(eq(comments.postId, id))
     .orderBy(comments.createdAt);
+  const [{ likes }] = await db
+    .select({ likes: sql<number>`count(*)::int` })
+    .from(postLikes)
+    .where(eq(postLikes.postId, id));
+  const likedByMe = user
+    ? (
+        await db
+          .select({ id: postLikes.id })
+          .from(postLikes)
+          .where(and(eq(postLikes.postId, id), eq(postLikes.userId, user.id)))
+          .limit(1)
+      ).length > 0
+    : false;
   return {
     id: r.id,
     category: r.category,
@@ -112,7 +133,8 @@ export async function getBoardPost(id: string): Promise<BoardDetail | null> {
     church: r.authorChurch ?? "",
     date: formatDate(r.createdAt),
     views: r.viewCount,
-    likes: 0,
+    likes,
+    likedByMe,
     authorId: r.authorId,
     comments: cms.map((c) => ({
       id: c.id,
