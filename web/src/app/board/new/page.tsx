@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/server/auth/current-user";
+import { createPost } from "@/server/actions/board";
 import BoardEditorForm from "./BoardEditorForm";
 
 // 회원 글 작성 화면. proxy가 /board 를 회원 가드하지만 진입부에서 세션 재확인(이중 방어).
@@ -22,7 +23,7 @@ export default async function BoardNewPage({
       <h1 style={{ fontSize: 24, lineHeight: 1.3, margin: "16px 0 20px" }}>
         글 작성
       </h1>
-      <BoardEditorForm defaultCategory={cat} />
+      <BoardEditorForm action={createPost} defaultCategory={cat} />
     </main>
   );
 }
