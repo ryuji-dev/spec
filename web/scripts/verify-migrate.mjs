@@ -5,12 +5,15 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { readdirSync } from "node:fs";
 import { PGlite } from "@electric-sql/pglite";
 import { PGLiteSocketServer } from "@electric-sql/pglite-socket";
 import postgres from "postgres";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const migrationsDir = join(here, "../src/server/db/migrations");
+// 기대 적용 건수는 migrations/*.sql 개수에서 동적으로 — 마이그레이션 추가 시 자동 반영(하드코딩 금지).
+const migrationCount = readdirSync(migrationsDir).filter((f) => f.endsWith(".sql")).length;
 const PORT = 5434;
 const URL = `postgres://postgres:postgres@127.0.0.1:${PORT}/postgres`;
 
@@ -46,7 +49,10 @@ const server = new PGLiteSocketServer({ db, port: PORT, host: "127.0.0.1" });
 await server.start();
 try {
   const out1 = await runScript("migrate.mjs");
-  assert(/2건 적용 완료/.test(out1), "migrate 최초 실행 2건 적용");
+  assert(
+    new RegExp(`${migrationCount}건 적용 완료`).test(out1),
+    `migrate 최초 실행 ${migrationCount}건 적용`,
+  );
 
   const tables = await query((sql) =>
     sql`select table_name from information_schema.tables where table_schema='public' order by table_name`.then(
@@ -54,7 +60,9 @@ try {
     ),
   );
   assert(
-    ["attachments", "comments", "posts", "users", "__migrations"].every((t) => tables.includes(t)),
+    ["attachments", "comments", "posts", "users", "post_likes", "faculty", "__migrations"].every(
+      (t) => tables.includes(t),
+    ),
     `핵심 테이블 + __migrations 생성 (${tables.join(", ")})`,
   );
 
