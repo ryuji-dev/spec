@@ -23,6 +23,7 @@ export type WebzineArticleCoverType =
 export type WebzineFeaturedCoverType = "wilderness";
 
 export type WebzineFeatured = {
+  id: string;
   issue: string;
   category: string;
   title: string;
@@ -72,6 +73,7 @@ export const WEBZINE_PALETTE: WebzinePalette = {
 };
 
 export const WZ_FEATURED: WebzineFeatured = {
+  id: "featured",
   issue: "Vol. 24 · 2026 봄호",
   category: "COVER ESSAY",
   title: "광야로 보내심을\n다시 묵상하며",

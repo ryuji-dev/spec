@@ -89,6 +89,7 @@ export function toWebzineArticleView(row: WebzineRow): WebzineArticle {
 export function toWebzineFeaturedView(row: WebzineRow): WebzineFeatured {
   const cat = resolveCategory(row.category);
   return {
+    id: row.id,
     issue: CURRENT_ISSUE,
     category: WZ_CATEGORY_EN[cat],
     title: row.title,
