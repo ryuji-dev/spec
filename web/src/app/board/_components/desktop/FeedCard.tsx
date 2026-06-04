@@ -3,6 +3,7 @@ import type { FeedPost } from "@/lib/board-data";
 import CmAvatar from "../shared/CmAvatar";
 import CmCatChip from "../shared/CmCatChip";
 import FeedCover from "../shared/FeedCover";
+import LikeButton from "../LikeButton";
 
 type Props = {
   post: FeedPost;
@@ -197,17 +198,12 @@ export default function FeedCard({ post, palette, onOpen }: Props) {
                 기도 {post.prayerCount}
               </span>
             ) : (
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-                  <path
-                    d="M6 10 C6 10 1.5 7 1.5 4 a2.5 2.5 0 0 1 4.5 -1.5 a2.5 2.5 0 0 1 4.5 1.5 C10.5 7 6 10 6 10 Z"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                    fill="none"
-                  />
-                </svg>
-                {post.likes}
-              </span>
+              <LikeButton
+                postId={post.id}
+                initialLiked={post.likedByMe ?? false}
+                initialCount={post.likes}
+                palette={palette}
+              />
             )}
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
               <svg width="11" height="11" viewBox="0 0 12 12" fill="none">

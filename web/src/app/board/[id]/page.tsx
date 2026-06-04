@@ -5,6 +5,8 @@ import { getCurrentUser } from "@/server/auth/current-user";
 import { deletePost } from "@/server/actions/board";
 import { deleteComment } from "@/server/actions/comments";
 import CommentForm from "@/app/committee/_components/CommentForm";
+import LikeButton from "@/app/board/_components/LikeButton";
+import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 
 // 최소 기능 상세 화면. 디자인 폴리시는 추후 Claude Design 핸드오프로 교체.
 export default async function BoardPostPage({ params }: { params: Promise<{ id: string }> }) {
@@ -23,6 +25,14 @@ export default async function BoardPostPage({ params }: { params: Promise<{ id: 
         {post.category} · {post.author}{post.church ? ` · ${post.church}` : ""} · {post.date} · 조회 {post.views}
       </p>
       <h1 style={{ fontSize: 24, lineHeight: 1.3 }}>{post.title}</h1>
+      <div style={{ marginTop: 8, fontSize: 13, color: "#444" }}>
+        <LikeButton
+          postId={id}
+          initialLiked={post.likedByMe}
+          initialCount={post.likes}
+          palette={FOREST_PALETTE}
+        />
+      </div>
       {canEdit && (
         <div style={{ display: "flex", gap: 12, fontSize: 13, marginTop: 4 }}>
           <Link href={`/board/${id}/edit`} style={{ color: "#06c" }}>수정</Link>
