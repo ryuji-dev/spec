@@ -12,6 +12,7 @@ import { getCurrentUser } from "@/server/auth/current-user";
 const SECTION_PATH: Partial<Record<string, string>> = {
   committee: "/committee",
   board: "/board",
+  training: "/training",
 };
 
 const bodySchema = z
