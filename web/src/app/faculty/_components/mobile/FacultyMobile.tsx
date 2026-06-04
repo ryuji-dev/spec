@@ -4,11 +4,11 @@ import { useState } from "react";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
-  FACULTY_COVER,
-  FACULTY_DEPTS,
-  FACULTY_MEMBERS,
   FACULTY_QUOTES,
   type FacultyDept,
+  type FacultyCover,
+  type FacultyMember,
+  type FacultyDeptItem,
 } from "@/lib/faculty-data";
 import type { DeviceType } from "@/lib/device";
 import { deptColor } from "../deptTone";
@@ -18,6 +18,9 @@ const palette = FOREST_PALETTE;
 
 type Props = {
   deviceType: DeviceType;
+  cover: FacultyCover | null;
+  members: FacultyMember[];
+  depts: FacultyDeptItem[];
 };
 
 const BOTTOM_TABS: ReadonlyArray<{ ko: string; en: string; active: boolean }> = [
@@ -33,13 +36,13 @@ const BOTTOM_TABS: ReadonlyArray<{ ko: string; en: string; active: boolean }> = 
  * 모바일 bottom tab 은 디자인 원본이 자체 변형(점 인디케이터 + ko/en 듀얼 라벨)을
  * 사용하므로 글로벌 BottomTabBar 재사용 대신 인라인으로 보존.
  */
-export default function FacultyMobile({ deviceType }: Props) {
+export default function FacultyMobile({ deviceType, cover, members, depts }: Props) {
   const [activeDept, setActiveDept] = useState<FacultyDept>("all");
 
   const filtered =
     activeDept === "all"
-      ? FACULTY_MEMBERS
-      : FACULTY_MEMBERS.filter((p) => p.dept === activeDept);
+      ? members
+      : members.filter((p) => p.dept === activeDept);
 
   return (
     <div
@@ -152,6 +155,7 @@ export default function FacultyMobile({ deviceType }: Props) {
       />
 
       {/* Cover Story 모바일 */}
+      {cover && (
       <section style={{ padding: "24px 20px", background: palette.surface }}>
         <div style={{ position: "relative" }}>
           <div
@@ -177,7 +181,7 @@ export default function FacultyMobile({ deviceType }: Props) {
             <FacultyPortrait
               tone="forest"
               palette={palette}
-              init={FACULTY_COVER.init}
+              init={cover.init}
             />
           </div>
           <div
@@ -209,7 +213,7 @@ export default function FacultyMobile({ deviceType }: Props) {
               marginBottom: 8,
             }}
           >
-            {FACULTY_COVER.en}
+            {cover.en}
           </div>
           <h2
             style={{
@@ -223,7 +227,7 @@ export default function FacultyMobile({ deviceType }: Props) {
               color: palette.ink,
             }}
           >
-            {FACULTY_COVER.name}
+            {cover.name}
           </h2>
           <div
             style={{
@@ -233,7 +237,7 @@ export default function FacultyMobile({ deviceType }: Props) {
               letterSpacing: "-0.01em",
             }}
           >
-            {FACULTY_COVER.title} · {FACULTY_COVER.yearsKo}
+            {cover.title} · {cover.yearsKo}
           </div>
           <blockquote
             style={{
@@ -248,10 +252,11 @@ export default function FacultyMobile({ deviceType }: Props) {
               color: palette.ink,
             }}
           >
-            “{FACULTY_COVER.quote}”
+            “{cover.quote}”
           </blockquote>
         </div>
       </section>
+      )}
 
       {/* 인용 스트립 */}
       <section
@@ -380,7 +385,7 @@ export default function FacultyMobile({ deviceType }: Props) {
             scrollbarWidth: "none",
           }}
         >
-          {FACULTY_DEPTS.map((d) => {
+          {depts.map((d) => {
             const active = activeDept === d.id;
             return (
               <button
@@ -431,7 +436,7 @@ export default function FacultyMobile({ deviceType }: Props) {
       >
         {filtered.map((p) => {
           const accent = deptColor(p.dept, palette);
-          const deptEn = FACULTY_DEPTS.find((d) => d.id === p.dept)?.en ?? "";
+          const deptEn = depts.find((d) => d.id === p.dept)?.en ?? "";
           return (
             <article
               key={p.id}

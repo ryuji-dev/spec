@@ -1,9 +1,9 @@
 import type { Palette } from "@/app/_components/shared/palette";
 import { PageHeroDesktop } from "@/app/_components/PageHero";
-import { FACULTY_COVER } from "@/lib/faculty-data";
+import type { FacultyCover } from "@/lib/faculty-data";
 import FacultyPortrait from "../shared/FacultyPortrait";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; cover: FacultyCover | null };
 
 const VOL_STATS = [
   { k: "1968", l: "신학원 설립" },
@@ -13,7 +13,7 @@ const VOL_STATS = [
 
 const MAST_LABELS = ["커버 스토리", "학장 인터뷰", "2026 봄학기"];
 
-export default function FeaturedHero({ palette }: Props) {
+export default function FeaturedHero({ palette, cover }: Props) {
   return (
     <>
       <PageHeroDesktop
@@ -96,7 +96,8 @@ export default function FeaturedHero({ palette }: Props) {
         </div>
       </section>
 
-      {/* 이번 호의 교수 — 커버 스토리 섹션 */}
+      {/* 이번 호의 교수 — 커버 스토리 섹션 (커버 교수가 있을 때만) */}
+      {cover && (
       <section
         style={{
           padding: "40px 80px 56px",
@@ -189,7 +190,7 @@ export default function FeaturedHero({ palette }: Props) {
             <FacultyPortrait
               tone="forest"
               palette={palette}
-              init={FACULTY_COVER.init}
+              init={cover.init}
             />
           </div>
           <div
@@ -207,7 +208,7 @@ export default function FeaturedHero({ palette }: Props) {
               fontFamily: "Inter, system-ui",
             }}
           >
-            {FACULTY_COVER.tag}
+            {cover.tag}
           </div>
         </div>
 
@@ -222,7 +223,7 @@ export default function FeaturedHero({ palette }: Props) {
               marginBottom: 18,
             }}
           >
-            {FACULTY_COVER.en}
+            {cover.en}
           </div>
 
           <h2
@@ -237,7 +238,7 @@ export default function FeaturedHero({ palette }: Props) {
               color: palette.ink,
             }}
           >
-            {FACULTY_COVER.name}
+            {cover.name}
           </h2>
           <div
             style={{
@@ -248,7 +249,7 @@ export default function FeaturedHero({ palette }: Props) {
               marginBottom: 32,
             }}
           >
-            {FACULTY_COVER.title} · {FACULTY_COVER.yearsKo}
+            {cover.title} · {cover.yearsKo}
           </div>
 
           <blockquote
@@ -272,7 +273,7 @@ export default function FeaturedHero({ palette }: Props) {
               }}
             >
               <em style={{ fontStyle: "italic" }}>“</em>
-              {FACULTY_COVER.quote}
+              {cover.quote}
               <em style={{ fontStyle: "italic" }}>”</em>
             </div>
           </blockquote>
@@ -289,7 +290,7 @@ export default function FeaturedHero({ palette }: Props) {
               letterSpacing: "-0.005em",
             }}
           >
-            {FACULTY_COVER.about}
+            {cover.about}
           </p>
 
           <div
@@ -304,7 +305,7 @@ export default function FeaturedHero({ palette }: Props) {
               marginBottom: 18,
             }}
           >
-            {FACULTY_COVER.stats.map((s, i) => (
+            {cover.stats.map((s, i) => (
               <div
                 key={s.l}
                 style={{
@@ -352,7 +353,7 @@ export default function FeaturedHero({ palette }: Props) {
             NOW TEACHING
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {FACULTY_COVER.current.map((c) => (
+            {cover.current.map((c) => (
               <span
                 key={c}
                 style={{
@@ -374,6 +375,7 @@ export default function FeaturedHero({ palette }: Props) {
         </div>
       </div>
       </section>
+      )}
     </>
   );
 }
