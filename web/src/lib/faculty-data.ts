@@ -65,7 +65,7 @@ export const FACULTY_COVER: FacultyCover = {
 };
 
 export type FacultyMember = {
-  id: number;
+  id: string;
   dept: Exclude<FacultyDept, "all">;
   name: string;
   title: string;
@@ -84,7 +84,7 @@ export type FacultyMember = {
 
 export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
   {
-    id: 1,
+    id: "1",
     dept: "ot",
     name: "문성재",
     title: "구약학 교수",
@@ -101,7 +101,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "월·수 14:00–17:00",
   },
   {
-    id: 2,
+    id: "2",
     dept: "nt",
     name: "한도윤",
     title: "신약학 교수",
@@ -118,7 +118,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "화·목 10:00–13:00",
   },
   {
-    id: 3,
+    id: "3",
     dept: "pt",
     name: "정아라",
     title: "실천신학 부교수",
@@ -135,7 +135,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "월·금 09:00–12:00",
   },
   {
-    id: 4,
+    id: "4",
     dept: "st",
     name: "윤주환",
     title: "조직신학 교수",
@@ -152,7 +152,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "수·금 14:00–17:00",
   },
   {
-    id: 5,
+    id: "5",
     dept: "ch",
     name: "이혜성",
     title: "교회사 부교수",
@@ -169,7 +169,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "화·목 13:00–16:00",
   },
   {
-    id: 6,
+    id: "6",
     dept: "pt",
     name: "김찬우",
     title: "실천신학 교수",
@@ -186,7 +186,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "월·수 10:00–12:00",
   },
   {
-    id: 7,
+    id: "7",
     dept: "nt",
     name: "박지수",
     title: "신약학 부교수",
@@ -203,7 +203,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "화·목 14:00–17:00",
   },
   {
-    id: 8,
+    id: "8",
     dept: "ot",
     name: "오나래",
     title: "구약학 부교수",
@@ -220,7 +220,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "월·수 09:00–12:00",
   },
   {
-    id: 9,
+    id: "9",
     dept: "st",
     name: "한태경",
     title: "조직신학 부교수",
@@ -237,7 +237,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "화·금 10:00–13:00",
   },
   {
-    id: 10,
+    id: "10",
     dept: "mn",
     name: "정현우",
     title: "선교학 교수",
@@ -254,7 +254,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "수·금 13:00–16:00",
   },
   {
-    id: 11,
+    id: "11",
     dept: "pt",
     name: "윤소은",
     title: "기독교교육 부교수",
@@ -271,7 +271,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "월·목 14:00–17:00",
   },
   {
-    id: 12,
+    id: "12",
     dept: "ch",
     name: "박정근",
     title: "교회사 교수",
@@ -288,7 +288,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "화·목 10:00–12:00",
   },
   {
-    id: 13,
+    id: "13",
     dept: "ot",
     name: "김유리",
     title: "구약학 조교수",
@@ -305,7 +305,7 @@ export const FACULTY_MEMBERS: ReadonlyArray<FacultyMember> = [
     hours: "수·금 09:00–12:00",
   },
   {
-    id: 14,
+    id: "14",
     dept: "nt",
     name: "서한결",
     title: "신약학 조교수",
