@@ -198,6 +198,38 @@ if (wExists.rows.length === 0) {
   console.log("[dev-db] 신학원웹진 글 이미 존재");
 }
 
+// 신학원교수 seed (없을 때만) — 커버 교수 1명(isCover) + 부서별 교수 6명.
+const fExists = await db.query(`select 1 from faculty limit 1`);
+if (fExists.rows.length === 0) {
+  // [dept, name, title, en, degree, tone, field, teaches[], quote, years, papers, office, hours, isCover, about, sortOrder]
+  const fseed = [
+    ["st", "강민준", "학장 / 조직신학 교수", "KANG, MIN-JUN · TH.D", "Th.D · Universität Heidelberg", "pine", "조직신학·교회론",
+      ["교회론과 공동체", "성령과 교회", "신학원 모더레이션"],
+      "신학은 교회의 삶을 향해 열려 있어야 합니다. 강의실의 텍스트가 한 가정의 식탁에 닿을 때까지.", 24, 11, "본관 401호", "수 14:00–17:00",
+      true, "하이델베르크 대학에서 칼 바르트 후기 신학으로 박사 학위를 받았다. 노회 신학원 학장으로 봉사한 지 8년째이며, 매학기 두 강좌를 직접 강의한다.", 0],
+    ["ot", "문성재", "구약학 교수", "MOON, SEONG-JAE", "Ph.D · Princeton Theological Seminary", "forest", "예언서·시편 신학",
+      ["예언서 강해", "시편의 신학", "히브리어 강독 II"], "본문이 입을 다물 때까지 끈질기게 듣는 일.", 14, 23, "본관 207호", "월·수 14:00–17:00", false, null, 1],
+    ["nt", "한도윤", "신약학 교수", "HAN, DO-YOON", "D.Phil · University of Oxford", "olive", "바울서신·역사적 예수",
+      ["로마서 강해", "예수의 비유", "헬라어 강독 I"], "바울이 빌립보에 보낸 안부가 오늘 우리에게도 같은 무게로 도착합니다.", 18, 31, "본관 312호", "화·목 10:00–13:00", false, null, 2],
+    ["pt", "정아라", "실천신학 부교수", "JUNG, A-RA", "Ph.D · Fuller Theological Seminary", "sage", "예배학·기독교교육",
+      ["예배학 개론", "주일학교 커리큘럼 설계", "청년 사역의 신학"], "예배는 텍스트가 아니라 시간 속에 짜이는 옷감입니다.", 11, 18, "교육관 105호", "월·금 09:00–12:00", false, null, 3],
+    ["ch", "이혜성", "교회사 부교수", "LEE, HYE-SUNG", "Ph.D · University of Edinburgh", "forest", "한국교회사·종교개혁사",
+      ["한국교회사", "종교개혁사", "청교도 영성"], "잊혀진 이름들 사이에서 오늘의 길이 자라납니다.", 9, 14, "본관 215호", "화·목 13:00–16:00", false, null, 4],
+    ["mn", "정현우", "선교학 교수", "JUNG, HYUN-WOO", "Ph.D · Trinity Evangelical Divinity School", "forest", "디아스포라 선교·문화신학",
+      ["선교신학 개론", "디아스포라와 교회", "비교종교론"], "복음은 언제나 길 위에서 자랐습니다. 정착이 아닌 보냄의 신학.", 19, 27, "국제관 202호", "수·금 13:00–16:00", false, null, 5],
+  ];
+  for (const [dept, name, title, en, degree, tone, field, teaches, quote, years, papers, office, hours, isCover, about, sortOrder] of fseed) {
+    await db.query(
+      `insert into faculty (dept, name, title, en, degree, tone, field, teaches, quote, years, papers, office, hours, is_cover, about, sort_order)
+       values ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10,$11,$12,$13,$14,$15,$16)`,
+      [dept, name, title, en, degree, tone, field, JSON.stringify(teaches), quote, years, papers, office, hours, isCover, about, sortOrder],
+    );
+  }
+  console.log(`[dev-db] 신학원교수 ${fseed.length}명 seed`);
+} else {
+  console.log("[dev-db] 신학원교수 이미 존재");
+}
+
 const server = new PGLiteSocketServer({ db, port: PORT, host: "127.0.0.1" });
 await server.start();
 console.log(`[dev-db] PGlite 서버 listening: postgres://127.0.0.1:${PORT}`);
