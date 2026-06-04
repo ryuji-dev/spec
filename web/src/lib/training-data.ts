@@ -155,7 +155,7 @@ export const TR_CATEGORIES: ReadonlyArray<TrainingCategory> = [
 ];
 
 export type TrainingPost = {
-  id: number;
+  id: string;
   cat: TrainingCategoryKo;
   catEn: TrainingCategoryEn;
   title: string;
@@ -171,7 +171,7 @@ export type TrainingPost = {
 
 export const TR_BOARD: ReadonlyArray<TrainingPost> = [
   {
-    id: 11,
+    id: "11",
     cat: "강의자료",
     catEn: "MATERIALS",
     title: "2025 가을 수련회 — 이정훈 교수 강의안 PDF (3편 일괄)",
@@ -186,7 +186,7 @@ export const TR_BOARD: ReadonlyArray<TrainingPost> = [
     isNew: true,
   },
   {
-    id: 12,
+    id: "12",
     cat: "신청",
     catEn: "OPEN",
     title: "2026 봄 수련회 신청 — 변경/취소 절차 안내",
@@ -201,7 +201,7 @@ export const TR_BOARD: ReadonlyArray<TrainingPost> = [
     isNew: true,
   },
   {
-    id: 13,
+    id: "13",
     cat: "후기",
     catEn: "REVIEW",
     title: "광야 한복판에서, 다시 일어설 힘을 받다",
@@ -214,7 +214,7 @@ export const TR_BOARD: ReadonlyArray<TrainingPost> = [
     comments: 24,
   },
   {
-    id: 14,
+    id: "14",
     cat: "Q&A",
     catEn: "QNA",
     title: "봄 수련회 — 가족 동반(아이 포함) 가능한가요?",
@@ -227,7 +227,7 @@ export const TR_BOARD: ReadonlyArray<TrainingPost> = [
     comments: 6,
   },
   {
-    id: 15,
+    id: "15",
     cat: "강의자료",
     catEn: "MATERIALS",
     title: "2025 봄 수련회 — 박세영 목사 설교 영상 (4편)",
@@ -241,7 +241,7 @@ export const TR_BOARD: ReadonlyArray<TrainingPost> = [
     attach: 4,
   },
   {
-    id: 16,
+    id: "16",
     cat: "후기",
     catEn: "REVIEW",
     title: "40대 후반의 목사로 다시 듣게 된 ‘부르심’",
@@ -253,7 +253,7 @@ export const TR_BOARD: ReadonlyArray<TrainingPost> = [
     comments: 31,
   },
   {
-    id: 17,
+    id: "17",
     cat: "Q&A",
     catEn: "QNA",
     title: "단체 차량 운행 — 서울역 픽업 가능 여부",
