@@ -1,6 +1,6 @@
 "use server";
 // 댓글 작성/삭제. 작성은 로그인 회원(admin·member), 삭제는 작성자 본인 또는 admin.
-// 상세 페이지가 있는 섹션(committee·board)에서만 댓글을 지원하며, 섹션별 경로로 redirect.
+// 상세 페이지가 있는 섹션(committee·board·training)에서만 댓글을 지원하며, 섹션별 경로로 redirect.
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { z } from "zod";

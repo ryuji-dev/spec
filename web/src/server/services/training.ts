@@ -17,8 +17,6 @@ import type {
 
 const SECTION = "training" as const;
 
-type PopularTraining = { id: string; title: string; views: number };
-
 // 목록 행 공통 SELECT (작성자 조인 + 댓글/첨부 카운트 서브쿼리)
 function baseRows() {
   const db = getDb();
@@ -45,7 +43,6 @@ export type TrainingListData = {
   pinned: TrainingPost | null;
   posts: TrainingPost[];
   categories: TrainingCategory[];
-  popular: PopularTraining[];
 };
 
 export async function getTrainingListData(): Promise<TrainingListData> {
@@ -77,20 +74,7 @@ export async function getTrainingListData(): Promise<TrainingListData> {
     })),
   ];
 
-  // 인기글 — 조회수 상위 5
-  const pop = await getDb()
-    .select({ id: posts.id, title: posts.title, views: posts.viewCount })
-    .from(posts)
-    .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .orderBy(desc(posts.viewCount))
-    .limit(5);
-  const popular: PopularTraining[] = pop.map((p) => ({
-    id: p.id,
-    title: p.title,
-    views: p.views,
-  }));
-
-  return { pinned, posts: list, categories, popular };
+  return { pinned, posts: list, categories };
 }
 
 export type TrainingDetail = {
