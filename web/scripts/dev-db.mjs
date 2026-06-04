@@ -173,6 +173,31 @@ if (tExists.rows.length === 0) {
   console.log("[dev-db] 교역자수련회 글 이미 존재");
 }
 
+// 신학원웹진 seed (없을 때만) — admin 발행. 표지 에세이 1편(isPinned) + 카테고리별 기사.
+const wExists = await db.query(`select 1 from posts where section='webzine' limit 1`);
+if (wExists.rows.length === 0) {
+  const longBody =
+    "광야로 보내심을 다시 묵상하며, 교사의 자리를 지탱하는 것이 무엇인지 돌아봅니다.\n\n".repeat(20);
+  const wseed = [
+    ["신학산책", "말씀을 가르친다는 것 — 칼뱅의 교사론 다시 읽기", "제네바의 작은 강의실에서 시작된 가르침의 신학.", true],
+    ["현장에서", "시골 작은 교회의 주일학교, 무엇이 가능한가", "학생 일곱 명, 교사 두 명. 그 자리의 작은 사건들.", false],
+    ["북리뷰", "『가르치는 자의 영성』 — 파머의 오래된 질문", "“우리는 누구인가”가 어떻게 가르침의 본질이 되는가.", false],
+    ["에세이", "아이의 한 마디가 나를 다시 세웁니다", "교사로 십이 년, 한 아이의 짧은 기도가 가르쳐 준 것.", false],
+    ["교회사", "한국교회 주일학교의 한 세기", "1907년 평양에서 시작된 작은 모임이 오늘에 이르기까지.", false],
+    ["대담", "두 세대의 교사, 같은 자리에서 만나다", "삼십 년 전 교사였던 어머니와 오늘의 교사 딸이 마주 앉았다.", false],
+  ];
+  for (const [cat, title, excerpt, pinned] of wseed) {
+    await db.query(
+      `insert into posts (section, category, title, excerpt, body, author_id, is_pinned)
+       values ('webzine', $1, $2, $3, $4, $5, $6)`,
+      [cat, title, excerpt, longBody, adminId, pinned],
+    );
+  }
+  console.log(`[dev-db] 신학원웹진 글 ${wseed.length}건 seed`);
+} else {
+  console.log("[dev-db] 신학원웹진 글 이미 존재");
+}
+
 const server = new PGLiteSocketServer({ db, port: PORT, host: "127.0.0.1" });
 await server.start();
 console.log(`[dev-db] PGlite 서버 listening: postgres://127.0.0.1:${PORT}`);
