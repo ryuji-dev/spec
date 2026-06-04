@@ -1,17 +1,27 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { PageHeroDesktop } from "@/app/_components/PageHero";
 import {
-  WZ_ARTICLES,
   WZ_BACK_ISSUES,
-  WZ_CATEGORIES,
-  WZ_FEATURED,
   type WebzinePalette,
+  type WebzineFeatured,
+  type WebzineArticle,
+  type WebzineCategory,
 } from "@/lib/webzine-data";
+import { CURRENT_ISSUE } from "@/lib/webzine";
 import CoverArt from "../illustrations/CoverArt";
 import CoverWilderness from "../illustrations/CoverWilderness";
 
-type Props = { palette: WebzinePalette };
+type Props = {
+  palette: WebzinePalette;
+  featured: WebzineFeatured | null;
+  articles: WebzineArticle[];
+  categories: WebzineCategory[];
+};
 
-export default function WebzineDesktop({ palette }: Props) {
+export default function WebzineDesktop({ palette, featured, articles, categories }: Props) {
+  const router = useRouter();
   return (
     <div style={{ background: palette.bg, minHeight: "100%" }}>
       <PageHeroDesktop
@@ -31,7 +41,7 @@ export default function WebzineDesktop({ palette }: Props) {
                 fontWeight: 500,
               }}
             >
-              {WZ_FEATURED.issue}
+              {featured?.issue ?? CURRENT_ISSUE}
             </div>
             <div style={{ marginTop: 12, fontSize: 11, letterSpacing: "0.1em", opacity: 0.7 }}>
               EST. 2014 · 봄·여름·가을·겨울 · 연 4회
@@ -65,7 +75,7 @@ export default function WebzineDesktop({ palette }: Props) {
         </span>
         <div style={{ display: "flex", gap: 24, flex: 1 }}>
           <a style={{ fontSize: 13, color: palette.ink, fontWeight: 600, letterSpacing: "-0.02em", cursor: "pointer" }}>전체</a>
-          {WZ_CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <a
               key={c.en}
               style={{
@@ -92,128 +102,131 @@ export default function WebzineDesktop({ palette }: Props) {
       </div>
 
       {/* 커버 피처 */}
-      <div style={{ padding: "64px 80px 48px" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.05fr 1fr",
-            gap: 56,
-            alignItems: "stretch",
-          }}
-        >
-          <div style={{ height: 520, overflow: "hidden" }}>
-            <CoverWilderness palette={palette} />
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div
-              style={{
-                fontSize: 11,
-                letterSpacing: "0.28em",
-                color: palette.secondary,
-                fontWeight: 600,
-                fontFamily: "Inter",
-                marginBottom: 16,
-              }}
-            >
-              {WZ_FEATURED.category} · 이번 호 커버 에세이
+      {featured && (
+        <div style={{ padding: "64px 80px 48px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.05fr 1fr",
+              gap: 56,
+              alignItems: "stretch",
+            }}
+          >
+            <div style={{ height: 520, overflow: "hidden" }}>
+              <CoverWilderness palette={palette} />
             </div>
-            <h2
-              style={{
-                margin: 0,
-                fontFamily: '"Noto Serif KR", serif',
-                fontSize: 52,
-                fontWeight: 500,
-                color: palette.ink,
-                letterSpacing: "-0.025em",
-                lineHeight: 1.15,
-                whiteSpace: "pre-line",
-              }}
-            >
-              {WZ_FEATURED.title}
-            </h2>
-            <p
-              style={{
-                marginTop: 24,
-                fontSize: 16,
-                color: palette.muted,
-                fontFamily: '"Noto Sans KR"',
-                lineHeight: 1.7,
-                fontWeight: 300,
-                maxWidth: 480,
-              }}
-            >
-              {WZ_FEATURED.subtitle}
-            </p>
-            <div
-              style={{
-                marginTop: 36,
-                display: "flex",
-                alignItems: "center",
-                gap: 16,
-                paddingTop: 24,
-                borderTop: `1px solid ${palette.line}`,
-              }}
-            >
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
               <div
                 style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 999,
-                  background: palette.primary,
+                  fontSize: 11,
+                  letterSpacing: "0.28em",
+                  color: palette.secondary,
+                  fontWeight: 600,
+                  fontFamily: "Inter",
+                  marginBottom: 16,
+                }}
+              >
+                {featured.category} · 이번 호 커버 에세이
+              </div>
+              <h2
+                style={{
+                  margin: 0,
+                  fontFamily: '"Noto Serif KR", serif',
+                  fontSize: 52,
+                  fontWeight: 500,
+                  color: palette.ink,
+                  letterSpacing: "-0.025em",
+                  lineHeight: 1.15,
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {featured.title}
+              </h2>
+              <p
+                style={{
+                  marginTop: 24,
+                  fontSize: 16,
+                  color: palette.muted,
+                  fontFamily: '"Noto Sans KR"',
+                  lineHeight: 1.7,
+                  fontWeight: 300,
+                  maxWidth: 480,
+                }}
+              >
+                {featured.subtitle}
+              </p>
+              <div
+                style={{
+                  marginTop: 36,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  color: palette.surface,
-                  fontFamily: '"Noto Serif KR", serif',
-                  fontSize: 16,
-                  fontWeight: 500,
+                  gap: 16,
+                  paddingTop: 24,
+                  borderTop: `1px solid ${palette.line}`,
                 }}
               >
-                김
-              </div>
-              <div style={{ flex: 1 }}>
                 <div
                   style={{
-                    fontFamily: '"Noto Sans KR"',
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: palette.ink,
-                    letterSpacing: "-0.02em",
+                    width: 44,
+                    height: 44,
+                    borderRadius: 999,
+                    background: palette.primary,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: palette.surface,
+                    fontFamily: '"Noto Serif KR", serif',
+                    fontSize: 16,
+                    fontWeight: 500,
                   }}
                 >
-                  {WZ_FEATURED.author}
+                  {featured.author.slice(0, 1)}
                 </div>
-                <div
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      fontFamily: '"Noto Sans KR"',
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: palette.ink,
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {featured.author}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: palette.muted,
+                      marginTop: 2,
+                      fontFamily: '"Noto Sans KR"',
+                    }}
+                  >
+                    {featured.authorRole} · {featured.date} · {featured.read} 읽기
+                  </div>
+                </div>
+                <button
+                  onClick={() => router.push(`/webzine/${featured.id}`)}
                   style={{
-                    fontSize: 11,
-                    color: palette.muted,
-                    marginTop: 2,
+                    background: palette.ink,
+                    color: palette.surface,
+                    border: "none",
+                    padding: "12px 22px",
+                    borderRadius: 2,
+                    fontSize: 12.5,
                     fontFamily: '"Noto Sans KR"',
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    letterSpacing: "-0.01em",
                   }}
                 >
-                  {WZ_FEATURED.authorRole} · {WZ_FEATURED.date} · {WZ_FEATURED.read} 읽기
-                </div>
+                  전문 읽기 →
+                </button>
               </div>
-              <button
-                style={{
-                  background: palette.ink,
-                  color: palette.surface,
-                  border: "none",
-                  padding: "12px 22px",
-                  borderRadius: 2,
-                  fontSize: 12.5,
-                  fontFamily: '"Noto Sans KR"',
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                전문 읽기 →
-              </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 글 목록 — 매거진 그리드 */}
       <div
@@ -257,14 +270,18 @@ export default function WebzineDesktop({ palette }: Props) {
             </h2>
           </div>
           <div style={{ fontSize: 13, color: palette.muted, fontFamily: '"Noto Sans KR"' }}>
-            총 <span style={{ color: palette.primary, fontWeight: 600 }}>{WZ_ARTICLES.length}</span>편 ·
+            총 <span style={{ color: palette.primary, fontWeight: 600 }}>{articles.length}</span>편 ·
             <span style={{ marginLeft: 6, fontFamily: "Inter" }}>2026.04 업데이트</span>
           </div>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 28 }}>
-          {WZ_ARTICLES.map((a) => (
-            <article key={a.id} style={{ cursor: "pointer" }}>
+          {articles.map((a) => (
+            <article
+              key={a.id}
+              onClick={() => router.push(`/webzine/${a.id}`)}
+              style={{ cursor: "pointer" }}
+            >
               <div
                 style={{
                   height: 220,
@@ -347,7 +364,7 @@ export default function WebzineDesktop({ palette }: Props) {
                 }}
               >
                 <span style={{ fontWeight: 500, color: palette.ink }}>{a.author}</span>
-                <span style={{ fontFamily: "Inter", letterSpacing: "0.04em" }}>2026.{a.date} · {a.read}</span>
+                <span style={{ fontFamily: "Inter", letterSpacing: "0.04em" }}>{a.date} · {a.read}</span>
               </div>
             </article>
           ))}
