@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
-import {
-  FACULTY_MEMBERS,
-  type FacultyDept,
-  type FacultyView,
+import type {
+  FacultyMember,
+  FacultyCover,
+  FacultyDeptItem,
+  FacultyDept,
+  FacultyView,
 } from "@/lib/faculty-data";
 import FeaturedHero from "./FeaturedHero";
 import QuoteStrip from "./QuoteStrip";
@@ -22,14 +24,20 @@ const palette = FOREST_PALETTE;
  * 신학원교수소개 데스크톱 — 디자인 원본 faculty.jsx 의 FacultyDesktop 그대로.
  * 글로벌 DesktopNav(solid)는 page 단에서 노출. 여기선 본문만.
  */
-export default function FacultyDesktop() {
+type Props = {
+  cover: FacultyCover | null;
+  members: FacultyMember[];
+  depts: FacultyDeptItem[];
+};
+
+export default function FacultyDesktop({ cover, members, depts }: Props) {
   const [activeDept, setActiveDept] = useState<FacultyDept>("all");
   const [view, setView] = useState<FacultyView>("grid");
 
   const filtered =
     activeDept === "all"
-      ? FACULTY_MEMBERS
-      : FACULTY_MEMBERS.filter((p) => p.dept === activeDept);
+      ? members
+      : members.filter((p) => p.dept === activeDept);
 
   return (
     <div
@@ -39,10 +47,11 @@ export default function FacultyDesktop() {
         minHeight: "100%",
       }}
     >
-      <FeaturedHero palette={palette} />
+      <FeaturedHero palette={palette} cover={cover} />
       <QuoteStrip palette={palette} />
       <FilterStrip
         palette={palette}
+        depts={depts}
         activeDept={activeDept}
         setActiveDept={setActiveDept}
         view={view}

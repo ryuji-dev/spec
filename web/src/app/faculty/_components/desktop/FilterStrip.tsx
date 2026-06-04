@@ -1,14 +1,15 @@
 "use client";
 
 import type { Palette } from "@/app/_components/shared/palette";
-import {
-  FACULTY_DEPTS,
-  type FacultyDept,
-  type FacultyView,
+import type {
+  FacultyDeptItem,
+  FacultyDept,
+  FacultyView,
 } from "@/lib/faculty-data";
 
 type Props = {
   palette: Palette;
+  depts: ReadonlyArray<FacultyDeptItem>;
   activeDept: FacultyDept;
   setActiveDept: (d: FacultyDept) => void;
   view: FacultyView;
@@ -27,6 +28,7 @@ const VIEW_OPTIONS: ReadonlyArray<{ v: FacultyView; label: string }> = [
  */
 export default function FilterStrip({
   palette,
+  depts,
   activeDept,
   setActiveDept,
   view,
@@ -85,7 +87,7 @@ export default function FilterStrip({
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 22, flexWrap: "wrap" }}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {FACULTY_DEPTS.map((d) => {
+          {depts.map((d) => {
             const active = activeDept === d.id;
             return (
               <button
