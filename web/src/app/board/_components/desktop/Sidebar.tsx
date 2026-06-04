@@ -1,5 +1,5 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { CM_CATEGORIES, CM_MEMBERS, CM_TAGS } from "@/lib/board-data";
+import { CM_MEMBERS, CM_TAGS, type BoardCategory } from "@/lib/board-data";
 import CmAvatar from "../shared/CmAvatar";
 import { catTone } from "../catTone";
 
@@ -247,7 +247,13 @@ export function SideGuide({ palette }: Props) {
   );
 }
 
-export function SideCategories({ palette }: Props) {
+export function SideCategories({
+  palette,
+  categories,
+}: {
+  palette: Palette;
+  categories: BoardCategory[];
+}) {
   return (
     <section>
       <div
@@ -263,7 +269,7 @@ export function SideCategories({ palette }: Props) {
         CATEGORIES
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {CM_CATEGORIES.slice(1).map((c) => {
+        {categories.slice(1).map((c) => {
           const t = catTone(c.ko as Exclude<typeof c.ko, "전체">, palette);
           return (
             <div

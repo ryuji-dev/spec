@@ -7,19 +7,21 @@ import FeedCover from "../shared/FeedCover";
 type Props = {
   post: FeedPost;
   palette: Palette;
+  onOpen?: () => void;
 };
 
 /**
  * 일반 피드 카드.
  * 디자인 원본 community.jsx 의 FeedCard 그대로.
  */
-export default function FeedCard({ post, palette }: Props) {
+export default function FeedCard({ post, palette, onOpen }: Props) {
   const hasImage = !!post.image;
   const isPrayer = post.kind === "prayer";
   const isQuestion = post.kind === "question";
 
   return (
     <article
+      onClick={onOpen}
       style={{
         background: palette.surface,
         border: `1px solid ${palette.line}`,

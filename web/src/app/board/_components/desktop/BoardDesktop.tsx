@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
-import {
-  CM_CATEGORIES,
-  CM_FEED,
-  type BoardSort,
-} from "@/lib/board-data";
+import type { BoardCategory, FeedPost } from "@/lib/board-data";
+import { type BoardSort } from "@/lib/board-data";
 import BoardHeader from "./BoardHeader";
 import HotSection from "./HotSection";
 import CategoryStickyBar from "./CategoryStickyBar";
@@ -27,14 +25,21 @@ const palette = FOREST_PALETTE;
  * 자유게시판 데스크톱 — 디자인 원본 community.jsx 의 CommunityDesktop 그대로.
  * 글로벌 DesktopNav(solid)는 페이지 단에서 노출. 여기선 본문만.
  */
-export default function BoardDesktop() {
+export default function BoardDesktop({
+  posts,
+  categories,
+}: {
+  posts: FeedPost[];
+  categories: BoardCategory[];
+}) {
+  const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
   const [sort, setSort] = useState<BoardSort>("recent");
 
   const filtered =
     activeCat === 0
-      ? CM_FEED
-      : CM_FEED.filter((p) => p.cat === CM_CATEGORIES[activeCat].ko);
+      ? posts
+      : posts.filter((p) => p.cat === categories[activeCat].ko);
 
   return (
     <div
@@ -49,6 +54,7 @@ export default function BoardDesktop() {
 
       <CategoryStickyBar
         palette={palette}
+        categories={categories}
         activeCat={activeCat}
         setActiveCat={setActiveCat}
         sort={sort}
@@ -67,7 +73,12 @@ export default function BoardDesktop() {
           <Composer palette={palette} />
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {filtered.map((p) => (
-              <FeedCard key={p.id} post={p} palette={palette} />
+              <FeedCard
+                key={p.id}
+                post={p}
+                palette={palette}
+                onOpen={() => router.push(`/board/${p.id}`)}
+              />
             ))}
           </div>
           <BoardPagination palette={palette} />
@@ -77,7 +88,7 @@ export default function BoardDesktop() {
           <SideMembers palette={palette} />
           <SideTags palette={palette} />
           <SideGuide palette={palette} />
-          <SideCategories palette={palette} />
+          <SideCategories palette={palette} categories={categories} />
         </aside>
       </div>
 
