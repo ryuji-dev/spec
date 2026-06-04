@@ -23,7 +23,7 @@ export class UploadError extends Error {
   }
 }
 
-type Section = "committee" | "resource";
+type Section = "committee" | "resource" | "training";
 
 export type AttachmentStore = {
   uploadPath: (storedName: string) => string;

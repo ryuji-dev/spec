@@ -7,11 +7,13 @@ import { catTone } from "../catTone";
 type Props = {
   post: TrainingPost;
   palette: Palette;
+  onOpen?: () => void;
 };
 
-export default function PostCard({ post, palette }: Props) {
+export default function PostCard({ post, palette, onOpen }: Props) {
   return (
     <article
+      onClick={onOpen}
       style={{
         background: palette.surface,
         borderRadius: 12,

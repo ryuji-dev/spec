@@ -141,6 +141,38 @@ if (bExists.rows.length === 0) {
   console.log("[dev-db] 자유게시판 글 이미 존재");
 }
 
+// 교역자수련회 seed (없을 때만) — admin 작성. 강의자료 글엔 첨부 placeholder 1개.
+const trainingDir = join(here, "../uploads/training");
+const tExists = await db.query(`select 1 from posts where section='training' limit 1`);
+if (tExists.rows.length === 0) {
+  await mkdir(trainingDir, { recursive: true });
+  const tseed = [
+    ["신청", "2026 봄 교역자 수련회 신청 — 변경/취소 절차 안내", null],
+    ["후기", "광야 한복판에서, 다시 일어설 힘을 받다", null],
+    ["Q&A", "봄 수련회 — 가족 동반(아이 포함) 가능한가요?", null],
+    ["강의자료", "2025 가을 수련회 — 이정훈 교수 강의안 PDF (3편 일괄)", "lecture.pdf"],
+  ];
+  for (const [cat, title, attachName] of tseed) {
+    const p = await db.query(
+      `insert into posts (section, category, title, excerpt, body, author_id)
+       values ('training', $1, $2, $3, $4, $5) returning id`,
+      [cat, title, title + " (요약)", title + "\n\n(본문 예시)", adminId],
+    );
+    if (attachName) {
+      const storedName = `${randomUUID()}.${attachName.split(".").pop()}`;
+      await writeFile(join(trainingDir, storedName), `placeholder for ${attachName}`);
+      await db.query(
+        `insert into attachments (post_id, original_name, stored_name, mime, size_bytes)
+         values ($1,$2,$3,$4,$5)`,
+        [p.rows[0].id, attachName, storedName, "application/pdf", 9122611],
+      );
+    }
+  }
+  console.log(`[dev-db] 교역자수련회 글 ${tseed.length}건 + 첨부 seed`);
+} else {
+  console.log("[dev-db] 교역자수련회 글 이미 존재");
+}
+
 const server = new PGLiteSocketServer({ db, port: PORT, host: "127.0.0.1" });
 await server.start();
 console.log(`[dev-db] PGlite 서버 listening: postgres://127.0.0.1:${PORT}`);

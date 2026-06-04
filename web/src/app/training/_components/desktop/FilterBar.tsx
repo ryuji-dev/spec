@@ -1,13 +1,14 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { TR_CATEGORIES } from "@/lib/training-data";
+import type { TrainingCategory } from "@/lib/training-data";
 
 type Props = {
   palette: Palette;
+  categories: ReadonlyArray<TrainingCategory>;
   active: number;
   setActive: (i: number) => void;
 };
 
-export default function FilterBar({ palette, active, setActive }: Props) {
+export default function FilterBar({ palette, categories, active, setActive }: Props) {
   return (
     <div
       style={{
@@ -28,7 +29,7 @@ export default function FilterBar({ palette, active, setActive }: Props) {
       }}
     >
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {TR_CATEGORIES.map((c, i) => {
+        {categories.map((c, i) => {
           const isActive = active === i;
           return (
             <button

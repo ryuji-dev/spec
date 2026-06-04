@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
-import { TR_BOARD, TR_CATEGORIES } from "@/lib/training-data";
+import type { TrainingPost, TrainingCategory } from "@/lib/training-data";
 import HeroSection from "./HeroSection";
 import UpcomingHero from "./UpcomingHero";
 import ScheduleSection from "./ScheduleSection";
@@ -19,12 +20,18 @@ import SectionEyebrow from "../shared/SectionEyebrow";
 
 const palette = FOREST_PALETTE;
 
-export default function TrainingDesktop() {
+type Props = {
+  posts: TrainingPost[];
+  categories: TrainingCategory[];
+};
+
+export default function TrainingDesktop({ posts, categories }: Props) {
+  const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
   const filtered =
     activeCat === 0
-      ? TR_BOARD
-      : TR_BOARD.filter((p) => p.cat === TR_CATEGORIES[activeCat].ko);
+      ? posts
+      : posts.filter((p) => p.cat === categories[activeCat].ko);
 
   return (
     <div
@@ -52,6 +59,7 @@ export default function TrainingDesktop() {
 
       <FilterBar
         palette={palette}
+        categories={categories}
         active={activeCat}
         setActive={setActiveCat}
       />
@@ -73,7 +81,12 @@ export default function TrainingDesktop() {
             }}
           >
             {filtered.slice(0, 2).map((p) => (
-              <PostCard key={p.id} post={p} palette={palette} />
+              <PostCard
+                key={p.id}
+                post={p}
+                palette={palette}
+                onOpen={() => router.push(`/training/${p.id}`)}
+              />
             ))}
           </div>
           <div style={{ marginTop: 32 }}>
@@ -109,7 +122,12 @@ export default function TrainingDesktop() {
               </div>
             </div>
             {filtered.slice(2).map((p) => (
-              <PostListRow key={p.id} post={p} palette={palette} />
+              <PostListRow
+                key={p.id}
+                post={p}
+                palette={palette}
+                onOpen={() => router.push(`/training/${p.id}`)}
+              />
             ))}
           </div>
           <Pagination palette={palette} />
