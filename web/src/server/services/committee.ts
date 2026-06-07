@@ -46,7 +46,7 @@ export async function getCommitteeListData(): Promise<CommitteeListData> {
   const rows = data ?? [];
 
   // 첨부파일 카운트 — 목록 전체를 한 번에 집계
-  let attachCountMap = new Map<string, number>();
+  const attachCountMap = new Map<string, number>();
   if (rows.length > 0) {
     const { data: attRows } = await supabase
       .from("attachments")
