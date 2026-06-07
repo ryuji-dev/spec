@@ -1,7 +1,5 @@
 import "server-only";
-import { and, desc, eq, sql } from "drizzle-orm";
-import { getDb } from "@/server/db";
-import { posts, comments, attachments, users } from "@/server/db/schema";
+import { createSupabaseServer } from "@/server/supabase/server";
 import {
   toCommitteePostView,
   COMMITTEE_CATEGORIES_KO,
@@ -18,26 +16,9 @@ import type {
 
 const SECTION = "committee" as const;
 
-// 목록 행 공통 SELECT (작성자 조인 + 댓글/첨부 카운트 서브쿼리)
-function baseRows() {
-  const db = getDb();
-  return db
-    .select({
-      id: posts.id,
-      category: posts.category,
-      title: posts.title,
-      excerpt: posts.excerpt,
-      viewCount: posts.viewCount,
-      createdAt: posts.createdAt,
-      isPinned: posts.isPinned,
-      authorName: users.name,
-      authorTitle: users.title,
-      commentCount: sql<number>`(select count(*)::int from ${comments} c where c.post_id = ${posts.id})`,
-      attachCount: sql<number>`(select count(*)::int from ${attachments} a where a.post_id = ${posts.id})`,
-    })
-    .from(posts)
-    .leftJoin(users, eq(users.id, posts.authorId))
-    .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)));
+// PostgREST 임베드는 to-one도 환경에 따라 배열로 올 수 있어 단일 객체로 정규화.
+function one<T>(v: T | T[] | null): T | null {
+  return Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
 export type CommitteeListData = {
@@ -49,24 +30,63 @@ export type CommitteeListData = {
 
 export async function getCommitteeListData(): Promise<CommitteeListData> {
   const now = new Date();
-  const rows = await baseRows().orderBy(desc(posts.isPinned), desc(posts.createdAt));
+  const supabase = await createSupabaseServer();
+
+  // 목록 쿼리 — 고정글 우선, 최신순. 댓글 수는 집계 임베드.
+  const { data, error } = await supabase
+    .from("posts")
+    .select(
+      "id, category, title, excerpt, view_count, created_at, is_pinned, author_id, author:profiles(name, title), comments(count)",
+    )
+    .eq("section", SECTION)
+    .eq("is_published", true)
+    .order("is_pinned", { ascending: false })
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  const rows = data ?? [];
+
+  // 첨부파일 카운트 — 목록 전체를 한 번에 집계
+  let attachCountMap = new Map<string, number>();
+  if (rows.length > 0) {
+    const { data: attRows } = await supabase
+      .from("attachments")
+      .select("post_id")
+      .in(
+        "post_id",
+        rows.map((r) => r.id),
+      );
+    for (const a of attRows ?? []) {
+      attachCountMap.set(a.post_id, (attachCountMap.get(a.post_id) ?? 0) + 1);
+    }
+  }
 
   let pinned: Post | null = null;
   const list: Post[] = [];
   for (const r of rows) {
-    const view = toCommitteePostView(r as CommitteeRow, now);
-    if (r.isPinned && !pinned) pinned = view;
+    const author = one(r.author);
+    const row: CommitteeRow = {
+      id: r.id,
+      category: r.category,
+      title: r.title,
+      excerpt: r.excerpt,
+      viewCount: r.view_count,
+      createdAt: new Date(r.created_at),
+      authorName: author?.name ?? null,
+      authorTitle: author?.title ?? null,
+      commentCount: r.comments[0]?.count ?? 0,
+      attachCount: attachCountMap.get(r.id) ?? 0,
+    };
+    const view = toCommitteePostView(row, now);
+    if (r.is_pinned && !pinned) pinned = view;
     else list.push(view);
   }
 
-  // 카테고리 카운트 ('전체' + 5개)
-  const counts = await getDb()
-    .select({ category: posts.category, n: sql<number>`count(*)::int` })
-    .from(posts)
-    .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .groupBy(posts.category);
-  const byCat = new Map(counts.map((c) => [c.category, c.n]));
-  const total = counts.reduce((s, c) => s + c.n, 0);
+  // 카테고리 카운트 — 목록 쿼리 결과 재사용
+  const byCat = new Map<string, number>();
+  for (const r of rows) {
+    if (r.category) byCat.set(r.category, (byCat.get(r.category) ?? 0) + 1);
+  }
+  const total = rows.length;
   const categories: PostCategory[] = [
     { ko: "전체", en: "ALL", count: total },
     ...COMMITTEE_CATEGORIES_KO.map((ko) => ({
@@ -77,16 +97,17 @@ export async function getCommitteeListData(): Promise<CommitteeListData> {
   ];
 
   // 인기글 — 조회수 상위 5
-  const pop = await getDb()
-    .select({ id: posts.id, title: posts.title, views: posts.viewCount })
-    .from(posts)
-    .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .orderBy(desc(posts.viewCount))
+  const { data: pop } = await supabase
+    .from("posts")
+    .select("id, title, view_count")
+    .eq("section", SECTION)
+    .eq("is_published", true)
+    .order("view_count", { ascending: false })
     .limit(5);
-  const popular: PopularPost[] = pop.map((p) => ({
+  const popular: PopularPost[] = (pop ?? []).map((p) => ({
     id: p.id,
     title: p.title,
-    views: p.views,
+    views: p.view_count,
   }));
 
   return { pinned, posts: list, categories, popular };
@@ -105,73 +126,61 @@ export type CommitteeDetail = {
 };
 
 export async function getCommitteePost(id: string): Promise<CommitteeDetail | null> {
-  const db = getDb();
-  const rows = await db
-    .select({
-      id: posts.id,
-      category: posts.category,
-      title: posts.title,
-      body: posts.body,
-      viewCount: posts.viewCount,
-      createdAt: posts.createdAt,
-      authorName: users.name,
-      authorTitle: users.title,
-    })
-    .from(posts)
-    .leftJoin(users, eq(users.id, posts.authorId))
-    .where(and(eq(posts.id, id), eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .limit(1);
-  const r = rows[0];
+  const supabase = await createSupabaseServer();
+
+  const { data: r } = await supabase
+    .from("posts")
+    .select(
+      "id, category, title, body, view_count, created_at, author:profiles(name, title)",
+    )
+    .eq("id", id)
+    .eq("section", SECTION)
+    .eq("is_published", true)
+    .maybeSingle();
   if (!r) return null;
 
-  const atts = await db
-    .select({
-      id: attachments.id,
-      name: attachments.originalName,
-      sizeBytes: attachments.sizeBytes,
-      mime: attachments.mime,
-    })
-    .from(attachments)
-    .where(eq(attachments.postId, id));
+  const { data: atts } = await supabase
+    .from("attachments")
+    .select("id, original_name, size_bytes, mime")
+    .eq("post_id", id);
 
-  const cms = await db
-    .select({
-      id: comments.id,
-      authorId: comments.authorId,
-      body: comments.body,
-      createdAt: comments.createdAt,
-      authorName: users.name,
-      authorTitle: users.title,
-    })
-    .from(comments)
-    .leftJoin(users, eq(users.id, comments.authorId))
-    .where(eq(comments.postId, id))
-    .orderBy(comments.createdAt);
+  const { data: cms } = await supabase
+    .from("comments")
+    .select("id, author_id, body, created_at, author:profiles(name, title)")
+    .eq("post_id", id)
+    .order("created_at", { ascending: true });
 
+  const author = one(r.author);
   return {
     id: r.id,
     category: r.category,
     title: r.title,
     body: r.body,
-    author: formatAuthor(r.authorName, r.authorTitle),
-    date: formatDate(r.createdAt),
-    views: r.viewCount,
-    attachments: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })),
-    comments: cms.map((c) => ({
-      id: c.id,
-      authorId: c.authorId,
-      author: formatAuthor(c.authorName, c.authorTitle),
-      date: formatDate(c.createdAt),
-      body: c.body,
+    author: formatAuthor(author?.name ?? null, author?.title ?? null),
+    date: formatDate(new Date(r.created_at)),
+    views: r.view_count,
+    attachments: (atts ?? []).map((a) => ({
+      id: a.id,
+      name: a.original_name,
+      sizeBytes: a.size_bytes,
+      mime: a.mime,
     })),
+    comments: (cms ?? []).map((c) => {
+      const ca = one(c.author);
+      return {
+        id: c.id,
+        authorId: c.author_id,
+        author: formatAuthor(ca?.name ?? null, ca?.title ?? null),
+        date: formatDate(new Date(c.created_at)),
+        body: c.body,
+      };
+    }),
   };
 }
 
 export async function incrementCommitteeView(id: string): Promise<void> {
-  await getDb()
-    .update(posts)
-    .set({ viewCount: sql`${posts.viewCount} + 1` })
-    .where(and(eq(posts.id, id), eq(posts.section, SECTION), eq(posts.isPublished, true)));
+  const supabase = await createSupabaseServer();
+  await supabase.rpc("increment_post_view", { p_id: id });
 }
 
 export type CommitteeEditData = {
@@ -185,28 +194,33 @@ export type CommitteeEditData = {
 };
 
 export async function getCommitteePostForEdit(id: string): Promise<CommitteeEditData | null> {
-  const db = getDb();
-  const [r] = await db
-    .select({
-      id: posts.id,
-      category: posts.category,
-      title: posts.title,
-      excerpt: posts.excerpt,
-      body: posts.body,
-      isPinned: posts.isPinned,
-    })
-    .from(posts)
-    .where(and(eq(posts.id, id), eq(posts.section, SECTION)))
-    .limit(1);
+  const supabase = await createSupabaseServer();
+
+  const { data: r } = await supabase
+    .from("posts")
+    .select("id, category, title, excerpt, body, is_pinned")
+    .eq("id", id)
+    .eq("section", SECTION)
+    .maybeSingle();
   if (!r) return null;
-  const atts = await db
-    .select({
-      id: attachments.id,
-      name: attachments.originalName,
-      sizeBytes: attachments.sizeBytes,
-      mime: attachments.mime,
-    })
-    .from(attachments)
-    .where(eq(attachments.postId, id));
-  return { ...r, attachments: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })) };
+
+  const { data: atts } = await supabase
+    .from("attachments")
+    .select("id, original_name, size_bytes, mime")
+    .eq("post_id", id);
+
+  return {
+    id: r.id,
+    category: r.category,
+    title: r.title,
+    excerpt: r.excerpt,
+    body: r.body,
+    isPinned: r.is_pinned,
+    attachments: (atts ?? []).map((a) => ({
+      id: a.id,
+      name: a.original_name,
+      sizeBytes: a.size_bytes,
+      mime: a.mime,
+    })),
+  };
 }

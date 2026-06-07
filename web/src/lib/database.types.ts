@@ -306,6 +306,7 @@ export type Database = {
     Functions: {
       auth_is_admin: { Args: never; Returns: boolean }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      increment_post_view: { Args: { p_id: string }; Returns: undefined }
     }
     Enums: {
       faculty_dept: "ot" | "nt" | "st" | "pt" | "ch" | "mn"

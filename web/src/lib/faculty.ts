@@ -1,5 +1,6 @@
 // 신학원 교수 디렉터리 — 클라이언트 안전 순수 매퍼. DB·server-only 의존 없음.
 // DB 평면 행(FacultyRow)을 디자인 뷰모델(FacultyMember/FacultyCover)로 파생한다.
+import type { Database } from "./database.types";
 import type { FacultyDept, FacultyMember, FacultyCover } from "./faculty-data";
 
 // 부서 코드 → 한국어·영문 라벨 (FilterStrip·목록 카운트용)
@@ -18,40 +19,24 @@ export const FACULTY_DEPT_META: Record<
 // 커버 스토리 정적 태그
 export const COVER_TAG = "커버 스토리 · 2026 봄";
 
-// 서비스가 만든 DB 평면 행 (faculty 테이블 컬럼)
-export type FacultyRow = {
-  id: string;
-  dept: Exclude<FacultyDept, "all">;
-  name: string;
-  title: string;
-  en: string;
-  degree: string;
-  tone: FacultyMember["tone"];
-  field: string;
-  teaches: string[];
-  quote: string;
-  years: number;
-  papers: number;
-  office: string;
-  hours: string;
-  isCover: boolean;
-  about: string | null;
-  sortOrder: number;
-};
+// DB Row 타입 — supabase-js 생성 타입 기반 (snake_case)
+export type FacultyRow = Database["public"]["Tables"]["faculty"]["Row"];
 
 // 평면 행 → 디자인 FacultyMember 뷰모델 (init은 이름 첫 글자 파생)
 export function toFacultyMemberView(row: FacultyRow): FacultyMember {
+  // teaches는 jsonb → supabase-js가 Json 타입으로 반환하므로 string[]로 캐스트
+  const teaches = (row.teaches as string[]) ?? [];
   return {
     id: row.id,
-    dept: row.dept,
+    dept: row.dept as Exclude<FacultyDept, "all">,
     name: row.name,
     title: row.title,
     en: row.en,
     degree: row.degree,
     init: row.name.slice(0, 1),
-    tone: row.tone,
+    tone: row.tone as FacultyMember["tone"],
     field: row.field,
-    teaches: row.teaches,
+    teaches,
     quote: row.quote,
     years: row.years,
     papers: row.papers,
@@ -62,6 +47,8 @@ export function toFacultyMemberView(row: FacultyRow): FacultyMember {
 
 // 평면 행 → 디자인 FacultyCover 뷰모델 (커버 히어로)
 export function toFacultyCoverView(row: FacultyRow): FacultyCover {
+  // teaches는 jsonb → string[]로 캐스트
+  const teaches = (row.teaches as string[]) ?? [];
   return {
     id: row.id,
     name: row.name,
@@ -75,8 +62,8 @@ export function toFacultyCoverView(row: FacultyRow): FacultyCover {
     stats: [
       { k: String(row.years), l: "강의 연차" },
       { k: String(row.papers), l: "저서·논문" },
-      { k: String(row.teaches.length), l: "담당 강좌" },
+      { k: String(teaches.length), l: "담당 강좌" },
     ],
-    current: row.teaches,
+    current: teaches,
   };
 }

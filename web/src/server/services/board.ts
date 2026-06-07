@@ -1,7 +1,5 @@
 import "server-only";
-import { and, desc, eq, sql } from "drizzle-orm";
-import { getDb } from "@/server/db";
-import { posts, comments, users, postLikes } from "@/server/db/schema";
+import { createSupabaseServer } from "@/server/supabase/server";
 import { getCurrentUser } from "@/server/auth/current-user";
 import { formatDate, formatAuthor } from "@/lib/format";
 import {
@@ -9,7 +7,6 @@ import {
   categoryToKind,
   BOARD_CATEGORIES_KO,
   BOARD_CATEGORY_EN,
-  type BoardRow,
 } from "@/lib/board";
 import type { FeedPost, BoardCategory } from "@/lib/board-data";
 
@@ -20,41 +17,68 @@ export type BoardListData = {
   categories: BoardCategory[];
 };
 
+// PostgREST 임베드는 to-one도 환경에 따라 배열로 올 수 있어 단일 객체로 정규화.
+function one<T>(v: T | T[] | null): T | null {
+  return Array.isArray(v) ? (v[0] ?? null) : v;
+}
+
 export async function getBoardListData(): Promise<BoardListData> {
   const now = new Date();
-  const db = getDb();
+  const supabase = await createSupabaseServer();
   const user = await getCurrentUser();
-  const rows = await db
-    .select({
-      id: posts.id,
-      category: posts.category,
-      title: posts.title,
-      excerpt: posts.excerpt,
-      viewCount: posts.viewCount,
-      createdAt: posts.createdAt,
-      authorName: users.name,
-      authorChurch: users.church,
-      commentCount: sql<number>`(select count(*)::int from ${comments} c where c.post_id = ${posts.id})`,
-      likeCount: sql<number>`(select count(*)::int from ${postLikes} pl where pl.post_id = ${posts.id})`,
-      likedByMe: user
-        ? sql<boolean>`exists(select 1 from ${postLikes} pl where pl.post_id = ${posts.id} and pl.user_id = ${user.id})`
-        : sql<boolean>`false`,
-    })
-    .from(posts)
-    .leftJoin(users, eq(users.id, posts.authorId))
-    .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .orderBy(desc(posts.createdAt));
-  const list = rows.map((r) => toFeedPostView(r as BoardRow, now));
 
-  const counts = await db
-    .select({ category: posts.category, n: sql<number>`count(*)::int` })
-    .from(posts)
-    .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .groupBy(posts.category);
-  const byCat = new Map(counts.map((c) => [c.category, c.n]));
-  const total = counts.reduce((s, c) => s + c.n, 0);
+  const { data, error } = await supabase
+    .from("posts")
+    .select(
+      "id, category, title, excerpt, view_count, created_at, author:profiles(name, church), comments(count), post_likes(count)",
+    )
+    .eq("section", SECTION)
+    .eq("is_published", true)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  const rows = data ?? [];
+
+  // 내가 좋아요한 글 집합 (로그인 시)
+  let likedSet = new Set<string>();
+  if (user && rows.length > 0) {
+    const { data: likes } = await supabase
+      .from("post_likes")
+      .select("post_id")
+      .eq("user_id", user.id)
+      .in(
+        "post_id",
+        rows.map((r) => r.id),
+      );
+    likedSet = new Set((likes ?? []).map((l) => l.post_id));
+  }
+
+  const list = rows.map((r) => {
+    const author = one(r.author);
+    return toFeedPostView(
+      {
+        id: r.id,
+        category: r.category,
+        title: r.title,
+        excerpt: r.excerpt,
+        viewCount: r.view_count,
+        createdAt: new Date(r.created_at),
+        authorName: author?.name ?? null,
+        authorChurch: author?.church ?? null,
+        commentCount: r.comments[0]?.count ?? 0,
+        likeCount: r.post_likes[0]?.count ?? 0,
+        likedByMe: likedSet.has(r.id),
+      },
+      now,
+    );
+  });
+
+  // 카테고리 집계 — 목록 쿼리 결과 재사용
+  const byCat = new Map<string, number>();
+  for (const r of rows) {
+    if (r.category) byCat.set(r.category, (byCat.get(r.category) ?? 0) + 1);
+  }
   const categories: BoardCategory[] = [
-    { ko: "전체", en: "ALL", count: total },
+    { ko: "전체", en: "ALL", count: rows.length },
     ...BOARD_CATEGORIES_KO.map((ko) => ({ ko, en: BOARD_CATEGORY_EN[ko], count: byCat.get(ko) ?? 0 })),
   ];
 
@@ -78,77 +102,70 @@ export type BoardDetail = {
 };
 
 export async function getBoardPost(id: string): Promise<BoardDetail | null> {
-  const db = getDb();
+  const supabase = await createSupabaseServer();
   const user = await getCurrentUser();
-  const [r] = await db
-    .select({
-      id: posts.id,
-      category: posts.category,
-      title: posts.title,
-      body: posts.body,
-      viewCount: posts.viewCount,
-      createdAt: posts.createdAt,
-      authorId: posts.authorId,
-      authorName: users.name,
-      authorChurch: users.church,
-    })
-    .from(posts)
-    .leftJoin(users, eq(users.id, posts.authorId))
-    .where(and(eq(posts.id, id), eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .limit(1);
+
+  const { data: r } = await supabase
+    .from("posts")
+    .select(
+      "id, category, title, body, view_count, created_at, author_id, author:profiles(name, church)",
+    )
+    .eq("id", id)
+    .eq("section", SECTION)
+    .eq("is_published", true)
+    .maybeSingle();
   if (!r) return null;
-  const cms = await db
-    .select({
-      id: comments.id,
-      authorId: comments.authorId,
-      body: comments.body,
-      createdAt: comments.createdAt,
-      authorName: users.name,
-      authorTitle: users.title,
-    })
-    .from(comments)
-    .leftJoin(users, eq(users.id, comments.authorId))
-    .where(eq(comments.postId, id))
-    .orderBy(comments.createdAt);
-  const [{ likes }] = await db
-    .select({ likes: sql<number>`count(*)::int` })
-    .from(postLikes)
-    .where(eq(postLikes.postId, id));
-  const likedByMe = user
-    ? (
-        await db
-          .select({ id: postLikes.id })
-          .from(postLikes)
-          .where(and(eq(postLikes.postId, id), eq(postLikes.userId, user.id)))
-          .limit(1)
-      ).length > 0
-    : false;
+
+  const { data: cms } = await supabase
+    .from("comments")
+    .select("id, author_id, body, created_at, author:profiles(name, title)")
+    .eq("post_id", id)
+    .order("created_at", { ascending: true });
+
+  const { count: likes } = await supabase
+    .from("post_likes")
+    .select("id", { count: "exact", head: true })
+    .eq("post_id", id);
+
+  let likedByMe = false;
+  if (user) {
+    const { data: liked } = await supabase
+      .from("post_likes")
+      .select("id")
+      .eq("post_id", id)
+      .eq("user_id", user.id)
+      .limit(1);
+    likedByMe = (liked?.length ?? 0) > 0;
+  }
+
+  const author = one(r.author);
   return {
     id: r.id,
     category: r.category,
     kind: categoryToKind(r.category),
     title: r.title,
     body: r.body,
-    author: r.authorName ?? "익명",
-    church: r.authorChurch ?? "",
-    date: formatDate(r.createdAt),
-    views: r.viewCount,
-    likes,
+    author: author?.name ?? "익명",
+    church: author?.church ?? "",
+    date: formatDate(new Date(r.created_at)),
+    views: r.view_count,
+    likes: likes ?? 0,
     likedByMe,
-    authorId: r.authorId,
-    comments: cms.map((c) => ({
-      id: c.id,
-      authorId: c.authorId,
-      author: formatAuthor(c.authorName, c.authorTitle),
-      date: formatDate(c.createdAt),
-      body: c.body,
-    })),
+    authorId: r.author_id,
+    comments: (cms ?? []).map((c) => {
+      const ca = one(c.author);
+      return {
+        id: c.id,
+        authorId: c.author_id,
+        author: formatAuthor(ca?.name ?? null, ca?.title ?? null),
+        date: formatDate(new Date(c.created_at)),
+        body: c.body,
+      };
+    }),
   };
 }
 
 export async function incrementBoardView(id: string): Promise<void> {
-  await getDb()
-    .update(posts)
-    .set({ viewCount: sql`${posts.viewCount} + 1` })
-    .where(and(eq(posts.id, id), eq(posts.section, SECTION), eq(posts.isPublished, true)));
+  const supabase = await createSupabaseServer();
+  await supabase.rpc("increment_post_view", { p_id: id });
 }

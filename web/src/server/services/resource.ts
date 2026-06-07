@@ -1,7 +1,6 @@
 import "server-only";
-import { and, desc, eq, sql } from "drizzle-orm";
-import { getDb } from "@/server/db";
-import { posts, attachments, users } from "@/server/db/schema";
+import { createSupabaseServer } from "@/server/supabase/server";
+import { formatAuthor } from "@/lib/format";
 import {
   toResourceFileView,
   categoryToType,
@@ -10,7 +9,6 @@ import {
   formatDate,
   type ResourceRow,
 } from "@/lib/resource";
-import { formatAuthor } from "@/lib/format";
 import type {
   ResourceFile,
   ResourceCategory,
@@ -18,6 +16,11 @@ import type {
 } from "@/lib/resources-data";
 
 const SECTION = "resource" as const;
+
+// PostgREST to-one 임베드가 배열로 올 수 있어 단일 객체로 정규화.
+function one<T>(v: T | T[] | null): T | null {
+  return Array.isArray(v) ? (v[0] ?? null) : v;
+}
 
 export type ResourceListData = {
   files: ResourceFile[];
@@ -27,35 +30,46 @@ export type ResourceListData = {
 
 export async function getResourceListData(): Promise<ResourceListData> {
   const now = new Date();
-  const db = getDb();
+  const supabase = await createSupabaseServer();
 
-  const rows = await db
-    .select({
-      id: posts.id,
-      category: posts.category,
-      title: posts.title,
-      excerpt: posts.excerpt,
-      viewCount: posts.viewCount,
-      createdAt: posts.createdAt,
-      authorName: users.name,
-      authorTitle: users.title,
-      totalBytes: sql<number>`coalesce((select sum(a.size_bytes) from ${attachments} a where a.post_id = ${posts.id}),0)::bigint`,
-    })
-    .from(posts)
-    .leftJoin(users, eq(users.id, posts.authorId))
-    .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .orderBy(desc(posts.createdAt));
-  const files = rows.map((r) =>
-    toResourceFileView({ ...r, totalBytes: Number(r.totalBytes) } as ResourceRow, now),
-  );
+  // attachments를 임베드해 size_bytes 합산(totalBytes)을 클라이언트에서 계산.
+  const { data, error } = await supabase
+    .from("posts")
+    .select(
+      "id, category, title, excerpt, view_count, created_at, author:profiles(name, title), attachments(size_bytes)",
+    )
+    .eq("section", SECTION)
+    .eq("is_published", true)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  const rows = data ?? [];
 
-  const counts = await db
-    .select({ category: posts.category, n: sql<number>`count(*)::int` })
-    .from(posts)
-    .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .groupBy(posts.category);
-  const byCat = new Map(counts.map((c) => [c.category, c.n]));
-  const total = counts.reduce((s, c) => s + c.n, 0);
+  const files: ResourceFile[] = rows.map((r) => {
+    const author = one(r.author);
+    const totalBytes = (r.attachments as { size_bytes: number }[]).reduce(
+      (sum, a) => sum + (a.size_bytes ?? 0),
+      0,
+    );
+    const row: ResourceRow = {
+      id: r.id,
+      category: r.category,
+      title: r.title,
+      excerpt: r.excerpt,
+      viewCount: r.view_count,
+      createdAt: new Date(r.created_at),
+      authorName: author?.name ?? null,
+      authorTitle: author?.title ?? null,
+      totalBytes,
+    };
+    return toResourceFileView(row, now);
+  });
+
+  // 카테고리 집계 — 목록 쿼리 결과 재사용.
+  const byCat = new Map<string, number>();
+  for (const r of rows) {
+    if (r.category) byCat.set(r.category, (byCat.get(r.category) ?? 0) + 1);
+  }
+  const total = rows.length;
   const categories: ResourceCategory[] = [
     { ko: "전체", en: "ALL", count: total, icon: "all" },
     ...RESOURCE_CATEGORIES_KO.map((ko) => ({
@@ -66,16 +80,12 @@ export async function getResourceListData(): Promise<ResourceListData> {
     })),
   ];
 
-  const pop = await db
-    .select({ title: posts.title, downloads: posts.viewCount, category: posts.category })
-    .from(posts)
-    .where(and(eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .orderBy(desc(posts.viewCount))
-    .limit(5);
-  const top: ResourceTopItem[] = pop.map((p, i) => ({
+  // 인기 자료 Top 5 — view_count 내림차순 정렬 후 상위 5개.
+  const sorted = [...rows].sort((a, b) => b.view_count - a.view_count).slice(0, 5);
+  const top: ResourceTopItem[] = sorted.map((p, i) => ({
     rank: i + 1,
     title: p.title,
-    downloads: p.downloads,
+    downloads: p.view_count,
     type: categoryToType(p.category),
   }));
 
@@ -94,49 +104,45 @@ export type ResourceDetail = {
 };
 
 export async function getResourcePost(id: string): Promise<ResourceDetail | null> {
-  const db = getDb();
-  const [r] = await db
-    .select({
-      id: posts.id,
-      category: posts.category,
-      title: posts.title,
-      excerpt: posts.excerpt,
-      viewCount: posts.viewCount,
-      createdAt: posts.createdAt,
-      authorName: users.name,
-      authorTitle: users.title,
-    })
-    .from(posts)
-    .leftJoin(users, eq(users.id, posts.authorId))
-    .where(and(eq(posts.id, id), eq(posts.section, SECTION), eq(posts.isPublished, true)))
-    .limit(1);
+  const supabase = await createSupabaseServer();
+
+  const { data: r } = await supabase
+    .from("posts")
+    .select(
+      "id, category, title, excerpt, view_count, created_at, author:profiles(name, title)",
+    )
+    .eq("id", id)
+    .eq("section", SECTION)
+    .eq("is_published", true)
+    .maybeSingle();
   if (!r) return null;
-  const atts = await db
-    .select({
-      id: attachments.id,
-      name: attachments.originalName,
-      sizeBytes: attachments.sizeBytes,
-      mime: attachments.mime,
-    })
-    .from(attachments)
-    .where(eq(attachments.postId, id));
+
+  const { data: atts } = await supabase
+    .from("attachments")
+    .select("id, original_name, size_bytes, mime")
+    .eq("post_id", id);
+
+  const author = one(r.author);
   return {
     id: r.id,
     category: r.category,
     title: r.title,
     sub: r.excerpt ?? "",
-    by: formatAuthor(r.authorName, r.authorTitle),
-    date: formatDate(r.createdAt),
-    downloads: r.viewCount,
-    files: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })),
+    by: formatAuthor(author?.name ?? null, author?.title ?? null),
+    date: formatDate(new Date(r.created_at)),
+    downloads: r.view_count,
+    files: (atts ?? []).map((a) => ({
+      id: a.id,
+      name: a.original_name,
+      sizeBytes: Number(a.size_bytes),
+      mime: a.mime,
+    })),
   };
 }
 
 export async function incrementResourceDownload(postId: string): Promise<void> {
-  await getDb()
-    .update(posts)
-    .set({ viewCount: sql`${posts.viewCount} + 1` })
-    .where(and(eq(posts.id, postId), eq(posts.section, SECTION)));
+  const supabase = await createSupabaseServer();
+  await supabase.rpc("increment_post_view", { p_id: postId });
 }
 
 export type ResourceEditData = {
@@ -148,27 +154,31 @@ export type ResourceEditData = {
 };
 
 export async function getResourcePostForEdit(id: string): Promise<ResourceEditData | null> {
-  const db = getDb();
-  const [r] = await db
-    .select({ id: posts.id, category: posts.category, title: posts.title, excerpt: posts.excerpt })
-    .from(posts)
-    .where(and(eq(posts.id, id), eq(posts.section, SECTION)))
-    .limit(1);
+  const supabase = await createSupabaseServer();
+
+  const { data: r } = await supabase
+    .from("posts")
+    .select("id, category, title, excerpt")
+    .eq("id", id)
+    .eq("section", SECTION)
+    .maybeSingle();
   if (!r) return null;
-  const atts = await db
-    .select({
-      id: attachments.id,
-      name: attachments.originalName,
-      sizeBytes: attachments.sizeBytes,
-      mime: attachments.mime,
-    })
-    .from(attachments)
-    .where(eq(attachments.postId, id));
+
+  const { data: atts } = await supabase
+    .from("attachments")
+    .select("id, original_name, size_bytes, mime")
+    .eq("post_id", id);
+
   return {
     id: r.id,
     category: r.category,
     title: r.title,
     sub: r.excerpt ?? "",
-    attachments: atts.map((a) => ({ ...a, sizeBytes: Number(a.sizeBytes) })),
+    attachments: (atts ?? []).map((a) => ({
+      id: a.id,
+      name: a.original_name,
+      sizeBytes: Number(a.size_bytes),
+      mime: a.mime,
+    })),
   };
 }
