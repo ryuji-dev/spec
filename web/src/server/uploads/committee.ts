@@ -1,12 +1,8 @@
 import "server-only";
-import { join } from "node:path";
 import { createAttachmentStore, UploadError, type StoredAttachment } from "./core";
 import { COMMITTEE_UPLOAD } from "@/lib/committee-upload";
 
-const UPLOAD_DIR = join(process.cwd(), "uploads", "committee");
-
 const store = createAttachmentStore({
-  uploadDir: UPLOAD_DIR,
   section: "committee",
   policy: COMMITTEE_UPLOAD,
   notFoundMessage: "게시물을 찾을 수 없습니다.",
@@ -16,7 +12,6 @@ const store = createAttachmentStore({
 
 export { UploadError };
 export type { StoredAttachment };
-export const uploadPath = store.uploadPath;
 export const storeAttachment = store.storeAttachment;
 export const deleteAttachment = store.deleteAttachment;
 export const deletePostFiles = store.deletePostFiles;

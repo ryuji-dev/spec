@@ -1,10 +1,8 @@
 "use server";
-// 신학원 교수 추가/수정/삭제. admin 전용, zod 검증, Drizzle.
+// 신학원 교수 추가/수정/삭제. admin 전용, zod 검증, supabase-js.
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { getDb } from "@/server/db";
-import { faculty } from "@/server/db/schema";
+import { createSupabaseServer } from "@/server/supabase/server";
 import { requireAdmin } from "@/server/auth/current-user";
 
 const facultySchema = z.object({
@@ -63,6 +61,28 @@ function parse(formData: FormData) {
   });
 }
 
+// zod가 반환한 camelCase 객체 → DB의 snake_case 컬럼명으로 변환
+function toRow(d: z.infer<typeof facultySchema>) {
+  return {
+    dept: d.dept,
+    name: d.name,
+    title: d.title,
+    en: d.en,
+    degree: d.degree,
+    tone: d.tone,
+    field: d.field,
+    teaches: d.teaches,
+    quote: d.quote,
+    years: d.years,
+    papers: d.papers,
+    office: d.office,
+    hours: d.hours,
+    is_cover: d.isCover,
+    sort_order: d.sortOrder,
+    about: d.about,
+  };
+}
+
 export async function createFaculty(
   _prev: FacultyFormState,
   formData: FormData,
@@ -70,7 +90,10 @@ export async function createFaculty(
   await requireAdmin();
   const r = parse(formData);
   if (!r.success) return { error: r.error.issues[0]?.message ?? "입력값을 확인해주세요." };
-  await getDb().insert(faculty).values(r.data);
+
+  const supabase = await createSupabaseServer();
+  const { error } = await supabase.from("faculty").insert(toRow(r.data));
+  if (error) return { error: "저장에 실패했습니다." };
   redirect("/admin/faculty");
 }
 
@@ -82,12 +105,16 @@ export async function updateFaculty(
   await requireAdmin();
   const r = parse(formData);
   if (!r.success) return { error: r.error.issues[0]?.message ?? "입력값을 확인해주세요." };
-  await getDb().update(faculty).set(r.data).where(eq(faculty.id, id));
+
+  const supabase = await createSupabaseServer();
+  const { error } = await supabase.from("faculty").update(toRow(r.data)).eq("id", id);
+  if (error) return { error: "수정에 실패했습니다." };
   redirect("/admin/faculty");
 }
 
 export async function deleteFaculty(id: string): Promise<void> {
   await requireAdmin();
-  await getDb().delete(faculty).where(eq(faculty.id, id));
+  const supabase = await createSupabaseServer();
+  await supabase.from("faculty").delete().eq("id", id);
   redirect("/admin/faculty");
 }

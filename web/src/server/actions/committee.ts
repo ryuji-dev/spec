@@ -1,10 +1,8 @@
 "use server";
-// 교육위원회 글 작성/수정/삭제. admin 전용, zod 검증, Drizzle.
+// 교육위원회 글 작성/수정/삭제. admin 전용(RLS admin 정책 + requireAdmin 재확인), zod 검증.
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { getDb } from "@/server/db";
-import { posts } from "@/server/db/schema";
+import { createSupabaseServer } from "@/server/supabase/server";
 import { requireAdmin } from "@/server/auth/current-user";
 import { deletePostFiles } from "@/server/uploads/committee";
 import { COMMITTEE_CATEGORIES_KO } from "@/lib/committee";
@@ -45,19 +43,22 @@ export async function createPost(
   const user = await requireAdmin();
   const r = parse(formData);
   if (!r.success) return { error: r.error.issues[0]?.message ?? "입력값을 확인해주세요." };
-  const [row] = await getDb()
-    .insert(posts)
-    .values({
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase
+    .from("posts")
+    .insert({
       section: "committee",
       category: r.data.category,
       title: r.data.title,
       excerpt: r.data.excerpt,
       body: r.data.body,
-      isPinned: r.data.isPinned,
-      authorId: user.id,
+      is_pinned: r.data.isPinned,
+      author_id: user.id,
     })
-    .returning({ id: posts.id });
-  redirect(`/admin/committee/${row.id}/edit`);
+    .select("id")
+    .single();
+  if (error || !data) return { error: "저장에 실패했습니다." };
+  redirect(`/admin/committee/${data.id}/edit`);
 }
 
 export async function updatePost(
@@ -68,23 +69,25 @@ export async function updatePost(
   await requireAdmin();
   const r = parse(formData);
   if (!r.success) return { error: r.error.issues[0]?.message ?? "입력값을 확인해주세요." };
-  await getDb()
-    .update(posts)
-    .set({
+  const supabase = await createSupabaseServer();
+  const { error } = await supabase
+    .from("posts")
+    .update({
       category: r.data.category,
       title: r.data.title,
       excerpt: r.data.excerpt,
       body: r.data.body,
-      isPinned: r.data.isPinned,
-      updatedAt: new Date(),
+      is_pinned: r.data.isPinned,
     })
-    .where(eq(posts.id, id));
+    .eq("id", id);
+  if (error) return { error: "수정에 실패했습니다." };
   redirect(`/committee/${id}`);
 }
 
 export async function deletePost(id: string): Promise<void> {
   await requireAdmin();
-  await deletePostFiles(id); // 디스크 파일 먼저 정리 (DB 행은 cascade)
-  await getDb().delete(posts).where(eq(posts.id, id));
+  await deletePostFiles(id); // Storage 파일 먼저 정리 (DB 행은 cascade)
+  const supabase = await createSupabaseServer();
+  await supabase.from("posts").delete().eq("id", id);
   redirect("/committee");
 }
