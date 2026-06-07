@@ -130,10 +130,13 @@ export async function readAttachment(
   const supabase = createSupabaseService();
   const { data: row } = await supabase
     .from("attachments")
-    .select("stored_name, original_name, mime, post_id")
+    .select("stored_name, original_name, mime, post_id, post:posts(is_published)")
     .eq("id", id)
     .maybeSingle();
   if (!row) return null;
+  // service-role은 RLS를 우회하므로, 비공개(미게시) 글의 첨부가 노출되지 않도록 직접 확인.
+  const post = Array.isArray(row.post) ? row.post[0] : row.post;
+  if (!post?.is_published) return null;
   const { data: blob, error } = await supabase.storage.from(BUCKET).download(row.stored_name);
   if (error || !blob) return null;
   return { blob, originalName: row.original_name, mime: row.mime, postId: row.post_id };

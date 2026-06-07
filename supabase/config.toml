@@ -173,6 +173,9 @@ enable_refresh_token_rotation = true
 # Requires enable_refresh_token_rotation = true.
 refresh_token_reuse_interval = 10
 # Allow/disallow new user signups to your project.
+# 운영(클라우드)에서는 대시보드 Authentication에서 공개 가입을 끈다(admin 전용 발급).
+# 로컬 CLI는 enable_signup=false 시 이메일 로그인 provider까지 꺼지는 quirk가 있어 true 유지.
+# 가입이 열려 있어도 role은 사용자 조작 불가한 app_metadata로만 받으므로 admin 상승은 불가.
 enable_signup = true
 # Allow/disallow anonymous sign-ins to your project.
 enable_anonymous_sign_ins = false

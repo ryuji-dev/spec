@@ -48,20 +48,27 @@ export async function createUser(
   const { email, password, name, title, church, role } = parsed.data;
   const supabase = createSupabaseService();
 
-  // user_metadata는 handle_new_user 트리거가 profiles로 복사한다.
-  const { error } = await supabase.auth.admin.createUser({
+  // handle_new_user 트리거가 프로필을 항상 member로 생성한다(메타데이터 role 미신뢰).
+  const { data, error } = await supabase.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
-    user_metadata: { name, title, church, role },
+    user_metadata: { name, title, church },
   });
 
-  if (error) {
-    const duplicate = /registered|already|exists/i.test(error.message);
+  if (error || !data?.user) {
+    const duplicate = error && /registered|already|exists/i.test(error.message);
     return {
       error: duplicate ? "이미 등록된 이메일입니다." : "계정 생성에 실패했습니다.",
     };
   }
+
+  // role은 생성 후 service-role로만 설정(guard 트리거가 service_role 허용).
+  const { error: roleErr } = await supabase
+    .from("profiles")
+    .update({ role })
+    .eq("id", data.user.id);
+  if (roleErr) return { error: "역할 설정에 실패했습니다." };
 
   return { success: `${name} 계정을 생성했습니다.` };
 }

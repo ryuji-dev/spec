@@ -125,7 +125,9 @@ create table public.faculty (
 -- 9. 헬퍼: 현재 요청자가 admin 인가 (JWT 커스텀 클레임 기반 — RLS 재귀 회피)
 -- ─────────────────────────────────────────────
 create or replace function public.auth_is_admin()
-returns boolean language sql stable as $$
+returns boolean language sql stable
+set search_path = ''
+as $$
   select coalesce((auth.jwt() ->> 'user_role') = 'admin', false)
 $$;
 
@@ -135,13 +137,16 @@ $$;
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = '' as $$
 begin
+  -- 이름·직함·교회는 사용자 입력(user_metadata). role은 어떤 메타데이터도 신뢰하지 않고
+  -- 항상 'member'로 생성한다(공개 가입자의 role 위조 차단). admin 승격은 생성 후
+  -- service-role의 명시적 profiles UPDATE로만 수행한다(admin.ts·seed).
   insert into public.profiles (id, name, title, church, role)
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
     new.raw_user_meta_data->>'title',
     new.raw_user_meta_data->>'church',
-    coalesce((new.raw_user_meta_data->>'role')::public.user_role, 'member')
+    'member'
   );
   return new;
 end;
@@ -150,12 +155,33 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
+-- 비-admin이 자기 profiles.role을 변경(권한 상승)하는 것을 차단.
+-- role 판정의 진실 원천은 JWT 클레임이지만, 그 클레임은 토큰 발급 시 profiles.role을
+-- 읽으므로 role 자가 변경을 막지 않으면 다음 토큰에서 admin이 된다.
+create or replace function public.guard_profile_role()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  -- service-role(서버의 admin 발급·승격 경로)과 admin 사용자만 role을 바꿀 수 있다.
+  -- 일반 사용자(authenticated/anon)의 role 변경은 조용히 무시(권한 상승 차단).
+  if new.role is distinct from old.role
+     and not public.auth_is_admin()
+     and auth.role() <> 'service_role' then
+    new.role := old.role;
+  end if;
+  return new;
+end;
+$$;
+create trigger profiles_guard_role before update on public.profiles
+  for each row execute function public.guard_profile_role();
+
 -- ─────────────────────────────────────────────
 -- 11. 커스텀 액세스 토큰 훅 — JWT에 user_role 클레임 주입
 --     (config.toml [auth.hook.custom_access_token]에서 활성화)
 -- ─────────────────────────────────────────────
 create or replace function public.custom_access_token_hook(event jsonb)
-returns jsonb language plpgsql stable as $$
+returns jsonb language plpgsql stable
+set search_path = ''
+as $$
 declare
   claims jsonb;
   v_role text;
@@ -165,7 +191,7 @@ begin
   if v_role is not null then
     claims := jsonb_set(claims, '{user_role}', to_jsonb(v_role));
   else
-    claims := jsonb_set(claims, '{user_role}', 'null');
+    claims := claims - 'user_role'; -- role 미상이면 클레임 제거(auth_is_admin은 false로 안전 실패)
   end if;
   event := jsonb_set(event, '{claims}', claims);
   return event;
@@ -220,7 +246,13 @@ create policy comments_select on public.comments for select using (
           and (p.is_published or p.author_id = auth.uid() or public.auth_is_admin()))
 );
 create policy comments_insert on public.comments for insert
-  with check (auth.uid() is not null and author_id = auth.uid());
+  with check (
+    auth.uid() is not null and author_id = auth.uid()
+    and exists (
+      select 1 from public.posts p where p.id = post_id
+      and (p.is_published or p.author_id = auth.uid() or public.auth_is_admin())
+    )
+  );
 create policy comments_delete on public.comments for delete
   using (author_id = auth.uid() or public.auth_is_admin());
 

@@ -16,18 +16,25 @@ const db = createClient(url, serviceKey, { auth: { persistSession: false } });
 
 // ── 1. auth 사용자 (멱등) ───────────────────────────────
 async function ensureUser(email, password, meta) {
+  const { role, ...profile } = meta;
   const { data: list } = await db.auth.admin.listUsers();
   const found = list.users.find((u) => u.email === email);
+  let id;
   if (found) {
     console.log(`skip user: ${email}`);
-    return found.id;
+    id = found.id;
+  } else {
+    const { data, error } = await db.auth.admin.createUser({
+      email, password, email_confirm: true, user_metadata: profile,
+    });
+    if (error) throw new Error(`createUser ${email}: ${error.message}`);
+    console.log(`created user: ${email}`);
+    id = data.user.id;
   }
-  const { data, error } = await db.auth.admin.createUser({
-    email, password, email_confirm: true, user_metadata: meta,
-  });
-  if (error) throw new Error(`createUser ${email}: ${error.message}`);
-  console.log(`created user: ${email}`);
-  return data.user.id;
+  // role은 service-role UPDATE로 설정(트리거는 항상 member로 생성, guard는 service_role 허용).
+  const { error: re } = await db.from("profiles").update({ role }).eq("id", id);
+  if (re) throw new Error(`set role ${email}: ${re.message}`);
+  return id;
 }
 
 const adminId = await ensureUser("admin@seogyeong.kr", "admin1234", {
