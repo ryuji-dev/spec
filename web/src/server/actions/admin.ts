@@ -1,12 +1,9 @@
 "use server";
 // 관리자 전용 계정 생성. 일반 가입 경로는 없고 admin이 회원·관리자 계정을 직접 발급한다.
-// 입력은 zod 검증, 비밀번호는 argon2 해시, 권한은 진입부에서 서버 재확인(헌법 보안).
-import { eq } from "drizzle-orm";
+// 입력은 zod 검증, 사용자 생성은 Supabase Auth(service-role), 권한은 진입부에서 서버 재확인.
 import { z } from "zod";
-import { getDb } from "@/server/db";
-import { users } from "@/server/db/schema";
-import { hashPassword } from "@/server/auth/password";
 import { requireAdmin } from "@/server/auth/current-user";
+import { createSupabaseService } from "@/server/supabase/service";
 
 const createUserSchema = z.object({
   email: z.email("이메일 형식을 확인해주세요."),
@@ -30,16 +27,6 @@ export interface CreateUserState {
   success?: string;
 }
 
-// PostgreSQL unique_violation
-function isUniqueViolation(err: unknown): boolean {
-  return (
-    typeof err === "object" &&
-    err !== null &&
-    "code" in err &&
-    (err as { code?: string }).code === "23505"
-  );
-}
-
 export async function createUser(
   _prev: CreateUserState,
   formData: FormData,
@@ -59,30 +46,21 @@ export async function createUser(
   }
 
   const { email, password, name, title, church, role } = parsed.data;
-  const db = getDb();
+  const supabase = createSupabaseService();
 
-  // 사전 중복 확인 — 흔한 케이스를 친절한 메시지로 처리한다.
-  // (아래 insert의 unique 제약 + 23505 catch는 경쟁 조건 백스톱)
-  const existing = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
-  if (existing.length > 0) {
-    return { error: "이미 등록된 이메일입니다." };
-  }
+  // user_metadata는 handle_new_user 트리거가 profiles로 복사한다.
+  const { error } = await supabase.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { name, title, church, role },
+  });
 
-  const passwordHash = await hashPassword(password);
-
-  try {
-    await db
-      .insert(users)
-      .values({ email, passwordHash, name, title, church, role });
-  } catch (err) {
-    if (isUniqueViolation(err)) {
-      return { error: "이미 등록된 이메일입니다." };
-    }
-    throw err;
+  if (error) {
+    const duplicate = /registered|already|exists/i.test(error.message);
+    return {
+      error: duplicate ? "이미 등록된 이메일입니다." : "계정 생성에 실패했습니다.",
+    };
   }
 
   return { success: `${name} 계정을 생성했습니다.` };
