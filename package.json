@@ -9,6 +9,7 @@
     "lint": "eslint",
     "og:build": "node scripts/build-og-images.mjs",
     "seed": "node --env-file=.env.local scripts/seed-supabase.mjs",
+    "seed:admin": "node --env-file=.env.production.local scripts/seed-admin.mjs",
     "db:types": "supabase gen types typescript --local > src/lib/database.types.ts"
   },
   "dependencies": {
