@@ -13,10 +13,10 @@ Next.js 앱은 **Vercel**에, DB·인증·파일저장은 **Supabase**에 둔다
 ```bash
 colima start                 # Docker 런타임 (최초 1회 설치: brew install colima docker)
 npx supabase start           # 로컬 스택(Postgres·Auth·Storage·Studio) — analytics 비활성
-cd web && pnpm dev           # http://localhost:3000
-pnpm --dir web seed          # admin·member 계정 + 콘텐츠 시드 (멱등)
+pnpm dev                     # http://localhost:3000 (저장소 루트에서 실행)
+pnpm seed                    # admin·member 계정 + 콘텐츠 시드 (멱등)
 ```
-`web/.env.local`에는 `supabase status`가 출력한 로컬 키를 넣는다(공용 기본값, 비밀 아님).
+`.env.local`(저장소 루트)에는 `supabase status`가 출력한 로컬 키를 넣는다(공용 기본값, 비밀 아님).
 정지: `npx supabase stop && colima stop`.
 
 ---
@@ -32,14 +32,15 @@ pnpm --dir web seed          # admin·member 계정 + 콘텐츠 시드 (멱등)
    npx supabase link --project-ref <ref>
    npx supabase db push          # supabase/migrations/* 적용
    ```
-5. admin 계정 시드: 운영 키를 넣은 환경에서 `node scripts/seed-supabase.mjs` 실행
-   (운영용 비밀번호로 교체, 콘텐츠 시드는 선택).
+5. admin 계정 생성: 저장소 루트에 `.env.production.local`(gitignore) 작성 —
+   `NEXT_PUBLIC_SUPABASE_URL`·`SUPABASE_SERVICE_ROLE_KEY`·`ADMIN_EMAIL`·`ADMIN_PASSWORD`(8자+).
+   그 뒤 `pnpm seed:admin` (관리자 1명만, 데모 콘텐츠 없음). 실제 콘텐츠는 관리자 화면에서 입력.
 
 ---
 
 ## 2. Vercel 연결
 
-1. Vercel에 GitHub 저장소 연결, 프레임워크 **Next.js**, **Root Directory = `web`**.
+1. Vercel에 GitHub 저장소 연결, 프레임워크 **Next.js**, **Root Directory = `./`(저장소 루트)** — 앱이 루트에 있으므로 기본값 그대로.
 2. 환경변수(Project Settings → Environment Variables):
    | 변수 | 출처 | 공개 |
    |---|---|---|
