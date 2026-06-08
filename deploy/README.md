@@ -1,62 +1,67 @@
-# 배포 — Oracle Cloud Always Free ARM VM
+# 배포 — Vercel + Supabase
 
-완성된 앱(web + postgres + caddy)을 Oracle Cloud 상시 무료 **ARM 컴퓨트 VM 1대**에 Docker Compose로 올인원 배포한다.
+Next.js 앱은 **Vercel**에, DB·인증·파일저장은 **Supabase**에 둔다.
+설계 배경은 `docs/superpowers/specs/2026-06-07-supabase-migration-design.md` 참조.
 
-> **중요:** 오라클의 관리형 DB(Autonomous Database)를 쓰지 않는다. PostgreSQL은 VM 안의 **Docker 컨테이너**로 직접 돌아간다. 오라클에서 "DB 생성"은 필요 없고, **ARM 컴퓨트 VM**만 있으면 된다. (이 compose 스택은 오라클 전용이 아니며 어떤 리눅스 호스트에서도 동일하게 동작한다.)
+> **비용**: 운영은 Supabase **Pro($25/월)** 한 줄. Vercel은 비영리 Hobby 무료.
+> Pro 결제는 **운영 프로젝트를 생성하는 순간**부터 시작된다. 로컬 개발(`supabase start`)은 무료.
 
-## 1. VM 프로비저닝 (OCI 콘솔)
-- **Shape**: `VM.Standard.A1.Flex` (ARM Ampere) — Always Free 최대 4 OCPU / 24GB RAM
-- **이미지**: Ubuntu LTS (aarch64), 부팅 볼륨 ≥ 47GB (Always Free 블록 합산 200GB)
-- **보안 목록(Ingress)**: **80·443만 개방**, SSH(22)는 본인 IP로 제한. **PostgreSQL 포트는 개방 금지**(컨테이너 내부망 전용)
-- 용량 부족("out of capacity") 시 다른 가용 도메인/리전 재시도 또는 시간차 재시도.
+---
 
-## 2. 서버 셋업
+## 0. 로컬 개발 (무료, 결제 불필요)
+
 ```bash
-sudo apt-get update && sudo apt-get install -y docker.io docker-compose-plugin
-sudo usermod -aG docker $USER   # 재로그인 후 적용
-git clone <repo-url> seogyeong && cd seogyeong
+colima start                 # Docker 런타임 (최초 1회 설치: brew install colima docker)
+npx supabase start           # 로컬 스택(Postgres·Auth·Storage·Studio) — analytics 비활성
+pnpm dev                     # http://localhost:3000 (저장소 루트에서 실행)
+pnpm seed                    # admin·member 계정 + 콘텐츠 시드 (멱등)
 ```
+`.env.local`(저장소 루트)에는 `supabase status`가 출력한 로컬 키를 넣는다(공용 기본값, 비밀 아님).
+정지: `npx supabase stop && colima stop`.
 
-## 3. 환경 변수 (.env — 서버에서 직접 작성, 커밋 금지)
-루트에 `.env`:
-```dotenv
-SITE_ADDRESS=교육위원회도메인.kr        # 도메인 지정 시 Caddy가 HTTPS 자동 발급. 없으면 :80
-POSTGRES_USER=seogyeong
-POSTGRES_PASSWORD=<openssl rand -base64 36>
-POSTGRES_DB=seogyeong
-DATABASE_URL=postgres://seogyeong:<위 비번>@postgres:5432/seogyeong
-JWT_SECRET=<openssl rand -base64 48>
-SEED_ADMIN_EMAIL=admin@교육위원회도메인.kr
-SEED_ADMIN_PASSWORD=<강한 무작위 값 — 최초 로그인 후 변경 권장>
-```
-> `.env`는 `.gitignore` 대상. 시크릿 커밋 금지.
+---
 
-## 4. 기동
-```bash
-docker compose up -d --build       # web·postgres·caddy 기동 (최초 빌드 — ARM 네이티브)
-docker compose ps                  # postgres healthy, web·caddy running 확인
-```
+## 1. Supabase 운영 프로젝트 (★유료 시작점)
 
-## 5. 마이그레이션 + 초기 admin (최초 1회 / 스키마 변경 시)
-```bash
-docker compose run --rm migrate    # migrate.mjs(스키마) → seed-admin.mjs(초기 admin)
-```
-- 멱등: 재실행해도 적용된 마이그레이션·기존 admin은 건너뛴다.
-- 스키마 변경 배포 시: `git pull` → `docker compose up -d --build` → `docker compose run --rm migrate`.
+1. Supabase 대시보드에서 **Pro 조직/프로젝트 생성**(리전: Seoul). DB 비밀번호 보관.
+2. **Authentication → 공개 가입 비활성화**(admin이 계정 발급).
+3. **커스텀 액세스 토큰 훅 활성화** 확인 (`config.toml`의 `[auth.hook.custom_access_token]`이 `db push`로 함께 반영됨).
+4. CLI 연결 후 마이그레이션 반영:
+   ```bash
+   npx supabase login
+   npx supabase link --project-ref <ref>
+   npx supabase db push          # supabase/migrations/* 적용
+   ```
+5. admin 계정 생성: 저장소 루트에 `.env.production.local`(gitignore) 작성 —
+   `NEXT_PUBLIC_SUPABASE_URL`·`SUPABASE_SERVICE_ROLE_KEY`·`ADMIN_EMAIL`·`ADMIN_PASSWORD`(8자+).
+   그 뒤 `pnpm seed:admin` (관리자 1명만, 데모 콘텐츠 없음). 실제 콘텐츠는 관리자 화면에서 입력.
 
-## 6. 도메인·HTTPS
-- DNS A 레코드를 VM 공인 IP로 연결. `SITE_ADDRESS`가 도메인이면 Caddy가 Let's Encrypt 인증서를 자동 발급(80/443 개방 필요).
-- 확인: `https://<도메인>/`, `/committee`, `/resources`, `/login`(admin 로그인) → `/admin`.
+---
 
-## 7. 운영 체크리스트
-- [ ] PostgreSQL 정기 백업: `docker compose exec postgres pg_dump -U $POSTGRES_USER $POSTGRES_DB > backup.sql` (cron → 블록 볼륨/Object Storage)
-- [ ] 업로드 볼륨 백업: `docker run --rm -v <프로젝트명>_uploads:/v -v $PWD:/b alpine tar czf /b/uploads.tgz -C /v .` (볼륨명은 `docker volume ls`로 확인 — compose 프로젝트 디렉터리명 접두)
-- [ ] 로그 확인: `docker compose logs -f web` / `caddy`
-- [ ] `JWT_SECRET` 로테이션 정책(로테이션 시 전 세션 무효화)
-- [ ] OCI 무료 한도·유휴 자원 회수 정책 모니터링
+## 2. Vercel 연결
 
-## 8. 트러블슈팅
-- web 컨테이너 DB 연결 실패: `.env`의 `DATABASE_URL` 호스트가 `postgres`(서비스명)인지 확인.
-- 마이그레이션 에러: `docker compose run --rm migrate` 출력 확인. `__migrations` 테이블로 적용 이력 추적.
-- `migrate` 명령이 비정상 종료(마이그레이션은 성공인데 종료 코드 ≠ 0): `seed-admin`이 `SEED_ADMIN_EMAIL`/`SEED_ADMIN_PASSWORD` 미설정으로 멈춘 경우다. `.env`에 두 값을 지정 후 재실행(멱등).
-- HTTPS 미발급: 80/443 개방·DNS 전파·`SITE_ADDRESS` 도메인 정확성 확인.
+1. Vercel에 GitHub 저장소 연결, 프레임워크 **Next.js**, **Root Directory = `./`(저장소 루트)** — 앱이 루트에 있으므로 기본값 그대로.
+2. 환경변수(Project Settings → Environment Variables):
+   | 변수 | 출처 | 공개 |
+   |---|---|---|
+   | `NEXT_PUBLIC_SUPABASE_URL` | 운영 프로젝트 Project URL | 공개 |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | publishable(anon) 키 | 공개(RLS가 보호) |
+   | `SUPABASE_SERVICE_ROLE_KEY` | secret(service_role) 키 | **서버 전용·노출 금지** |
+3. 푸시 → 자동 빌드·배포. PR마다 프리뷰 배포 제공.
+4. 도메인 연결·TLS는 Vercel이 자동 처리.
+
+---
+
+## 3. 운영 스모크 테스트
+
+- 공개 6섹션(`/committee`·`/training`·`/webzine`·`/faculty`·`/resources`·`/board`) 렌더
+- `/login` → admin 로그인 → `/admin` 접근, 글 작성·파일 업로드/다운로드
+- member 로그인 → `/board` 작성·댓글·좋아요, `/admin` 차단
+
+---
+
+## 4. 운영 메모
+
+- **스키마 변경**: `supabase migration new <name>` → 로컬 검증(`supabase db reset`) → `supabase db push` → `pnpm db:types`로 타입 재생성.
+- **백업**: Supabase Pro는 일일 백업 제공(대시보드). 추가로 `supabase db dump` 가능.
+- **RLS가 1차 보안 경계**다. service_role 키는 서버(Server Action·Route Handler·업로드)에서만 사용.

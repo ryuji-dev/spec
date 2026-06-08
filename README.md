@@ -6,32 +6,32 @@
 
 - **앱**: Next.js 16 풀스택 (App Router, TypeScript strict, Tailwind CSS, src/, pnpm) — 프론트·백엔드 단일 앱
 - **백엔드**: 같은 앱 안의 Server Actions·Route Handlers + `src/server/` 서버 전용 계층
-- **DB**: PostgreSQL (Drizzle ORM)
-- **인증**: 경량 커스텀 세션 (httpOnly 쿠키 + JWT)
-- **배포**: Oracle Cloud Always Free ARM VM 1대에 Docker Compose(`web` + `postgres` + `caddy`)
+- **DB·인증·저장**: Supabase (PostgreSQL + Auth + Storage) — supabase-js + RLS
+- **배포**: Vercel(Next.js) + Supabase. 도메인·HTTPS는 Vercel 자동
 - 자세한 규약·보안 기본기는 [`CLAUDE.md`](./CLAUDE.md) 참조
 
 ## 빠른 시작
 
 ```bash
-# 의존성 설치
-cd web
+# 의존성 설치 (저장소 루트에서 실행)
 pnpm install   # pnpm 미설치 시: corepack enable && corepack prepare pnpm@latest --activate
 
-# 로컬 DB (Docker 불필요 — PGlite를 PG 서버로 띄움, 최초 1회 마이그레이션+admin 시드)
-pnpm dev:db    # 별도 터미널에서 유지. admin@seogyeong.kr / admin1234
+# 로컬 Supabase 스택 (Docker 런타임은 colima)
+colima start                 # 최초 1회: brew install colima docker
+npx supabase start           # Postgres·Auth·Storage·Studio
+pnpm seed                    # admin·member 계정 + 콘텐츠 시드 (멱등)
+                             # admin@seogyeong.kr / admin1234
 
 # 개발 서버
-pnpm dev       # http://localhost:3000  (.env.local의 DATABASE_URL로 위 DB에 접속)
+pnpm dev       # http://localhost:3000  (.env.local의 Supabase 키 사용)
 
-# 빌드 / 린트 / 검증
+# 빌드 / 린트 / 타입
 pnpm build
 pnpm lint
-pnpm db:verify    # 스키마 마이그레이션 스모크 테스트
-pnpm auth:verify  # 인증 원시 함수 검증
+pnpm db:types  # database.types.ts 재생성
 ```
 
-> 로컬 개발은 **Docker 없이** 동작한다(PGlite). 운영은 Oracle VM에서 docker compose로 실제 PostgreSQL을 쓴다.
+> 로컬은 Supabase CLI 스택으로 무료, 운영은 Vercel + Supabase Pro($25/월). 정지: `npx supabase stop && colima stop`.
 
 ## 폴더 구조
 
@@ -40,28 +40,30 @@ spec/
 ├── CLAUDE.md          ← 프로젝트 헌법·규칙 (Claude Code 자동 로드)
 ├── README.md          ← 이 파일
 ├── TODO.md            ← 작업 큐 + 후속 작업 프롬프트
-├── docker-compose.yml ← web + postgres + caddy 오케스트레이션
-├── deploy/            ← 배포 자산 (Caddyfile, OCI VM 셋업 메모)
+├── deploy/            ← 배포 런북 (Vercel + Supabase)
+├── supabase/          ← DB 마이그레이션·config.toml (로컬 CLI 스택)
 ├── docs/
 │   └── superpowers/
 │       ├── plans/     ← 작업 plan 기록 (날짜별)
 │       └── specs/     ← 설계 문서 (브레인스토밍 결과)
-└── web/               ← Next.js 16 풀스택 앱
-    └── src/
-        ├── app/       ← App Router (UI 라우트 + api/ Route Handlers)
-        ├── server/    ← 서버 전용(백엔드): db/ · auth/ · services/ · actions/
-        └── lib/       ← 클라이언트·공용 (api.ts 래퍼, dto/, 유틸)
+├── package.json · tsconfig.json · next.config.ts  ← 앱 설정 (pnpm)
+├── public/            ← 정적 자산
+├── scripts/           ← 빌드·시드 스크립트
+└── src/               ← Next.js 16 풀스택 앱 소스 (루트에 바로 위치, web/ 래퍼 없음)
+    ├── app/           ← App Router (UI 라우트 + api/ Route Handlers)
+    ├── server/        ← 서버 전용(백엔드): auth/ · services/ · actions/ · supabase/ · uploads/
+    ├── lib/           ← 클라이언트·공용 (api.ts 래퍼, dto/, 유틸)
+    └── proxy.ts       ← 미들웨어 (Next 16: middleware→proxy)
 ```
 
 ## 진행 현황
 
-- [x] **랜딩페이지** — `web/src/app/page.tsx` (디자인 100% 보존, 휠 스크롤로 메인 진입)
-- [x] **신학원웹진** — `web/src/app/webzine/` (mock 단계)
+- [x] **랜딩페이지** — `src/app/page.tsx` (디자인 100% 보존, 휠 스크롤로 메인 진입)
+- [x] **신학원웹진** — `src/app/webzine/` (mock 단계)
 - [ ] 메인페이지·공통 레이아웃 (디자인 이식 진행 중)
-- [x] **아키텍처 재설계** — Oracle VM + Next.js 풀스택 + PostgreSQL/Drizzle
-- [ ] 인프라 골격 (docker-compose · Caddy) — Phase 1
-- [ ] DB 스키마·인증·게시물 CRUD — Phase 2~4 (디자인 이식 완료 후)
-- [ ] Oracle ARM VM 배포 — Phase 5
+- [x] **아키텍처 재설계** — Oracle/Drizzle → Supabase + Vercel 전환
+- [x] **Supabase 마이그레이션** — 스키마·RLS·Auth·Storage·supabase-js (로컬 e2e 검증)
+- [ ] Supabase Pro 결제 + Vercel 배포
 
 전체 작업 큐는 [`TODO.md`](./TODO.md) 참조.
 
