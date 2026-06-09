@@ -4,10 +4,15 @@ import LoginForm from "./LoginForm";
 
 export const metadata: Metadata = { title: "로그인" };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string; error?: string }>;
+}) {
+  const sp = await searchParams;
   return (
     <AuthLayout>
-      <LoginForm />
+      <LoginForm next={sp.next} notice={sp.error} />
     </AuthLayout>
   );
 }

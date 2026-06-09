@@ -9,7 +9,13 @@ import styles from "../_components/auth/auth.module.css";
 
 const initialState: LoginState = {};
 
-export default function LoginForm() {
+export default function LoginForm({
+  next,
+  notice,
+}: {
+  next?: string;
+  notice?: string;
+}) {
   const [state, formAction, pending] = useActionState(login, initialState);
   const [password, setPassword] = useState("");
 
@@ -30,6 +36,8 @@ export default function LoginForm() {
       </div>
 
       <form action={formAction} className={styles.form}>
+        {next ? <input type="hidden" name="next" value={next} /> : null}
+        {notice ? <p role="alert" className={styles.error}>{notice}</p> : null}
         <label className={styles.field}>
           <span className={styles.label}>이메일</span>
           <span className={styles.inputWrap}>

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useActionState, useState } from "react";
+import { signup, type SignupState } from "@/server/actions/auth";
 import { signupSchema } from "@/lib/dto/auth";
 import BrandLockup from "../_components/auth/BrandLockup";
 import PasswordInput from "../_components/auth/PasswordInput";
@@ -8,10 +9,13 @@ import GoogleMark from "../_components/auth/GoogleMark";
 import styles from "../_components/auth/auth.module.css";
 
 type Errors = Partial<
-  Record<"name" | "email" | "password" | "passwordConfirm" | "terms" | "form", string>
+  Record<"name" | "email" | "password" | "passwordConfirm" | "terms", string>
 >;
 
+const initialState: SignupState = {};
+
 export default function SignupForm() {
+  const [state, formAction, pending] = useActionState(signup, initialState);
   const [f, setF] = useState({
     name: "",
     church: "",
@@ -21,16 +25,16 @@ export default function SignupForm() {
     terms: false,
   });
   const [errors, setErrors] = useState<Errors>({});
-  const [done, setDone] = useState(false);
   const set =
     (k: keyof typeof f) =>
     (v: string | boolean) =>
       setF((p) => ({ ...p, [k]: v }));
 
-  function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  // 클라이언트 즉시 검증 — 실패 시 제출 막고 필드 오류 표시, 통과 시 Server Action 진행.
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     const parsed = signupSchema.safeParse(f);
     if (!parsed.success) {
+      e.preventDefault();
       const next: Errors = {};
       for (const issue of parsed.error.issues) {
         const key = issue.path[0] as keyof Errors;
@@ -40,8 +44,24 @@ export default function SignupForm() {
       return;
     }
     setErrors({});
-    // 디자인 단계: 실제 가입은 미연동(기능 단계에서 signupSchema 공유 Server Action 연결).
-    setDone(true);
+  }
+
+  if (state.sent) {
+    return (
+      <>
+        <div className={styles.brandRow}>
+          <BrandLockup />
+        </div>
+        <p className={styles.label} style={{ textAlign: "center", lineHeight: 1.6 }}>
+          입력하신 이메일로 인증 메일을 보냈습니다.
+          <br />
+          메일의 링크를 눌러 회원가입을 완료해주세요.
+        </p>
+        <div className={styles.footer}>
+          <Link href="/login" className={styles.footerLink}>로그인으로 돌아가기</Link>
+        </div>
+      </>
+    );
   }
 
   return (
@@ -60,12 +80,13 @@ export default function SignupForm() {
         <span className={styles.dividerLine} />
       </div>
 
-      <form onSubmit={onSubmit} className={styles.form} noValidate>
+      <form action={formAction} onSubmit={onSubmit} className={styles.form} noValidate>
         <div className={styles.twoCol}>
           <label className={styles.field}>
             <span className={styles.label}>성함</span>
             <span className={styles.inputWrap}>
               <input
+                name="name"
                 className={styles.input}
                 placeholder="홍길동"
                 autoComplete="name"
@@ -78,6 +99,7 @@ export default function SignupForm() {
             <span className={styles.label}>소속 교회</span>
             <span className={styles.inputWrap}>
               <input
+                name="church"
                 className={styles.input}
                 placeholder="서경중앙교회"
                 autoComplete="organization"
@@ -93,6 +115,7 @@ export default function SignupForm() {
           <span className={styles.label}>이메일</span>
           <span className={styles.inputWrap}>
             <input
+              name="email"
               className={styles.input}
               type="email"
               placeholder="you@example.com"
@@ -135,6 +158,7 @@ export default function SignupForm() {
         <label className={styles.terms}>
           <input
             type="checkbox"
+            name="terms"
             checked={f.terms}
             onChange={(e) => set("terms")(e.target.checked)}
           />
@@ -145,13 +169,11 @@ export default function SignupForm() {
         </label>
         {errors.terms && <p className={styles.error}>{errors.terms}</p>}
 
-        {done && (
-          <p className={styles.error} style={{ color: "#9DB08F" }}>
-            입력이 확인되었습니다. (가입 기능은 준비 중입니다)
-          </p>
-        )}
+        {state.error && <p role="alert" className={styles.error}>{state.error}</p>}
 
-        <button type="submit" className={styles.submit}>가입하기</button>
+        <button type="submit" disabled={pending} className={styles.submit}>
+          {pending ? "처리 중…" : "가입하기"}
+        </button>
       </form>
 
       <div className={styles.footer}>
