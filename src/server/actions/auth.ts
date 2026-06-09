@@ -1,13 +1,8 @@
 "use server";
 // 로그인·로그아웃 Server Action. 입력은 zod 검증, 세션은 Supabase Auth(@supabase/ssr 쿠키).
 import { redirect } from "next/navigation";
-import { z } from "zod";
+import { loginSchema } from "@/lib/dto/auth";
 import { createSupabaseServer } from "@/server/supabase/server";
-
-const loginSchema = z.object({
-  email: z.email(),
-  password: z.string().min(1),
-});
 
 export interface LoginState {
   error?: string;

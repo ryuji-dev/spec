@@ -1,0 +1,390 @@
+/* 로그인·회원가입 공통 — 디자인 원본(_design/auth) dark+gold 테마 해석. 헌법 [7] 보존. */
+
+/* 레이아웃 */
+.grid {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 47%) 1fr;
+}
+
+/* 좌측 히어로 */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: #1a1410;
+  min-height: 660px;
+}
+.heroImg {
+  position: absolute;
+  inset: 0;
+  background-image: url("/images/auth-hero.webp");
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.04);
+}
+.heroGrad {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    155deg,
+    rgba(45, 74, 62, 0.45) 0%,
+    rgba(26, 20, 16, 0.42) 42%,
+    rgba(26, 20, 16, 0.9) 100%
+  );
+}
+.heroDots {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 0
+  );
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+}
+.heroContent {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 46px 52px;
+  color: #fff;
+}
+.heroKicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.78);
+}
+.heroKicker::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: rgba(245, 241, 232, 0.4);
+}
+.heroEyebrow {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  opacity: 0.72;
+  margin-bottom: 22px;
+}
+.heroTitle {
+  margin: 0;
+  font-family: var(--font-noto-serif-kr), serif;
+  font-size: 46px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.heroTitle em {
+  font-style: italic;
+  font-weight: 300;
+  color: #d9c18c;
+}
+.heroQuoteWrap {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(245, 241, 232, 0.2);
+  max-width: 400px;
+}
+.heroQuote {
+  margin: 0;
+  font-family: var(--font-noto-serif-kr), serif;
+  font-size: 16px;
+  line-height: 1.65;
+  opacity: 0.92;
+  letter-spacing: -0.01em;
+}
+.heroCite {
+  margin: 12px 0 0;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 11px;
+  opacity: 0.58;
+  letter-spacing: 0.08em;
+}
+
+/* 우측 폼 사이드 */
+.formSide {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 44px;
+  background: #1a1410;
+  min-height: 660px;
+}
+.formPanel {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 90% at 50% -10%,
+    rgba(45, 74, 62, 0.22) 0%,
+    rgba(26, 20, 16, 0) 55%
+  );
+}
+.formInner {
+  position: relative;
+  width: 100%;
+  max-width: 396px;
+}
+
+/* 브랜드 락업 */
+.brandRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 34px;
+}
+.lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  flex-shrink: 0;
+}
+.lockupKo {
+  display: block;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  white-space: nowrap;
+}
+.lockupEn {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: nowrap;
+}
+
+/* OAuth(구글) 버튼 — 이번엔 disabled */
+.oauth {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 16px;
+  background: rgba(245, 241, 232, 0.05);
+  border: 1px solid rgba(245, 241, 232, 0.18);
+  border-radius: 8px;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f5f1e8;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.oauth:hover:not(:disabled) {
+  background: rgba(245, 241, 232, 0.11);
+}
+.oauth:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* 구분선 */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 22px 0;
+}
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background: rgba(245, 241, 232, 0.16);
+}
+.dividerText {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: rgba(245, 241, 232, 0.55);
+}
+
+/* 폼 */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.field {
+  display: block;
+}
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(245, 241, 232, 0.92);
+}
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.inputWrap {
+  position: relative;
+  display: block;
+}
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 16px;
+  background: rgba(245, 241, 232, 0.05);
+  border: 1px solid rgba(245, 241, 232, 0.18);
+  border-radius: 8px;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 14px;
+  color: #f5f1e8;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.input::placeholder {
+  color: rgba(245, 241, 232, 0.4);
+}
+.input:focus {
+  border-color: rgba(201, 169, 110, 0.6);
+}
+.inputEye {
+  padding-right: 44px;
+}
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(245, 241, 232, 0.55);
+  display: inline-flex;
+  padding: 2px;
+}
+.forgot {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #d9c18c;
+  text-decoration: none;
+}
+
+/* 약관 동의 */
+.terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(245, 241, 232, 0.55);
+  cursor: pointer;
+}
+.terms input {
+  margin-top: 2px;
+  width: 15px;
+  height: 15px;
+  accent-color: #c9a96e;
+  flex-shrink: 0;
+}
+.termsLink {
+  color: #d9c18c;
+  font-weight: 600;
+}
+
+/* 제출 버튼 (accent/gold) */
+.submit {
+  width: 100%;
+  margin-top: 6px;
+  padding: 15px 28px;
+  border: 1px solid #c9a96e;
+  border-radius: 8px;
+  background: #c9a96e;
+  color: #2a2520;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 34px rgba(201, 169, 110, 0.45);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+.submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 하단 토글 + 오류 */
+.footer {
+  margin-top: 28px;
+  text-align: center;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 13px;
+  color: rgba(245, 241, 232, 0.55);
+}
+.footerLink {
+  color: #d9c18c;
+  font-weight: 700;
+  text-decoration: none;
+}
+.error {
+  margin: 0;
+  color: #e6907f;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 12.5px;
+}
+
+/* 모바일 — 원본엔 브레이크포인트 없음(데스크톱 전용). 사용성 위해 최소 스택 추가. */
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .hero {
+    display: none;
+  }
+  .formSide {
+    padding: 40px 20px;
+  }
+}
