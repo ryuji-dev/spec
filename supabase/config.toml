@@ -255,6 +255,10 @@ otp_expiry = 3600
 subject = "[서경노회 교육위원회] 이메일 인증"
 content_path = "./supabase/templates/confirmation.html"
 
+[auth.email.template.recovery]
+subject = "[서경노회 교육위원회] 비밀번호 재설정"
+content_path = "./supabase/templates/recovery.html"
+
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
 # enabled = true
