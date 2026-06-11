@@ -174,6 +174,53 @@ export type Database = {
         }
         Relationships: []
       }
+      inquiries: {
+        Row: {
+          answer: string | null
+          answered_at: string | null
+          body: string
+          category: string
+          contact: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string
+          user_id: string | null
+        }
+        Insert: {
+          answer?: string | null
+          answered_at?: string | null
+          body: string
+          category: string
+          contact?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          user_id?: string | null
+        }
+        Update: {
+          answer?: string | null
+          answered_at?: string | null
+          body?: string
+          category?: string
+          contact?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inquiries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_likes: {
         Row: {
           created_at: string
