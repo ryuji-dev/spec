@@ -28,11 +28,6 @@ export const signupSchema = z
   });
 export type SignupInput = z.infer<typeof signupSchema>;
 
-export const resetRequestSchema = z.object({
-  email: z.email("이메일 형식을 확인해주세요."),
-});
-export type ResetRequestInput = z.infer<typeof resetRequestSchema>;
-
 export const newPasswordSchema = z
   .object({
     password: z.string().min(8, "비밀번호는 8자 이상이어야 합니다."),
