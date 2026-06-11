@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireAdmin } from "@/server/auth/current-user";
 import { logout } from "@/server/actions/auth";
 import CreateUserForm from "./CreateUserForm";
@@ -19,6 +20,9 @@ export default async function AdminPage() {
           로그아웃
         </button>
       </form>
+      <p style={{ marginTop: 16 }}>
+        <Link href="/admin/inquiries">문의 접수함 →</Link>
+      </p>
 
       <section style={{ marginTop: 40 }}>
         <h2 style={{ fontSize: 18, marginBottom: 12 }}>계정 생성</h2>
