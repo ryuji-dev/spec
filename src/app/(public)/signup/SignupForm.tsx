@@ -46,24 +46,6 @@ export default function SignupForm() {
     setErrors({});
   }
 
-  if (state.sent) {
-    return (
-      <>
-        <div className={styles.brandRow}>
-          <BrandLockup />
-        </div>
-        <p className={styles.label} style={{ textAlign: "center", lineHeight: 1.6 }}>
-          입력하신 이메일로 인증 메일을 보냈습니다.
-          <br />
-          메일의 링크를 눌러 회원가입을 완료해주세요.
-        </p>
-        <div className={styles.footer}>
-          <Link href="/login" className={styles.footerLink}>로그인으로 돌아가기</Link>
-        </div>
-      </>
-    );
-  }
-
   return (
     <>
       <div className={styles.brandRow}>

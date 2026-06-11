@@ -6,10 +6,10 @@ import ResetPasswordForm from "./ResetPasswordForm";
 
 export const metadata: Metadata = { title: "새 비밀번호 설정" };
 
-// 복구 링크(verifyOtp)로 세션이 만들어진 상태에서만 진입. 직접 접근은 요청 페이지로 보낸다.
+// 로그인 사용자의 비밀번호 변경 페이지(임시 비밀번호 수령 후 본인 변경 경로). 미로그인은 로그인으로.
 export default async function ResetPasswordPage() {
   const user = await getCurrentUser();
-  if (!user) redirect("/forgot-password");
+  if (!user) redirect("/login");
   return (
     <AuthLayout>
       <ResetPasswordForm />

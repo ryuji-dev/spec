@@ -55,7 +55,7 @@ export default function LoginForm({
         <div>
           <div className={styles.labelRow}>
             <label htmlFor="login-password" className={styles.label} style={{ marginBottom: 0 }}>비밀번호</label>
-            <Link href="/forgot-password" className={styles.forgot}>비밀번호를 잊으셨나요?</Link>
+            <span className={styles.forgot} style={{ cursor: "default" }}>분실 시 관리자에게 문의</span>
           </div>
           <PasswordInput
             id="login-password"
