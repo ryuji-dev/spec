@@ -226,7 +226,7 @@ enable_signup = true
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
-enable_confirmations = true
+enable_confirmations = false
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
@@ -250,14 +250,6 @@ otp_expiry = 3600
 # [auth.email.template.invite]
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
-
-[auth.email.template.confirmation]
-subject = "[서경노회 교육위원회] 이메일 인증"
-content_path = "./supabase/templates/confirmation.html"
-
-[auth.email.template.recovery]
-subject = "[서경노회 교육위원회] 비밀번호 재설정"
-content_path = "./supabase/templates/recovery.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
@@ -423,3 +415,14 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 # declarative_schema_path = "./database"
 # JSON string passed through to pg-delta SQL formatting.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":80,\"commaStyle\":\"trailing\"}"
+
+# ─────────────────────────────────────────────
+# 운영 프로젝트 전용 override — config push가 이 project_id로 푸시할 때만 적용.
+# 로컬 스택(supabase start)에는 영향 없음. Site URL은 메일 링크({{ .SiteURL }})의 기준.
+# ─────────────────────────────────────────────
+[remotes.production]
+project_id = "kznzcxegbeuwiwjczpmp"
+
+[remotes.production.auth]
+site_url = "https://spec-webzin.vercel.app"
+additional_redirect_urls = []
