@@ -1,0 +1,70 @@
+/* 문서형 페이지 공통 — 팔레트 토큰 기반(디자인 원본 없는 페이지 전용). */
+.page {
+  min-height: 100vh;
+  background: var(--palette-bg);
+  color: var(--palette-ink);
+}
+
+.mobileBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  background: rgba(251, 248, 241, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--palette-line);
+}
+.mobileBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--palette-ink);
+  text-decoration: none;
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 20px 96px;
+}
+.title {
+  margin: 0 0 10px;
+  font-family: var(--font-noto-serif-kr), serif;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.lead {
+  margin: 0 0 36px;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--palette-muted);
+}
+
+/* 본문 요소 — 약관 등 긴 문서용 */
+.container h2 {
+  margin: 36px 0 10px;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.container p,
+.container li {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: var(--palette-ink);
+}
+.container ul {
+  padding-left: 20px;
+  margin: 8px 0 16px;
+}
