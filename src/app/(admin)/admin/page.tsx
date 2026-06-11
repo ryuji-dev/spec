@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/server/auth/current-user";
 import { logout } from "@/server/actions/auth";
 import CreateUserForm from "./CreateUserForm";
+import AdminResetPasswordForm from "./AdminResetPasswordForm";
 
 // proxy가 1차 가드, 여기서 서버 권한을 재확인한다(헌법: 권한 체크는 서버에서).
 export default async function AdminPage() {
@@ -22,9 +23,18 @@ export default async function AdminPage() {
       <section style={{ marginTop: 40 }}>
         <h2 style={{ fontSize: 18, marginBottom: 12 }}>계정 생성</h2>
         <p style={{ color: "#666", fontSize: 13, marginTop: 0 }}>
-          일반 가입 경로는 없습니다. 노회 회원·관리자 계정은 여기서 발급합니다.
+          일반 회원은 셀프 가입이 가능합니다. 여기서는 직함이 필요한 회원·관리자 계정을 발급합니다.
         </p>
         <CreateUserForm />
+      </section>
+
+      <section style={{ marginTop: 40 }}>
+        <h2 style={{ fontSize: 18, marginBottom: 12 }}>회원 비밀번호 재설정</h2>
+        <p style={{ color: "#666", fontSize: 13, marginTop: 0 }}>
+          비밀번호를 잊은 회원에게 임시 비밀번호를 발급합니다. 전달 후 회원이
+          로그인하여 /reset-password에서 직접 변경하도록 안내해주세요.
+        </p>
+        <AdminResetPasswordForm />
       </section>
     </main>
   );
