@@ -3,6 +3,7 @@ import { requireAdmin } from "@/server/auth/current-user";
 import { listInquiries } from "@/server/services/inquiry";
 import { formatDate } from "@/lib/format";
 import AnswerForm from "./AnswerForm";
+import DeleteInquiryButton from "./DeleteInquiryButton";
 
 // proxy(/admin/:path*)가 1차 가드, 여기서 서버 권한 재확인.
 export default async function AdminInquiriesPage() {
@@ -46,6 +47,7 @@ export default async function AdminInquiriesPage() {
             )}
             <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{q.body}</p>
             <AnswerForm inquiryId={q.id} defaultAnswer={q.answer ?? undefined} />
+            <DeleteInquiryButton inquiryId={q.id} />
           </div>
         </details>
       ))}

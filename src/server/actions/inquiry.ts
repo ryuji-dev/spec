@@ -1,6 +1,7 @@
 "use server";
 // 고객지원 문의 — 접수(비로그인 포함)와 관리자 답변. RLS가 1차 경계, 답변은 진입부 권한 재확인.
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { answerSchema, inquirySchema } from "@/lib/dto/inquiry";
 import { requireAdmin } from "@/server/auth/current-user";
 import { createSupabaseServer } from "@/server/supabase/server";
@@ -86,4 +87,31 @@ export async function answerInquiry(
   revalidatePath("/admin/inquiries");
   revalidatePath("/support");
   return { success: "답변을 저장했습니다." };
+}
+
+export interface DeleteInquiryState {
+  error?: string;
+}
+
+// 문의 삭제 — 보유 기간 경과·요청 시 파기. 관리자만(진입부 재확인 + RLS delete 정책).
+export async function deleteInquiry(
+  _prev: DeleteInquiryState,
+  formData: FormData,
+): Promise<DeleteInquiryState> {
+  await requireAdmin();
+
+  const parsed = z.uuid().safeParse(formData.get("id"));
+  if (!parsed.success) return { error: "잘못된 요청입니다." };
+
+  const supabase = await createSupabaseServer();
+  const { error, data } = await supabase
+    .from("inquiries")
+    .delete()
+    .eq("id", parsed.data)
+    .select("id");
+  if (error || data.length === 0) return { error: "삭제에 실패했습니다." };
+
+  revalidatePath("/admin/inquiries");
+  revalidatePath("/support");
+  return {};
 }
