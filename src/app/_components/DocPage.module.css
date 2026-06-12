@@ -65,6 +65,8 @@
   color: var(--palette-ink);
 }
 .container ul {
+  /* Tailwind preflight가 list-style을 제거하므로 문서용으로 복원 */
+  list-style: disc;
   padding-left: 20px;
   margin: 8px 0 16px;
 }

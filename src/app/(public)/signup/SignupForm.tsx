@@ -145,8 +145,8 @@ export default function SignupForm() {
             onChange={(e) => set("terms")(e.target.checked)}
           />
           <span>
-            <a href="#" className={styles.termsLink} onClick={(e) => e.preventDefault()}>이용약관</a> 및{" "}
-            <a href="#" className={styles.termsLink} onClick={(e) => e.preventDefault()}>개인정보 처리방침</a>에 동의합니다.
+            <a href="/terms" target="_blank" rel="noreferrer" className={styles.termsLink}>이용약관</a> 및{" "}
+            <a href="/privacy" target="_blank" rel="noreferrer" className={styles.termsLink}>개인정보 처리방침</a>에 동의합니다.
           </span>
         </label>
         {errors.terms && <p className={styles.error}>{errors.terms}</p>}
