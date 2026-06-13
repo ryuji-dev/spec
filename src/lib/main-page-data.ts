@@ -1,6 +1,7 @@
 /**
- * 메인페이지 mock 데이터.
- * 백엔드 연동 전까지 사용. 디자인 원본 `_design/.../app.jsx`, `desktop.jsx` 와 동일한 내용.
+ * 메인페이지 정적 구조 데이터.
+ * 히어로·메뉴·내비·푸터·탭 등 사이트 구조에 속하는 상수만 남겼다.
+ * 일정·사진첩·공지 등 동적 섹션은 DB에서 가져온다(server/services/home.ts).
  */
 
 export type HeroSlide = {
@@ -72,20 +73,6 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 ];
 
-export type ScheduleItem = {
-  date: string;
-  day: string;
-  title: string;
-  loc: string;
-  tag: string;
-};
-
-export const SCHEDULE_ITEMS: ScheduleItem[] = [
-  { date: "05.10", day: "주일", title: "제27회 성경고사 본선", loc: "서경교회 본당", tag: "대회" },
-  { date: "05.24", day: "주일", title: "봄 교사 헌신예배", loc: "제일교회", tag: "예배" },
-  { date: "06.06", day: "금", title: "여름 수련회 사전 모임", loc: "교육관 3층", tag: "모임" },
-];
-
 export type PhotoTileType =
   | "mountain"
   | "forest"
@@ -93,26 +80,6 @@ export type PhotoTileType =
   | "book"
   | "music"
   | "camp";
-
-export type PhotoTile = {
-  id: number;
-  title: string;
-  date: string;
-  tag: string;
-  type: PhotoTileType;
-};
-
-export const PHOTO_TILES: PhotoTile[] = [
-  { id: 1, title: "교사 헌신예배", date: "04.28", tag: "예배", type: "mountain" },
-  { id: 2, title: "봄 야외수련회", date: "04.20", tag: "수련회", type: "forest" },
-  { id: 3, title: "주일학교 교사회의", date: "04.15", tag: "회의", type: "meeting" },
-  { id: 4, title: "성경고사 본선", date: "04.10", tag: "대회", type: "book" },
-  { id: 5, title: "찬양제 리허설", date: "04.05", tag: "음악", type: "music" },
-  { id: 6, title: "교육위원회 정기모임", date: "03.28", tag: "회의", type: "meeting" },
-  { id: 7, title: "여름 캠프 사전답사", date: "03.22", tag: "답사", type: "camp" },
-];
-
-export const ANNOUNCEMENT_TEXT = "2026년 상반기 교사 수련회 신청이 시작되었습니다.";
 
 export type NavItem = { label: string; href?: string };
 
