@@ -1,7 +1,7 @@
-import { SCHEDULE_ITEMS } from "@/lib/main-page-data";
+import type { HomeScheduleItem } from "@/server/services/home";
 import styles from "./DesktopSchedule.module.css";
 
-export default function DesktopSchedule() {
+export default function DesktopSchedule({ items }: { items: HomeScheduleItem[] }) {
   return (
     <div className={styles.section}>
       <div className={styles.grid}>
@@ -17,22 +17,30 @@ export default function DesktopSchedule() {
           </div>
         </div>
         <div>
-          {SCHEDULE_ITEMS.map((s, i) => (
-            <div key={i} className={styles.row}>
-              <div className={styles.dateBox}>
-                <div className={styles.date}>{s.date}</div>
-                <div className={styles.day}>2026 · {s.day}요일</div>
-              </div>
+          {items.length === 0 ? (
+            <div className={styles.row}>
               <div className={styles.body}>
-                <div className={styles.itemTitle}>{s.title}</div>
-                <div className={styles.loc}>{s.loc}</div>
+                <div className={styles.itemTitle}>예정된 일정이 없습니다.</div>
               </div>
-              <div className={styles.tag}>{s.tag}</div>
-              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden>
-                <path d="M5 3l5 5-5 5" stroke="var(--palette-muted)" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-              </svg>
             </div>
-          ))}
+          ) : (
+            items.map((s) => (
+              <div key={s.id} className={styles.row}>
+                <div className={styles.dateBox}>
+                  <div className={styles.date}>{s.date}</div>
+                  <div className={styles.day}>2026 · {s.dayLong}</div>
+                </div>
+                <div className={styles.body}>
+                  <div className={styles.itemTitle}>{s.title}</div>
+                  <div className={styles.loc}>{s.loc}</div>
+                </div>
+                <div className={styles.tag}>{s.tag}</div>
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden>
+                  <path d="M5 3l5 5-5 5" stroke="var(--palette-muted)" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                </svg>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

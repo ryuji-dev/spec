@@ -1,11 +1,13 @@
-import { PHOTO_TILES } from "@/lib/main-page-data";
+import type { HomePhotoItem } from "@/server/services/home";
 import PhotoThumb from "../PhotoThumb";
 import styles from "./DesktopPhotoSection.module.css";
 
-export default function DesktopPhotoSection() {
-  const featured = PHOTO_TILES[0];
-  const middle = [PHOTO_TILES[1], PHOTO_TILES[2]];
-  const bottom = [PHOTO_TILES[3], PHOTO_TILES[4], PHOTO_TILES[5], PHOTO_TILES[6]];
+export default function DesktopPhotoSection({ photos }: { photos: HomePhotoItem[] }) {
+  if (photos.length === 0) return null;
+
+  const [featured, ...rest] = photos;
+  const middle = rest.slice(0, 2);
+  const bottom = rest.slice(2, 6);
 
   return (
     <div className={styles.section}>
