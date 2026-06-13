@@ -1,3 +1,4 @@
+import type { HomeData } from "@/server/services/home";
 import HeroMobile from "./HeroMobile";
 import MobileStickyHeader from "@/app/_components/MobileStickyHeader";
 import AnnouncementStrip from "./AnnouncementStrip";
@@ -9,15 +10,13 @@ import FooterMobile from "./FooterMobile";
 import BottomTabBar from "./BottomTabBar";
 import styles from "./MobilePage.module.css";
 
-/**
- * 모바일 페이지. 디자인 원본 `app.jsx:47-96` 섹션 순서를 그대로 따른다.
- */
-export default function MobilePage() {
+// 모바일 페이지. 디자인 원본 app.jsx 섹션 순서 그대로. 공지·일정·사진은 실데이터(props).
+export default function MobilePage({ home }: { home: HomeData }) {
   return (
     <div className={styles.shell}>
       <MobileStickyHeader />
       <HeroMobile />
-      <AnnouncementStrip />
+      <AnnouncementStrip text={home.announcement} />
 
       <SectionHeader
         kicker="CORE · MENU"
@@ -32,10 +31,13 @@ export default function MobilePage() {
       <MenuCardGrid />
 
       <SectionHeader kicker="UPCOMING" title="다가오는 일정" action="전체보기" />
-      <ScheduleList />
+      <ScheduleList items={home.schedule} />
 
-      <SectionHeader kicker="RECENT · PHOTOS" title="최근 활동 모음" action="사진첩" />
-      <PhotoSectionMobile />
+      {/* 사진이 없으면 데스크톱과 동일하게 헤더까지 숨긴다. */}
+      {home.photos.length > 0 && (
+        <SectionHeader kicker="RECENT · PHOTOS" title="최근 활동 모음" action="사진첩" />
+      )}
+      <PhotoSectionMobile photos={home.photos} />
 
       <FooterMobile />
       <BottomTabBar />
