@@ -6,6 +6,8 @@ import { createSupabaseServer } from "@/server/supabase/server";
 import { requireAdmin } from "@/server/auth/current-user";
 import { deletePostFiles } from "@/server/uploads/committee";
 import { COMMITTEE_CATEGORIES_KO } from "@/lib/committee";
+import type { Json } from "@/lib/database.types";
+import { kstDateEndToIso } from "@/lib/datetime";
 
 const postSchema = z.object({
   title: z.string().trim().min(1, "제목을 입력해주세요."),
@@ -20,6 +22,17 @@ const postSchema = z.object({
     .optional()
     .transform((v) => v || null),
   isPinned: z.coerce.boolean(),
+  eventDate: z
+    .string()
+    .trim()
+    .optional()
+    .transform((v) => v || null),
+  location: z
+    .string()
+    .trim()
+    .max(200, "장소는 200자 이내로 입력해주세요.")
+    .optional()
+    .transform((v) => v || null),
 });
 
 export interface PostFormState {
@@ -33,6 +46,8 @@ function parse(formData: FormData) {
     excerpt: formData.get("excerpt"),
     body: formData.get("body"),
     isPinned: formData.get("isPinned") === "on" || formData.get("isPinned") === "true",
+    eventDate: formData.get("eventDate"),
+    location: formData.get("location"),
   });
 }
 
@@ -53,6 +68,8 @@ export async function createPost(
       excerpt: r.data.excerpt,
       body: r.data.body,
       is_pinned: r.data.isPinned,
+      event_date: r.data.eventDate ? kstDateEndToIso(r.data.eventDate) : null,
+      meta: r.data.location ? { location: r.data.location } : null,
       author_id: user.id,
     })
     .select("id")
@@ -70,6 +87,21 @@ export async function updatePost(
   const r = parse(formData);
   if (!r.success) return { error: r.error.issues[0]?.message ?? "입력값을 확인해주세요." };
   const supabase = await createSupabaseServer();
+  // 기존 meta 보존(location만 갱신/제거). 잘못된 id로 타 섹션 글을 건드리지 않도록 section도 고정.
+  const { data: cur } = await supabase
+    .from("posts")
+    .select("meta")
+    .eq("id", id)
+    .eq("section", "committee")
+    .single();
+  const baseMeta =
+    cur?.meta && typeof cur.meta === "object" && !Array.isArray(cur.meta)
+      ? (cur.meta as Record<string, Json>)
+      : {};
+  const nextMeta: Record<string, Json> = { ...baseMeta };
+  if (r.data.location) nextMeta.location = r.data.location;
+  else delete nextMeta.location;
+  const meta: Json | null = Object.keys(nextMeta).length ? nextMeta : null;
   const { error } = await supabase
     .from("posts")
     .update({
@@ -78,8 +110,11 @@ export async function updatePost(
       excerpt: r.data.excerpt,
       body: r.data.body,
       is_pinned: r.data.isPinned,
+      event_date: r.data.eventDate ? kstDateEndToIso(r.data.eventDate) : null,
+      meta,
     })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("section", "committee");
   if (error) return { error: "수정에 실패했습니다." };
   redirect(`/committee/${id}`);
 }

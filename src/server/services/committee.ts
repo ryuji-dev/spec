@@ -1,5 +1,6 @@
 import "server-only";
 import { createSupabaseServer } from "@/server/supabase/server";
+import { isoToKstDate } from "@/lib/datetime";
 import {
   toCommitteePostView,
   COMMITTEE_CATEGORIES_KO,
@@ -190,6 +191,8 @@ export type CommitteeEditData = {
   excerpt: string | null;
   body: string | null;
   isPinned: boolean;
+  eventDate: string | null;
+  location: string | null;
   attachments: { id: string; name: string; sizeBytes: number; mime: string }[];
 };
 
@@ -198,7 +201,7 @@ export async function getCommitteePostForEdit(id: string): Promise<CommitteeEdit
 
   const { data: r } = await supabase
     .from("posts")
-    .select("id, category, title, excerpt, body, is_pinned")
+    .select("id, category, title, excerpt, body, is_pinned, event_date, meta")
     .eq("id", id)
     .eq("section", SECTION)
     .maybeSingle();
@@ -216,6 +219,11 @@ export async function getCommitteePostForEdit(id: string): Promise<CommitteeEdit
     excerpt: r.excerpt,
     body: r.body,
     isPinned: r.is_pinned,
+    eventDate: r.event_date ? isoToKstDate(r.event_date) : null,
+    location:
+      r.meta && typeof r.meta === "object" && !Array.isArray(r.meta)
+        ? ((r.meta as Record<string, unknown>).location as string | undefined) ?? null
+        : null,
     attachments: (atts ?? []).map((a) => ({
       id: a.id,
       name: a.original_name,

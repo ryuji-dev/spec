@@ -9,6 +9,8 @@ type Initial = {
   excerpt?: string;
   body?: string;
   isPinned?: boolean;
+  eventDate?: string;
+  location?: string;
 };
 
 const inputStyle = { padding: 10, border: "1px solid #ccc", borderRadius: 6, width: "100%" } as const;
@@ -36,6 +38,22 @@ export default function EditorForm({
       <label style={{ fontSize: 14 }}>
         <input type="checkbox" name="isPinned" defaultChecked={initial?.isPinned ?? false} /> 상단 고정
       </label>
+      <label style={{ fontSize: 13, color: "#666", display: "grid", gap: 4 }}>
+        행사 일정 (선택)
+        <input
+          type="date"
+          name="eventDate"
+          defaultValue={initial?.eventDate ?? ""}
+          style={inputStyle}
+        />
+      </label>
+      <input
+        name="location"
+        defaultValue={initial?.location ?? ""}
+        placeholder="장소 (선택)"
+        maxLength={200}
+        style={inputStyle}
+      />
       {state.error && <p role="alert" style={{ color: "#c00", margin: 0 }}>{state.error}</p>}
       <button type="submit" disabled={pending} style={{ padding: 10, borderRadius: 6 }}>
         {pending ? "저장 중…" : submitLabel}
