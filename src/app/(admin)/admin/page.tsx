@@ -3,10 +3,13 @@ import { requireAdmin } from "@/server/auth/current-user";
 import { logout } from "@/server/actions/auth";
 import CreateUserForm from "./CreateUserForm";
 import AdminResetPasswordForm from "./AdminResetPasswordForm";
+import { getCurrentAnnouncement } from "@/server/services/notice";
+import AnnouncementForm from "./AnnouncementForm";
 
 // proxy가 1차 가드, 여기서 서버 권한을 재확인한다(헌법: 권한 체크는 서버에서).
 export default async function AdminPage() {
   const user = await requireAdmin();
+  const announcement = await getCurrentAnnouncement();
 
   return (
     <main style={{ maxWidth: 640, margin: "40px auto", padding: "0 24px" }}>
@@ -23,6 +26,15 @@ export default async function AdminPage() {
       <p style={{ marginTop: 16 }}>
         <Link href="/admin/inquiries">문의 접수함 →</Link>
       </p>
+
+      <section style={{ marginTop: 40 }}>
+        <h2 style={{ fontSize: 18, marginBottom: 12 }}>메인 공지</h2>
+        <p style={{ color: "#666", fontSize: 13, marginTop: 0 }}>
+          메인 페이지 상단에 한 줄로 노출됩니다. 비우고 저장하지 말고, 내릴 때는
+          &quot;공지 내리기&quot;를 사용하세요.
+        </p>
+        <AnnouncementForm current={announcement} />
+      </section>
 
       <section style={{ marginTop: 40 }}>
         <h2 style={{ fontSize: 18, marginBottom: 12 }}>계정 생성</h2>
