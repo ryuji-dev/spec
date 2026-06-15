@@ -32,6 +32,8 @@ export default async function EditTrainingPostPage({
           excerpt: post.excerpt ?? undefined,
           body: post.body ?? undefined,
           isPinned: post.isPinned,
+          eventDate: post.eventDate ?? undefined,
+          location: post.location ?? undefined,
         }}
         submitLabel="수정 저장"
       />
