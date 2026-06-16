@@ -1,5 +1,5 @@
 import type { HomePhotoItem } from "@/server/services/home";
-import PhotoThumb from "../PhotoThumb";
+import PhotoTileThumb from "../PhotoTileThumb";
 import styles from "./PhotoSectionMobile.module.css";
 
 // 모바일 사진 섹션 — feature 1 + small 4.
@@ -24,7 +24,7 @@ function PhotoCard({ tile, size }: { tile: HomePhotoItem; size: "large" | "small
   return (
     <div className={styles.card}>
       <div className={styles.thumb} data-size={size}>
-        <PhotoThumb type={tile.type} idPrefix={`m-${tile.id}-${size}`} />
+        <PhotoTileThumb imageId={tile.imageId} type={tile.type} idPrefix={`m-${tile.id}-${size}`} />
         <div className={styles.tag}>{tile.tag}</div>
       </div>
       <div className={styles.body}>
