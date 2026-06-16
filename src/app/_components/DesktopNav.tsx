@@ -59,7 +59,9 @@ export default function DesktopNav({ variant = "transparent" }: Props) {
             <path d="M13 13 L17 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </button>
-        <button type="button" className={styles.loginBtn}>로그인</button>
+        <Link href="/login" className={styles.loginBtn} style={{ textDecoration: "none" }}>
+          로그인
+        </Link>
       </div>
     </div>
   );
