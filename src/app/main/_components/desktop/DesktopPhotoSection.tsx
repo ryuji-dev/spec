@@ -1,5 +1,5 @@
 import type { HomePhotoItem } from "@/server/services/home";
-import PhotoThumb from "../PhotoThumb";
+import PhotoTileThumb from "../PhotoTileThumb";
 import styles from "./DesktopPhotoSection.module.css";
 
 export default function DesktopPhotoSection({ photos }: { photos: HomePhotoItem[] }) {
@@ -21,7 +21,7 @@ export default function DesktopPhotoSection({ photos }: { photos: HomePhotoItem[
 
       <div className={styles.featuredRow}>
         <div className={styles.featuredCard}>
-          <PhotoThumb type={featured.type} idPrefix={`d-feat-${featured.id}`} />
+          <PhotoTileThumb imageId={featured.imageId} type={featured.type} idPrefix={`d-feat-${featured.id}`} />
           <div className={styles.featuredCaption}>
             <div className={styles.featuredKicker}>FEATURED · {featured.tag}</div>
             <div className={styles.featuredTitle}>{featured.title}</div>
@@ -30,7 +30,7 @@ export default function DesktopPhotoSection({ photos }: { photos: HomePhotoItem[
         </div>
         {middle.map((t) => (
           <div key={t.id} className={styles.midCard}>
-            <PhotoThumb type={t.type} idPrefix={`d-mid-${t.id}`} />
+            <PhotoTileThumb imageId={t.imageId} type={t.type} idPrefix={`d-mid-${t.id}`} />
             <div className={styles.midCaption}>
               <div className={styles.midKicker}>{t.tag}</div>
               <div className={styles.midTitle}>{t.title}</div>
@@ -42,7 +42,7 @@ export default function DesktopPhotoSection({ photos }: { photos: HomePhotoItem[
       <div className={styles.bottomGrid}>
         {bottom.map((t) => (
           <div key={t.id} className={styles.smallCard}>
-            <PhotoThumb type={t.type} idPrefix={`d-sml-${t.id}`} />
+            <PhotoTileThumb imageId={t.imageId} type={t.type} idPrefix={`d-sml-${t.id}`} />
             <div className={styles.smallCaption}>
               <div className={styles.smallTitle}>{t.title}</div>
               <div className={styles.smallDate}>2026.{t.date}</div>
