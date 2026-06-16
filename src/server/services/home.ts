@@ -14,10 +14,11 @@ export type HomeScheduleItem = {
 };
 export type HomePhotoItem = {
   id: string;
+  imageId: string; // 첫 이미지 첨부 id → /api/files/{imageId}
   title: string;
   date: string;
   tag: string;
-  type: PhotoTileType;
+  type: PhotoTileType; // 이미지 로드 실패 시 폴백용 그라데이션 타입
 };
 export type HomeData = {
   announcement: string | null;
@@ -90,8 +91,9 @@ export async function getHomeData(): Promise<HomeData> {
       .limit(4),
     supabase
       .from("posts")
-      .select("id, title, category, section, created_at")
+      .select("id, title, category, section, created_at, attachments!inner(id, mime, created_at)")
       .eq("is_published", true)
+      .like("attachments.mime", "image/%")
       .order("created_at", { ascending: false })
       .limit(7),
   ]);
@@ -114,13 +116,25 @@ export async function getHomeData(): Promise<HomeData> {
     };
   });
 
-  const photos: HomePhotoItem[] = (photoRes.data ?? []).map((r) => ({
-    id: r.id,
-    title: r.title,
-    date: mmdd(r.created_at),
-    tag: r.category ?? SECTION_LABEL[r.section] ?? "",
-    type: SECTION_PHOTO_TYPE[r.section] ?? "mountain",
-  }));
+  const photos: HomePhotoItem[] = (photoRes.data ?? [])
+    .map((r) => {
+      const imgs = ((r.attachments ?? []) as { id: string; mime: string; created_at: string }[])
+        .filter((img) => img.mime.startsWith("image/"));
+      // 첫 이미지(업로드 순) 사용. !inner 필터로 최소 1건이 보장되지만 strict 대비 가드.
+      const first = [...imgs].sort(
+        (a, b) => a.created_at.localeCompare(b.created_at) || a.id.localeCompare(b.id),
+      )[0];
+      if (!first) return null;
+      return {
+        id: r.id,
+        imageId: first.id,
+        title: r.title,
+        date: mmdd(r.created_at),
+        tag: r.category ?? SECTION_LABEL[r.section] ?? "",
+        type: SECTION_PHOTO_TYPE[r.section] ?? "mountain",
+      };
+    })
+    .filter((p): p is HomePhotoItem => p !== null);
 
   return { announcement, schedule, photos };
 }
