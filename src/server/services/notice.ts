@@ -10,20 +10,6 @@ function one<T>(v: T | T[] | null): T | null {
 const SECTION = "notice" as const;
 const NEW_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
-// /admin 메인 공지(싱글톤) 표시용 — 후속 태스크에서 제거 예정(현재 admin 페이지가 사용 중).
-export async function getCurrentAnnouncement(): Promise<string | null> {
-  const supabase = await createSupabaseServer();
-  const { data } = await supabase
-    .from("posts")
-    .select("title")
-    .eq("section", SECTION)
-    .order("is_pinned", { ascending: false })
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-  return data?.title ?? null;
-}
-
 export type NoticePost = {
   id: string;
   title: string;
