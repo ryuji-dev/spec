@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { FOOTER_COLUMNS } from "@/lib/main-page-data";
 import styles from "./DesktopFooter.module.css";
 
@@ -27,7 +28,15 @@ export default function DesktopFooter() {
           <div key={c.title}>
             <div className={styles.colTitle}>{c.title.toUpperCase()}</div>
             {c.items.map((item) => (
-              <div key={item} className={styles.colItem}>{item}</div>
+              <div key={item.label} className={styles.colItem}>
+                {item.href ? (
+                  <Link href={item.href} style={{ color: "inherit", textDecoration: "none" }}>
+                    {item.label}
+                  </Link>
+                ) : (
+                  item.label
+                )}
+              </div>
             ))}
           </div>
         ))}

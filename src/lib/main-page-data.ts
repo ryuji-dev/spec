@@ -92,12 +92,22 @@ export const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { label: "신학원교수소개", href: "/faculty" },
 ];
 
-export type FooterColumn = { title: string; items: ReadonlyArray<string> };
+export type FooterItem = { label: string; href?: string };
+export type FooterColumn = { title: string; items: ReadonlyArray<FooterItem> };
 
 export const FOOTER_COLUMNS: ReadonlyArray<FooterColumn> = [
-  { title: "교육 사역", items: ["교사 수련회", "성경고사", "찬양제", "교사 헌신예배"] },
-  { title: "자료실", items: ["설교 PPT", "주일학교 교안", "찬양 악보", "주보 양식"] },
-  { title: "소통", items: ["공지사항", "사진첩", "문의하기", "제안 보내기"] },
+  {
+    title: "교육 사역",
+    items: [{ label: "교사 수련회" }, { label: "성경고사" }, { label: "찬양제" }, { label: "교사 헌신예배" }],
+  },
+  {
+    title: "자료실",
+    items: [{ label: "설교 PPT" }, { label: "주일학교 교안" }, { label: "찬양 악보" }, { label: "주보 양식" }],
+  },
+  {
+    title: "소통",
+    items: [{ label: "공지사항", href: "/notice" }, { label: "사진첩" }, { label: "문의하기" }, { label: "제안 보내기" }],
+  },
 ];
 
 export type BottomTab = { key: string; label: string };
