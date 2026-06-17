@@ -41,6 +41,7 @@ export const MENU_ITEMS: MenuItem[] = [
     title: "교육위원회",
     sub: "위원회 소개 및 활동",
     meta: "2026년도 회기",
+    href: "/committee",
   },
   {
     key: "training",
@@ -48,6 +49,7 @@ export const MENU_ITEMS: MenuItem[] = [
     title: "교역자수련회",
     sub: "봄·가을 정기 수련회",
     meta: "2026 상반기 · 신청중",
+    href: "/training",
   },
   {
     key: "board",
@@ -55,6 +57,7 @@ export const MENU_ITEMS: MenuItem[] = [
     title: "자유게시판",
     sub: "교제와 나눔의 공간",
     meta: "오늘의 글 12개",
+    href: "/board",
   },
   {
     key: "library",
@@ -62,6 +65,7 @@ export const MENU_ITEMS: MenuItem[] = [
     title: "자료공유",
     sub: "악보 · 설교 PPT · 교안",
     meta: "신규 24건",
+    href: "/resources",
   },
   {
     key: "faculty",
@@ -106,7 +110,7 @@ export const FOOTER_COLUMNS: ReadonlyArray<FooterColumn> = [
   },
   {
     title: "소통",
-    items: [{ label: "공지사항", href: "/notice" }, { label: "사진첩", href: "/gallery" }, { label: "문의하기" }, { label: "제안 보내기" }],
+    items: [{ label: "공지사항", href: "/notice" }, { label: "사진첩", href: "/gallery" }, { label: "문의하기", href: "/support" }, { label: "제안 보내기" }],
   },
 ];
 
