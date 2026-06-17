@@ -35,7 +35,7 @@ export default function MobilePage({ home }: { home: HomeData }) {
 
       {/* 사진이 없으면 데스크톱과 동일하게 헤더까지 숨긴다. */}
       {home.photos.length > 0 && (
-        <SectionHeader kicker="RECENT · PHOTOS" title="최근 활동 모음" action="사진첩" />
+        <SectionHeader kicker="RECENT · PHOTOS" title="최근 활동 모음" action="사진첩" actionHref="/gallery" />
       )}
       <PhotoSectionMobile photos={home.photos} />
 

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { HomePhotoItem } from "@/server/services/home";
 import PhotoTileThumb from "../PhotoTileThumb";
 import styles from "./DesktopPhotoSection.module.css";
@@ -16,7 +17,7 @@ export default function DesktopPhotoSection({ photos }: { photos: HomePhotoItem[
           <div className={styles.kicker}>RECENT · PHOTOS</div>
           <h2 className={styles.title}>최근 활동 모음</h2>
         </div>
-        <button type="button" className={styles.allBtn}>전체 사진첩 →</button>
+        <Link href="/gallery" className={styles.allBtn} style={{ textDecoration: "none" }}>전체 사진첩 →</Link>
       </div>
 
       <div className={styles.featuredRow}>
