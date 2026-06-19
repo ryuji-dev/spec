@@ -95,7 +95,7 @@
   font-size: 11px;
   font-weight: 600;
   color: var(--palette-primary);
-  background: color-mix(in srgb, var(--palette-primary) 12%, transparent);
+  background: rgba(45, 74, 62, 0.12); /* --palette-primary 12% (프로젝트 관용: rgba 리터럴) */
   padding: 2px 9px;
   border-radius: 999px;
 }
