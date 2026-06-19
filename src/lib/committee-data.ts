@@ -215,10 +215,3 @@ export type SideAuthor = {
   init: string;
   posts: number;
 };
-
-export const SIDE_AUTHORS: SideAuthor[] = [
-  { name: "한경수 목사", role: "교육위원장", init: "한", posts: 18 },
-  { name: "김도현 목사", role: "총무", init: "김", posts: 14 },
-  { name: "박혜진 전도사", role: "서기", init: "박", posts: 12 },
-  { name: "이수민 전도사", role: "자료팀", init: "이", posts: 9 },
-];

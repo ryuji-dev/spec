@@ -22,6 +22,7 @@ export default async function CommitteePage() {
           posts={data.posts}
           categories={data.categories}
           popular={data.popular}
+          authors={data.authors}
         />
       </>
     );
