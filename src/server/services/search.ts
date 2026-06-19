@@ -19,13 +19,14 @@ export type SearchResult = {
 
 /**
  * 사용자 입력 정제. PostgREST .or()는 ','로 필터를, '()'로 그룹을 구분하고
- * '*'/'%'는 ilike 와일드카드다 → 구문 깨짐·의도치 않은 와일드카드를 막기 위해 제거.
+ * '*' '%' '_'는 ilike 와일드카드다 → 구문 깨짐·의도치 않은 와일드카드 매칭을 막기 위해 제거.
+ * (마침표 '.'는 값 위치에서 안전하고 정상 검색어에 흔해 그대로 둔다.)
  */
 export function sanitizeQuery(raw: string): string {
   return raw
     .trim()
     .slice(0, MAX_QUERY_LEN)
-    .replace(/[,()*%\\]/g, " ")
+    .replace(/[,()*%_\\]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -50,13 +51,19 @@ export async function searchPosts(rawQuery: string): Promise<SearchResult[]> {
     .limit(RESULT_LIMIT);
   if (error) throw error;
 
-  return (data ?? []).map((r) => ({
-    id: r.id,
-    title: r.title,
-    snippet: toSnippet(r.excerpt, r.body),
-    section: r.section,
-    sectionLabel: SECTION_LABEL[r.section] ?? "",
-    date: formatDate(new Date(r.created_at)),
-    href: `${SECTION_ROUTE[r.section]}/${r.id}`,
-  }));
+  return (data ?? [])
+    .map((r) => {
+      const route = SECTION_ROUTE[r.section];
+      if (!route) return null; // 상세 경로가 없는 섹션은 제외(링크 대상 없음)
+      return {
+        id: r.id,
+        title: r.title,
+        snippet: toSnippet(r.excerpt, r.body),
+        section: r.section,
+        sectionLabel: SECTION_LABEL[r.section] ?? "",
+        date: formatDate(new Date(r.created_at)),
+        href: `${route}/${r.id}`,
+      };
+    })
+    .filter((r): r is SearchResult => r !== null);
 }
