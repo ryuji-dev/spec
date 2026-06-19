@@ -2,6 +2,7 @@ import "server-only";
 import { createSupabaseServer } from "@/server/supabase/server";
 import { formatDate } from "@/lib/format";
 import type { PhotoTileType } from "@/lib/main-page-data";
+import { SECTION_LABEL, SECTION_PHOTO_TYPE, SECTION_ROUTE } from "@/lib/section-meta";
 
 export type GalleryTile = {
   postId: string;
@@ -13,34 +14,6 @@ export type GalleryTile = {
   href: string; // 섹션→경로 매핑 + /{postId}
 };
 
-const SECTION_LABEL: Record<string, string> = {
-  notice: "공지",
-  board: "게시판",
-  committee: "교육위원회",
-  training: "강습회",
-  webzine: "웹진",
-  resource: "자료",
-};
-
-// 섹션 → 사진 그라데이션 타입(home.ts와 동일 규칙).
-const SECTION_PHOTO_TYPE: Record<string, PhotoTileType> = {
-  training: "camp",
-  committee: "meeting",
-  webzine: "book",
-  board: "music",
-  resource: "book",
-  notice: "mountain",
-};
-
-// 섹션 → 공개 상세 경로. 'resource'는 라우트가 복수형(/resources).
-const SECTION_ROUTE: Record<string, string> = {
-  committee: "/committee",
-  training: "/training",
-  webzine: "/webzine",
-  resource: "/resources",
-  board: "/board",
-  notice: "/notice",
-};
 
 export async function getGalleryData(): Promise<GalleryTile[]> {
   const supabase = await createSupabaseServer();

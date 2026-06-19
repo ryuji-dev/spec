@@ -1,6 +1,7 @@
 // 메인 페이지 실데이터 — posts에서 공지·다가오는 일정·최신 활동을 조회·가공. RLS(공개 읽기) 적용.
 import "server-only";
 import { createSupabaseServer } from "@/server/supabase/server";
+import { SECTION_LABEL, SECTION_PHOTO_TYPE } from "@/lib/section-meta";
 import type { PhotoTileType } from "@/lib/main-page-data";
 
 export type HomeScheduleItem = {
@@ -26,24 +27,6 @@ export type HomeData = {
   photos: HomePhotoItem[];
 };
 
-const SECTION_LABEL: Record<string, string> = {
-  notice: "공지",
-  board: "게시판",
-  committee: "교육위원회",
-  training: "강습회",
-  webzine: "웹진",
-  resource: "자료",
-};
-
-// 섹션 → 사진 그라데이션 타입 매핑(실이미지 대신 브랜드 그라데이션 유지).
-const SECTION_PHOTO_TYPE: Record<string, PhotoTileType> = {
-  training: "camp",
-  committee: "meeting",
-  webzine: "book",
-  board: "music",
-  resource: "book",
-  notice: "mountain",
-};
 
 function mmdd(iso: string): string {
   // en-CA는 파트별 추출용(로케일 무관) — KST 기준 MM.DD 생성.
