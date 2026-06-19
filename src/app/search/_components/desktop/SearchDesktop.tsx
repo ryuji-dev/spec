@@ -27,7 +27,7 @@ export default function SearchDesktop({ query, results }: Props) {
         {!hasQuery ? (
           <p className={styles.hint}>검색어를 입력해 주세요.</p>
         ) : results.length === 0 ? (
-          <p className={styles.hint}>&apos;{query}&apos;에 대한 검색 결과가 없습니다.</p>
+          <p className={styles.hint}>&lsquo;{query}&rsquo;에 대한 검색 결과가 없습니다.</p>
         ) : (
           <>
             <p className={styles.count}>검색 결과 {results.length}개</p>
