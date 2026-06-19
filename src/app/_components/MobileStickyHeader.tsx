@@ -34,12 +34,17 @@ export default function MobileStickyHeader() {
           <div className={styles.brandKo}>서경노회 교육위원회 웹진</div>
         </div>
       </Link>
-      <button type="button" className={styles.searchBtn} aria-label="검색">
-        <svg width="18" height="18" viewBox="0 0 18 18">
-          <circle cx="8" cy="8" r="6" stroke="var(--palette-ink)" strokeWidth="1.5" fill="none" />
-          <path d="M13 13 L17 17" stroke="var(--palette-ink)" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      </button>
+      <div className={styles.utils}>
+        <button type="button" className={styles.searchBtn} aria-label="검색">
+          <svg width="18" height="18" viewBox="0 0 18 18">
+            <circle cx="8" cy="8" r="6" stroke="var(--palette-ink)" strokeWidth="1.5" fill="none" />
+            <path d="M13 13 L17 17" stroke="var(--palette-ink)" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </button>
+        <Link href="/login" className={styles.loginBtn}>
+          로그인
+        </Link>
+      </div>
     </div>
   );
 }
