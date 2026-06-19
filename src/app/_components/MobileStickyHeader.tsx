@@ -35,12 +35,12 @@ export default function MobileStickyHeader() {
         </div>
       </Link>
       <div className={styles.utils}>
-        <button type="button" className={styles.searchBtn} aria-label="검색">
+        <Link href="/search" className={styles.searchBtn} aria-label="검색" style={{ textDecoration: "none" }}>
           <svg width="18" height="18" viewBox="0 0 18 18">
             <circle cx="8" cy="8" r="6" stroke="var(--palette-ink)" strokeWidth="1.5" fill="none" />
             <path d="M13 13 L17 17" stroke="var(--palette-ink)" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
-        </button>
+        </Link>
         <Link href="/login" className={styles.loginBtn}>
           로그인
         </Link>
