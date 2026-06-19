@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Post, PostCategory, PopularPost } from "@/lib/committee-data";
+import type { Post, PostCategory, PopularPost, SideAuthor } from "@/lib/committee-data";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroDesktop } from "@/app/_components/PageHero";
 import PinnedCard from "./PinnedCard";
@@ -25,9 +25,10 @@ type Props = {
   posts: Post[];
   categories: PostCategory[];
   popular: PopularPost[];
+  authors: SideAuthor[];
 };
 
-export default function CommitteeDesktop({ pinned, posts, categories, popular }: Props) {
+export default function CommitteeDesktop({ pinned, posts, categories, popular, authors }: Props) {
   const router = useRouter();
   const palette = FOREST_PALETTE;
   const [activeCat, setActiveCat] = useState(0);
@@ -361,7 +362,7 @@ export default function CommitteeDesktop({ pinned, posts, categories, popular }:
           <Pagination palette={palette} />
         </main>
 
-        <Sidebar palette={palette} popular={popular} />
+        <Sidebar palette={palette} popular={popular} authors={authors} />
       </div>
 
       <CommitteeFooter palette={palette} />

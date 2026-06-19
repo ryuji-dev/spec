@@ -1,6 +1,6 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { BD_TAGS, SIDE_AUTHORS } from "@/lib/committee-data";
-import type { PopularPost } from "@/lib/committee-data";
+import { BD_TAGS } from "@/lib/committee-data";
+import type { PopularPost, SideAuthor } from "@/lib/committee-data";
 
 type SideProps = { palette: Palette };
 
@@ -167,7 +167,7 @@ function SideTags({ palette }: SideProps) {
 }
 
 /** 사이드 — 활발한 작성자. */
-function SideAuthorsBlock({ palette }: SideProps) {
+function SideAuthorsBlock({ palette, authors }: SideProps & { authors: SideAuthor[] }) {
   return (
     <div>
       <div
@@ -201,7 +201,7 @@ function SideAuthorsBlock({ palette }: SideProps) {
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {SIDE_AUTHORS.map((a) => {
+        {authors.map((a) => {
           const seed = a.init.charCodeAt(0);
           const tones = [palette.primary, palette.secondary, palette.accent, palette.muted];
           const c = tones[seed % tones.length];
@@ -275,12 +275,16 @@ function SideAuthorsBlock({ palette }: SideProps) {
   );
 }
 
-export default function Sidebar({ palette, popular }: SideProps & { popular: PopularPost[] }) {
+export default function Sidebar({
+  palette,
+  popular,
+  authors,
+}: SideProps & { popular: PopularPost[]; authors: SideAuthor[] }) {
   return (
     <aside style={{ display: "flex", flexDirection: "column", gap: 32 }}>
       <SidePopular palette={palette} popular={popular} />
       <SideTags palette={palette} />
-      <SideAuthorsBlock palette={palette} />
+      <SideAuthorsBlock palette={palette} authors={authors} />
     </aside>
   );
 }

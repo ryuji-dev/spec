@@ -13,6 +13,7 @@ import type {
   Post,
   PostCategory,
   PopularPost,
+  SideAuthor,
 } from "@/lib/committee-data";
 
 const SECTION = "committee" as const;
@@ -27,6 +28,7 @@ export type CommitteeListData = {
   posts: Post[];
   categories: PostCategory[];
   popular: PopularPost[];
+  authors: SideAuthor[];
 };
 
 export async function getCommitteeListData(): Promise<CommitteeListData> {
@@ -97,6 +99,32 @@ export async function getCommitteeListData(): Promise<CommitteeListData> {
     })),
   ];
 
+  // 활발한 작성자 — 게시 글 전체(rows)에서 작성자별 글 수 집계, 상위 4명
+  const authorAgg = new Map<string, { name: string; title: string | null; count: number }>();
+  for (const r of rows) {
+    if (!r.author_id) continue;
+    const author = one(r.author);
+    const prev = authorAgg.get(r.author_id);
+    if (prev) {
+      prev.count += 1;
+    } else {
+      authorAgg.set(r.author_id, {
+        name: author?.name ?? "",
+        title: author?.title ?? null,
+        count: 1,
+      });
+    }
+  }
+  const authors: SideAuthor[] = [...authorAgg.values()]
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, 4)
+    .map((a) => ({
+      name: a.name,
+      role: a.title ?? "",
+      init: a.name.charAt(0),
+      posts: a.count,
+    }));
+
   // 인기글 — 조회수 상위 5
   const { data: pop } = await supabase
     .from("posts")
@@ -111,7 +139,7 @@ export async function getCommitteeListData(): Promise<CommitteeListData> {
     views: p.view_count,
   }));
 
-  return { pinned, posts: list, categories, popular };
+  return { pinned, posts: list, categories, popular, authors };
 }
 
 export type CommitteeDetail = {
