@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAdmin } from "@/server/auth/current-user";
 import { listInquiries } from "@/server/services/inquiry";
+import { INQUIRY_CATEGORY_LABEL } from "@/lib/dto/inquiry";
 import { formatDate } from "@/lib/format";
 import AnswerForm from "./AnswerForm";
 import DeleteInquiryButton from "./DeleteInquiryButton";
@@ -35,7 +36,7 @@ export default async function AdminInquiriesPage() {
         >
           <summary style={{ cursor: "pointer", fontSize: 14 }}>
             <strong>{q.name}</strong> · {q.email} ·{" "}
-            {q.category === "password" ? "비밀번호 분실" : "일반 문의"} ·{" "}
+            {INQUIRY_CATEGORY_LABEL[q.category]} ·{" "}
             {formatDate(new Date(q.created_at))} ·{" "}
             <span style={{ color: q.answer ? "#0a0" : "#c60", fontWeight: 700 }}>
               {q.answer ? "답변완료" : "접수됨"}

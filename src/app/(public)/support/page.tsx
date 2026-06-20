@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { getCurrentUser } from "@/server/auth/current-user";
 import { listInquiries } from "@/server/services/inquiry";
+import {
+  INQUIRY_CATEGORIES,
+  INQUIRY_CATEGORY_LABEL,
+  type InquiryCategory,
+} from "@/lib/dto/inquiry";
 import { formatDate } from "@/lib/format";
 import DocPage from "@/app/_components/DocPage";
 import InquiryForm from "./InquiryForm";
@@ -9,7 +14,15 @@ import styles from "./support.module.css";
 export const metadata: Metadata = { title: "고객지원" };
 
 // 비로그인 포함 공개 페이지. 내 문의 내역은 RLS로 본인 것만 조회된다(비로그인이면 빈 목록).
-export default async function SupportPage() {
+export default async function SupportPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category: rawCategory } = await searchParams;
+  const initialCategory = INQUIRY_CATEGORIES.includes(rawCategory as InquiryCategory)
+    ? (rawCategory as InquiryCategory)
+    : undefined;
   const user = await getCurrentUser();
   const myInquiries = user ? await listInquiries() : [];
 
@@ -22,6 +35,7 @@ export default async function SupportPage() {
         isLoggedIn={!!user}
         defaultName={user?.name}
         defaultEmail={user?.email}
+        initialCategory={initialCategory}
       />
 
       {user && (
@@ -33,7 +47,7 @@ export default async function SupportPage() {
             myInquiries.map((q) => (
               <div key={q.id} className={styles.item}>
                 <div className={styles.itemMeta}>
-                  <span>{q.category === "password" ? "비밀번호 분실" : "일반 문의"}</span>
+                  <span>{INQUIRY_CATEGORY_LABEL[q.category]}</span>
                   <span>{formatDate(new Date(q.created_at))}</span>
                   <span className={q.answer ? styles.badgeDone : styles.badgeOpen}>
                     {q.answer ? "답변완료" : "접수됨"}
