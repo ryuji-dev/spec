@@ -6,14 +6,10 @@ import {
 } from "@/server/actions/inquiry";
 import {
   INQUIRY_CATEGORIES,
+  INQUIRY_CATEGORY_LABEL,
   type InquiryCategory,
 } from "@/lib/dto/inquiry";
 import styles from "./support.module.css";
-
-const CATEGORY_LABEL: Record<InquiryCategory, string> = {
-  general: "일반 문의",
-  password: "비밀번호 분실",
-};
 
 const initialState: SubmitInquiryState = {};
 
@@ -23,13 +19,15 @@ export default function InquiryForm({
   isLoggedIn,
   defaultName,
   defaultEmail,
+  initialCategory,
 }: {
   isLoggedIn: boolean;
   defaultName?: string;
   defaultEmail?: string;
+  initialCategory?: InquiryCategory;
 }) {
   const [state, formAction, pending] = useActionState(submitInquiry, initialState);
-  const [category, setCategory] = useState<InquiryCategory>("general");
+  const [category, setCategory] = useState<InquiryCategory>(initialCategory ?? "general");
   const needsContact = !isLoggedIn || category === "password";
 
   if (state.done) {
@@ -55,7 +53,7 @@ export default function InquiryForm({
           onChange={(e) => setCategory(e.target.value as InquiryCategory)}
         >
           {INQUIRY_CATEGORIES.map((c) => (
-            <option key={c} value={c}>{CATEGORY_LABEL[c]}</option>
+            <option key={c} value={c}>{INQUIRY_CATEGORY_LABEL[c]}</option>
           ))}
         </select>
       </div>

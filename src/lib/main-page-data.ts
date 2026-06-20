@@ -110,7 +110,7 @@ export const FOOTER_COLUMNS: ReadonlyArray<FooterColumn> = [
   },
   {
     title: "소통",
-    items: [{ label: "공지사항", href: "/notice" }, { label: "사진첩", href: "/gallery" }, { label: "문의하기", href: "/support" }, { label: "제안 보내기" }],
+    items: [{ label: "공지사항", href: "/notice" }, { label: "사진첩", href: "/gallery" }, { label: "문의하기", href: "/support" }, { label: "제안 보내기", href: "/support?category=suggestion" }],
   },
 ];
 
