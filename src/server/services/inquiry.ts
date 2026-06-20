@@ -1,10 +1,11 @@
 // 문의 조회 — RLS가 역할별 범위를 결정한다(admin 전체, member 본인, anon 없음).
 import "server-only";
 import { createSupabaseServer } from "@/server/supabase/server";
+import type { InquiryCategory } from "@/lib/dto/inquiry";
 
 export type InquiryRow = {
   id: string;
-  category: "general" | "password";
+  category: InquiryCategory;
   name: string;
   email: string;
   contact: string | null;
