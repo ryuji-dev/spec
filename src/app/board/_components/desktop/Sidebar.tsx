@@ -1,5 +1,5 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { CM_MEMBERS, CM_TAGS, type BoardCategory } from "@/lib/board-data";
+import { CM_TAGS, type BoardCategory, type ActiveMember } from "@/lib/board-data";
 import CmAvatar from "../shared/CmAvatar";
 import { catTone } from "../catTone";
 
@@ -9,7 +9,7 @@ type Props = { palette: Palette };
  * 자유게시판 사이드바 — 활발한 멤버 / 인기 태그 / 가이드 / 카테고리.
  * 디자인 원본 community.jsx CommunityDesktop 의 aside 영역 그대로.
  */
-export function SideMembers({ palette }: Props) {
+export function SideMembers({ palette, members }: Props & { members: ActiveMember[] }) {
   return (
     <section>
       <div
@@ -32,7 +32,7 @@ export function SideMembers({ palette }: Props) {
           padding: "6px 18px",
         }}
       >
-        {CM_MEMBERS.map((m, i) => (
+        {members.map((m, i) => (
           <div
             key={m.name}
             style={{
@@ -41,7 +41,7 @@ export function SideMembers({ palette }: Props) {
               gap: 12,
               padding: "12px 0",
               borderBottom:
-                i < CM_MEMBERS.length - 1
+                i < members.length - 1
                   ? `1px solid ${palette.line}`
                   : "none",
               cursor: "pointer",

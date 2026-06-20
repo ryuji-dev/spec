@@ -8,13 +8,14 @@ import {
   BOARD_CATEGORIES_KO,
   BOARD_CATEGORY_EN,
 } from "@/lib/board";
-import type { FeedPost, BoardCategory } from "@/lib/board-data";
+import type { FeedPost, BoardCategory, ActiveMember } from "@/lib/board-data";
 
 const SECTION = "board" as const;
 
 export type BoardListData = {
   posts: FeedPost[];
   categories: BoardCategory[];
+  members: ActiveMember[];
 };
 
 // PostgREST 임베드는 to-one도 환경에 따라 배열로 올 수 있어 단일 객체로 정규화.
@@ -30,7 +31,7 @@ export async function getBoardListData(): Promise<BoardListData> {
   const { data, error } = await supabase
     .from("posts")
     .select(
-      "id, category, title, excerpt, view_count, created_at, author:profiles(name, church), comments(count), post_likes(count)",
+      "id, category, title, excerpt, view_count, created_at, author_id, author:profiles(name, church), comments(count), post_likes(count)",
     )
     .eq("section", SECTION)
     .eq("is_published", true)
@@ -82,7 +83,33 @@ export async function getBoardListData(): Promise<BoardListData> {
     ...BOARD_CATEGORIES_KO.map((ko) => ({ ko, en: BOARD_CATEGORY_EN[ko], count: byCat.get(ko) ?? 0 })),
   ];
 
-  return { posts: list, categories };
+  // 활발한 멤버 — 게시 글 전체(rows)에서 작성자별 글 수 집계, 상위 5명
+  const memberAgg = new Map<string, { name: string; church: string | null; count: number }>();
+  for (const r of rows) {
+    if (!r.author_id) continue;
+    const author = one(r.author);
+    const prev = memberAgg.get(r.author_id);
+    if (prev) {
+      prev.count += 1;
+    } else {
+      memberAgg.set(r.author_id, {
+        name: author?.name ?? "",
+        church: author?.church ?? null,
+        count: 1,
+      });
+    }
+  }
+  const members: ActiveMember[] = [...memberAgg.values()]
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, 5)
+    .map((m) => ({
+      name: m.name,
+      church: m.church ?? "",
+      posts: m.count,
+      init: m.name.charAt(0),
+    }));
+
+  return { posts: list, categories, members };
 }
 
 export type BoardDetail = {
