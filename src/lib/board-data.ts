@@ -287,13 +287,6 @@ export type ActiveMember = {
   init: string;
 };
 
-export const CM_MEMBERS: ReadonlyArray<ActiveMember> = [
-  { name: "김도현 목사", church: "서경중앙", posts: 24, init: "김" },
-  { name: "박혜진 전도사", church: "강서동산", posts: 19, init: "박" },
-  { name: "오은혜 집사", church: "평안", posts: 17, init: "오" },
-  { name: "이수민 전도사", church: "은혜로", posts: 14, init: "이" },
-  { name: "정민호 목사", church: "강서동산", posts: 12, init: "정" },
-];
 
 export type TrendingTag = {
   tag: string;

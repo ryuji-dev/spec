@@ -18,7 +18,7 @@ export default async function BoardPage() {
     return (
       <>
         <DesktopNav variant="solid" />
-        <BoardDesktop posts={data.posts} categories={data.categories} />
+        <BoardDesktop posts={data.posts} categories={data.categories} members={data.members} />
       </>
     );
   }

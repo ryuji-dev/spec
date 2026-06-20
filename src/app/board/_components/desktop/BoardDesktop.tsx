@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
-import type { BoardCategory, FeedPost } from "@/lib/board-data";
+import type { BoardCategory, FeedPost, ActiveMember } from "@/lib/board-data";
 import { type BoardSort } from "@/lib/board-data";
 import BoardHeader from "./BoardHeader";
 import HotSection from "./HotSection";
@@ -28,9 +28,11 @@ const palette = FOREST_PALETTE;
 export default function BoardDesktop({
   posts,
   categories,
+  members,
 }: {
   posts: FeedPost[];
   categories: BoardCategory[];
+  members: ActiveMember[];
 }) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
@@ -85,7 +87,7 @@ export default function BoardDesktop({
         </main>
 
         <aside style={{ display: "flex", flexDirection: "column", gap: 36 }}>
-          <SideMembers palette={palette} />
+          <SideMembers palette={palette} members={members} />
           <SideTags palette={palette} />
           <SideGuide palette={palette} />
           <SideCategories palette={palette} categories={categories} />
