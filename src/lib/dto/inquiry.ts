@@ -1,8 +1,14 @@
 // 고객지원 문의 입력 스키마 — 클라이언트 검증과 서버 검증이 공유(server-only 의존 없음).
 import { z } from "zod";
 
-export const INQUIRY_CATEGORIES = ["general", "password"] as const;
+export const INQUIRY_CATEGORIES = ["general", "suggestion", "password"] as const;
 export type InquiryCategory = (typeof INQUIRY_CATEGORIES)[number];
+
+export const INQUIRY_CATEGORY_LABEL: Record<InquiryCategory, string> = {
+  general: "일반 문의",
+  suggestion: "제안",
+  password: "비밀번호 분실",
+};
 
 export const inquirySchema = z.object({
   category: z.enum(INQUIRY_CATEGORIES),
