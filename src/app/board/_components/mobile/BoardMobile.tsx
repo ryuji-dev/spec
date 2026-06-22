@@ -7,11 +7,12 @@ import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
   BOARD_SORTS,
-  BOARD_STATS_MOBILE,
   CM_HOT,
   CM_VERSE,
   type BoardCategory,
   type BoardSort,
+  type BoardStat,
+  type BoardStats,
   type FeedPost,
 } from "@/lib/board-data";
 import CmAvatar from "../shared/CmAvatar";
@@ -24,6 +25,7 @@ type Props = {
   deviceType?: "ios" | "android";
   posts: FeedPost[];
   categories: BoardCategory[];
+  stats: BoardStats;
 };
 
 const palette = FOREST_PALETTE;
@@ -36,10 +38,17 @@ export default function BoardMobile({
   deviceType = "ios",
   posts,
   categories,
+  stats,
 }: Props) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
   const [sort, setSort] = useState<BoardSort>("recent");
+
+  const boardStats: BoardStat[] = [
+    { k: String(stats.total), l: "전체" },
+    { k: String(stats.today), l: "오늘" },
+    { k: String(stats.activeMembers), l: "활동" },
+  ];
 
   const filtered =
     activeCat === 0
@@ -204,7 +213,7 @@ export default function BoardMobile({
             padding: "12px 14px",
           }}
         >
-          {BOARD_STATS_MOBILE.map((s, i) => (
+          {boardStats.map((s, i) => (
             <div
               key={s.l}
               style={{

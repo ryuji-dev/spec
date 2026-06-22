@@ -319,14 +319,9 @@ export const BOARD_SORTS: ReadonlyArray<{ v: BoardSort; label: string }> = [
 
 export type BoardStat = { k: string; l: string };
 
-export const BOARD_STATS: ReadonlyArray<BoardStat> = [
-  { k: "384", l: "전체 글" },
-  { k: "12", l: "오늘 새 글" },
-  { k: "47", l: "활동 멤버" },
-];
-
-export const BOARD_STATS_MOBILE: ReadonlyArray<BoardStat> = [
-  { k: "384", l: "전체" },
-  { k: "12", l: "오늘" },
-  { k: "47", l: "활동" },
-];
+// 헤더 통계 실데이터 — server/services/board.ts 에서 집계해 주입.
+export type BoardStats = {
+  total: number;
+  today: number;
+  activeMembers: number;
+};

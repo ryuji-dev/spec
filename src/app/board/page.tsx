@@ -18,7 +18,12 @@ export default async function BoardPage() {
     return (
       <>
         <DesktopNav variant="solid" />
-        <BoardDesktop posts={data.posts} categories={data.categories} members={data.members} />
+        <BoardDesktop
+          posts={data.posts}
+          categories={data.categories}
+          members={data.members}
+          stats={data.stats}
+        />
       </>
     );
   }
@@ -27,6 +32,7 @@ export default async function BoardPage() {
       deviceType={device}
       posts={data.posts}
       categories={data.categories}
+      stats={data.stats}
     />
   );
 }
