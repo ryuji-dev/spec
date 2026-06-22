@@ -15,6 +15,7 @@ import {
   type BoardStats,
   type FeedPost,
 } from "@/lib/board-data";
+import { sortFeedPosts } from "@/lib/board";
 import CmAvatar from "../shared/CmAvatar";
 import CmCatChip from "../shared/CmCatChip";
 import HeatGauge from "../shared/HeatGauge";
@@ -54,6 +55,7 @@ export default function BoardMobile({
     activeCat === 0
       ? posts
       : posts.filter((p) => p.cat === categories[activeCat].ko);
+  const sorted = sortFeedPosts(filtered, sort);
 
   return (
     <div
@@ -483,7 +485,7 @@ export default function BoardMobile({
       {/* 피드 */}
       <section style={{ padding: "12px 20px 30px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {filtered.map((p) => (
+          {sorted.map((p) => (
             <article
               key={p.id}
               style={{
