@@ -1,10 +1,15 @@
 import type { Palette } from "@/app/_components/shared/palette";
 import { PageHeroDesktop } from "@/app/_components/PageHero";
-import { BOARD_STATS, CM_VERSE } from "@/lib/board-data";
+import { CM_VERSE, type BoardStat, type BoardStats } from "@/lib/board-data";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; stats: BoardStats };
 
-export default function BoardHeader({ palette }: Props) {
+export default function BoardHeader({ palette, stats }: Props) {
+  const boardStats: BoardStat[] = [
+    { k: String(stats.total), l: "전체 글" },
+    { k: String(stats.today), l: "오늘 새 글" },
+    { k: String(stats.activeMembers), l: "활동 멤버" },
+  ];
   return (
     <>
       <PageHeroDesktop
@@ -107,7 +112,7 @@ export default function BoardHeader({ palette }: Props) {
             alignItems: "center",
           }}
         >
-          {BOARD_STATS.map((s, i) => (
+          {boardStats.map((s, i) => (
             <div
               key={s.l}
               style={{

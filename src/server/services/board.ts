@@ -8,7 +8,12 @@ import {
   BOARD_CATEGORIES_KO,
   BOARD_CATEGORY_EN,
 } from "@/lib/board";
-import type { FeedPost, BoardCategory, ActiveMember } from "@/lib/board-data";
+import type {
+  FeedPost,
+  BoardCategory,
+  ActiveMember,
+  BoardStats,
+} from "@/lib/board-data";
 
 const SECTION = "board" as const;
 
@@ -16,6 +21,7 @@ export type BoardListData = {
   posts: FeedPost[];
   categories: BoardCategory[];
   members: ActiveMember[];
+  stats: BoardStats;
 };
 
 // PostgREST 임베드는 to-one도 환경에 따라 배열로 올 수 있어 단일 객체로 정규화.
@@ -109,7 +115,16 @@ export async function getBoardListData(): Promise<BoardListData> {
       init: m.name.charAt(0),
     }));
 
-  return { posts: list, categories, members };
+  // 헤더 통계 — 전체 글 / 오늘 새 글 / 활동 멤버. 목록 쿼리 결과 재사용.
+  const todayStr = formatDate(now);
+  const stats: BoardStats = {
+    total: rows.length,
+    today: rows.filter((r) => formatDate(new Date(r.created_at)) === todayStr)
+      .length,
+    activeMembers: memberAgg.size,
+  };
+
+  return { posts: list, categories, members, stats };
 }
 
 export type BoardDetail = {
