@@ -10,6 +10,7 @@ import type {
   BoardStats,
 } from "@/lib/board-data";
 import { type BoardSort } from "@/lib/board-data";
+import { sortFeedPosts } from "@/lib/board";
 import BoardHeader from "./BoardHeader";
 import HotSection from "./HotSection";
 import CategoryStickyBar from "./CategoryStickyBar";
@@ -49,6 +50,7 @@ export default function BoardDesktop({
     activeCat === 0
       ? posts
       : posts.filter((p) => p.cat === categories[activeCat].ko);
+  const sorted = sortFeedPosts(filtered, sort);
 
   return (
     <div
@@ -81,7 +83,7 @@ export default function BoardDesktop({
         <main>
           <Composer palette={palette} />
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {filtered.map((p) => (
+            {sorted.map((p) => (
               <FeedCard
                 key={p.id}
                 post={p}

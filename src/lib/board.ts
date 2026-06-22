@@ -5,6 +5,7 @@ import type {
   BoardCategoryKo,
   BoardCategoryEn,
   BoardFeedKind,
+  BoardSort,
 } from "./board-data";
 
 type Cat = Exclude<BoardCategoryKo, "전체">;
@@ -66,4 +67,16 @@ export function toFeedPostView(row: BoardRow, now: Date): FeedPost {
     views: row.viewCount,
     isNew: now.getTime() - row.createdAt.getTime() < NEW_WINDOW_MS,
   };
+}
+
+// 자유게시판 목록 정렬 — recent는 입력 순서(서비스가 created_at desc로 제공) 유지,
+// hot/comments만 복사본을 정렬(안정 정렬이라 동점은 최신순 유지).
+export function sortFeedPosts(posts: FeedPost[], sort: BoardSort): FeedPost[] {
+  if (sort === "hot") {
+    return [...posts].sort((a, b) => b.likes - a.likes || b.views - a.views);
+  }
+  if (sort === "comments") {
+    return [...posts].sort((a, b) => b.comments - a.comments || b.likes - a.likes);
+  }
+  return posts;
 }
