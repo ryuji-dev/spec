@@ -8,6 +8,7 @@ import {
   toNextView,
   toPastView,
   buildArchive,
+  formatEventDates,
   parseSpeakers,
   parseSchedule,
   TRAINING_CATEGORIES_KO,
@@ -278,4 +279,98 @@ export async function getTrainingEventsData(): Promise<TrainingEventsData> {
   const archive = buildArchive(pastAll.map((e) => e.row));
 
   return { featured, next, past, archive, speakers, schedule };
+}
+
+// ── admin: 미공개 포함 전체 목록 ──
+export type AdminEventRow = {
+  id: string;
+  title: string;
+  dates: string; // "YYYY.MM.DD — MM.DD"
+  status: "예정" | "지난";
+  place: string;
+  isPublished: boolean;
+};
+
+export async function listEventsForAdmin(): Promise<AdminEventRow[]> {
+  const now = Date.now();
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase
+    .from("events")
+    .select("id, title, starts_at, ends_at, place, is_published")
+    .order("starts_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((r) => {
+    const start = new Date(r.starts_at);
+    const end = new Date(r.ends_at);
+    return {
+      id: r.id,
+      title: r.title,
+      dates: formatEventDates(start, end),
+      status: end.getTime() >= now ? "예정" : "지난",
+      place: r.place ?? "",
+      isPublished: r.is_published,
+    };
+  });
+}
+
+// ── admin: 편집 폼 prefill ──
+export type EventEditData = {
+  id: string;
+  title: string;
+  subtitle: string;
+  theme: string;
+  category: string;
+  badge: string;
+  startsAt: string; // "YYYY-MM-DD"
+  endsAt: string;
+  place: string;
+  note: string;
+  cover: string;
+  capacity: string; // input value(빈 문자열 허용)
+  registered: string;
+  participants: string;
+  fee: string;
+  deadline: string; // "YYYY-MM-DD" or ""
+  isPublished: boolean;
+  speakers: { name: string; role: string; affiliation: string; talks: number }[];
+  schedule: ScheduleDay[];
+};
+
+export async function getEventForEdit(id: string): Promise<EventEditData | null> {
+  const supabase = await createSupabaseServer();
+  const { data: r } = await supabase
+    .from("events")
+    .select(
+      "id, title, subtitle, theme, category, badge, starts_at, ends_at, place, note, cover, capacity, registered, participants, fee, deadline, is_published, speakers, schedule",
+    )
+    .eq("id", id)
+    .maybeSingle();
+  if (!r) return null;
+  const numStr = (n: number | null) => (n == null ? "" : String(n));
+  return {
+    id: r.id,
+    title: r.title,
+    subtitle: r.subtitle ?? "",
+    theme: r.theme ?? "",
+    category: r.category ?? "",
+    badge: r.badge ?? "",
+    startsAt: isoToKstDate(r.starts_at),
+    endsAt: isoToKstDate(r.ends_at),
+    place: r.place ?? "",
+    note: r.note ?? "",
+    cover: r.cover,
+    capacity: numStr(r.capacity),
+    registered: numStr(r.registered),
+    participants: numStr(r.participants),
+    fee: r.fee ?? "",
+    deadline: r.deadline ?? "",
+    isPublished: r.is_published,
+    speakers: parseSpeakers(r.speakers).map((s) => ({
+      name: s.name,
+      role: s.role,
+      affiliation: s.affiliation,
+      talks: s.talks,
+    })),
+    schedule: parseSchedule(r.schedule),
+  };
 }
