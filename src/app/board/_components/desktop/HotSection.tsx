@@ -1,14 +1,14 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { CM_HOT } from "@/lib/board-data";
+import type { HotThread } from "@/lib/board-data";
 import HotThreadCard from "./HotThreadCard";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; hot: HotThread[] };
 
 /**
  * HOT 스레드 섹션 — 큰 카드 2열.
  * 디자인 원본 community.jsx CommunityDesktop 의 HOT 섹션.
  */
-export default function HotSection({ palette }: Props) {
+export default function HotSection({ palette, hot }: Props) {
   return (
     <section style={{ padding: "48px 80px 0" }}>
       <div
@@ -85,7 +85,7 @@ export default function HotSection({ palette }: Props) {
           gap: 18,
         }}
       >
-        {CM_HOT.map((p) => (
+        {hot.map((p) => (
           <HotThreadCard key={p.id} post={p} palette={palette} />
         ))}
       </div>

@@ -6,6 +6,7 @@ import type {
   BoardCategoryEn,
   BoardFeedKind,
   BoardSort,
+  HotThread,
 } from "./board-data";
 
 type Cat = Exclude<BoardCategoryKo, "전체">;
@@ -79,4 +80,59 @@ export function sortFeedPosts(posts: FeedPost[], sort: BoardSort): FeedPost[] {
     return [...posts].sort((a, b) => b.comments - a.comments || b.likes - a.likes);
   }
   return posts;
+}
+
+// 인기글 파생용 평면 행
+export type HotRow = {
+  id: string;
+  category: string | null;
+  title: string;
+  excerpt: string | null;
+  viewCount: number;
+  createdAt: Date;
+  authorName: string | null;
+  authorChurch: string | null;
+  commentCount: number;
+  likeCount: number;
+};
+
+// 참여 점수 가중치
+export const HOT_WEIGHT = { comment: 10, like: 5 } as const;
+
+export function hotScore(row: {
+  viewCount: number;
+  commentCount: number;
+  likeCount: number;
+}): number {
+  return (
+    row.viewCount +
+    row.commentCount * HOT_WEIGHT.comment +
+    row.likeCount * HOT_WEIGHT.like
+  );
+}
+
+// 평면 행 → 인기글 뷰모델. heat는 최고 점수 대비 0~100 정규화.
+export function toHotThreadView(
+  row: HotRow,
+  score: number,
+  maxScore: number,
+  lastReply?: { name: string; text: string; when: string },
+): HotThread {
+  const cat = (row.category && row.category in CATEGORY_KIND ? row.category : "나눔") as Cat;
+  const name = row.authorName ?? "익명";
+  return {
+    id: row.id,
+    cat,
+    heat: maxScore > 0 ? Math.round((score / maxScore) * 100) : 0,
+    title: row.title,
+    excerpt: row.excerpt ?? "",
+    author: name,
+    church: row.authorChurch ?? "",
+    avatar: name.slice(0, 1),
+    date: formatDate(row.createdAt),
+    comments: row.commentCount,
+    likes: row.likeCount,
+    views: row.viewCount,
+    ...(lastReply ? { lastReply } : {}),
+  };
 }

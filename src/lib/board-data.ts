@@ -42,54 +42,8 @@ export type HotThread = {
   comments: number;
   likes: number;
   views: number;
-  reactions: Readonly<Record<string, number>>;
-  lastReply: { name: string; text: string; when: string };
+  lastReply?: { name: string; text: string; when: string };
 };
-
-export const CM_HOT: ReadonlyArray<HotThread> = [
-  {
-    id: "101",
-    cat: "토론",
-    heat: 92,
-    title: "주일학교 출석 감소, 우리 교회만의 문제일까요?",
-    excerpt:
-      "코로나 이후 회복이 더딘 부서가 많은 것 같습니다. 통계적으로 우리 노회 안에서는 어떤지, 또 회복 사례가 있다면 공유 부탁드립니다.",
-    author: "김도현 목사",
-    church: "서경중앙교회",
-    avatar: "김",
-    date: "4시간 전",
-    comments: 47,
-    likes: 128,
-    views: 1843,
-    reactions: { "🙏": 34, "💭": 22, "❤️": 18 },
-    lastReply: {
-      name: "이수민",
-      text: "저희도 비슷한 고민이에요. 작년 가을부터 조금씩...",
-      when: "12분 전",
-    },
-  },
-  {
-    id: "102",
-    cat: "Q&A",
-    heat: 78,
-    title: "중고등부 큐티 교재, 요즘 뭐 쓰고 계신가요?",
-    excerpt:
-      "IVP 청소년 큐티가 절판되어서 새 교재를 찾고 있습니다. 학생들이 잘 따라오는 교재 추천해주세요.",
-    author: "박혜진 전도사",
-    church: "강서동산교회",
-    avatar: "박",
-    date: "7시간 전",
-    comments: 31,
-    likes: 64,
-    views: 892,
-    reactions: { "👀": 41, "🙋": 12 },
-    lastReply: {
-      name: "한경수",
-      text: "CGN 청소년 큐티 같이 보고 있어요. 한번...",
-      when: "38분 전",
-    },
-  },
-];
 
 export type FeedPost = {
   id: string;
