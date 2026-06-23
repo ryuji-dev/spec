@@ -1,10 +1,11 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { TR_SCHEDULE } from "@/lib/training-data";
+import type { ScheduleDay } from "@/lib/training-data";
 import SectionEyebrow from "../shared/SectionEyebrow";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; schedule: ScheduleDay[] };
 
-export default function ScheduleSection({ palette }: Props) {
+export default function ScheduleSection({ palette, schedule }: Props) {
+  if (schedule.length === 0) return null;
   return (
     <section style={{ padding: "80px 80px 0" }}>
       <SectionEyebrow
@@ -22,7 +23,7 @@ export default function ScheduleSection({ palette }: Props) {
           marginTop: 32,
         }}
       >
-        {TR_SCHEDULE.map((d, i) => (
+        {schedule.map((d, i) => (
           <article
             key={d.day}
             style={{

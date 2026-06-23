@@ -4,11 +4,27 @@ import { formatDate, formatAuthor } from "@/lib/format";
 import { isoToKstDate } from "@/lib/datetime";
 import {
   toTrainingPostView,
+  toUpcomingView,
+  toNextView,
+  toPastView,
+  buildArchive,
+  parseSpeakers,
+  parseSchedule,
   TRAINING_CATEGORIES_KO,
   CATEGORY_EN,
   type TrainingRow,
+  type EventRow,
 } from "@/lib/training";
-import type { TrainingPost, TrainingCategory } from "@/lib/training-data";
+import type {
+  TrainingPost,
+  TrainingCategory,
+  UpcomingTraining,
+  NextTraining,
+  PastTraining,
+  TrainingSpeaker,
+  ScheduleDay,
+  ArchiveYear,
+} from "@/lib/training-data";
 
 const SECTION = "training" as const;
 
@@ -196,4 +212,70 @@ export async function getTrainingPostForEdit(id: string): Promise<TrainingEditDa
       mime: a.mime,
     })),
   };
+}
+
+export type TrainingEventsData = {
+  featured: UpcomingTraining | null;
+  next: NextTraining[];
+  past: PastTraining[];
+  archive: ArchiveYear[];
+  speakers: TrainingSpeaker[];
+  schedule: ScheduleDay[];
+};
+
+export async function getTrainingEventsData(): Promise<TrainingEventsData> {
+  const now = new Date();
+  const supabase = await createSupabaseServer();
+
+  const { data, error } = await supabase
+    .from("events")
+    .select(
+      "id, title, subtitle, theme, category, badge, starts_at, ends_at, place, note, cover, capacity, registered, fee, deadline, speakers, schedule, participants",
+    )
+    .eq("is_published", true)
+    .order("starts_at", { ascending: true });
+  if (error) throw error;
+  const rows = data ?? [];
+
+  // 평면 행 + featured용 schedule 원본 보관
+  const events = rows.map((r) => {
+    const row: EventRow = {
+      id: r.id,
+      title: r.title,
+      subtitle: r.subtitle,
+      theme: r.theme,
+      category: r.category,
+      badge: r.badge,
+      startsAt: new Date(r.starts_at),
+      endsAt: new Date(r.ends_at),
+      place: r.place,
+      note: r.note,
+      cover: r.cover,
+      capacity: r.capacity,
+      registered: r.registered,
+      fee: r.fee,
+      deadline: r.deadline ? isoToKstDate(r.deadline) : null,
+      speakers: parseSpeakers(r.speakers),
+      participants: r.participants,
+    };
+    return { row, schedule: parseSchedule(r.schedule) };
+  });
+
+  // 예정(종료가 아직 안 지남) vs 지난
+  const upcoming = events.filter((e) => e.row.endsAt.getTime() >= now.getTime());
+  const pastAll = events
+    .filter((e) => e.row.endsAt.getTime() < now.getTime())
+    .sort((a, b) => b.row.startsAt.getTime() - a.row.startsAt.getTime());
+
+  // featured = 예정 중 가장 임박(starts_at 오름차순 정렬이므로 첫 항목)
+  const featuredEntry = upcoming[0] ?? null;
+  const featured = featuredEntry ? toUpcomingView(featuredEntry.row, now) : null;
+  const speakers = featuredEntry ? featuredEntry.row.speakers : [];
+  const schedule = featuredEntry ? featuredEntry.schedule : [];
+
+  const next = upcoming.slice(1).map((e) => toNextView(e.row));
+  const past = pastAll.slice(0, 4).map((e, i) => toPastView(e.row, i));
+  const archive = buildArchive(pastAll.map((e) => e.row));
+
+  return { featured, next, past, archive, speakers, schedule };
 }

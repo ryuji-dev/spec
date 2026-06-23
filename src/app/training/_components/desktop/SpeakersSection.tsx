@@ -1,10 +1,11 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { TR_SPEAKERS } from "@/lib/training-data";
+import type { TrainingSpeaker } from "@/lib/training-data";
 import SectionEyebrow from "../shared/SectionEyebrow";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; speakers: TrainingSpeaker[] };
 
-export default function SpeakersSection({ palette }: Props) {
+export default function SpeakersSection({ palette, speakers }: Props) {
+  if (speakers.length === 0) return null;
   return (
     <section style={{ padding: "80px 80px 0" }}>
       <SectionEyebrow
@@ -22,7 +23,7 @@ export default function SpeakersSection({ palette }: Props) {
           marginTop: 32,
         }}
       >
-        {TR_SPEAKERS.map((s, i) => (
+        {speakers.map((s, i) => (
           <article
             key={s.name}
             style={{
