@@ -111,6 +111,75 @@ export type Database = {
           },
         ]
       }
+      events: {
+        Row: {
+          badge: string | null
+          capacity: number | null
+          category: string | null
+          cover: string
+          created_at: string
+          deadline: string | null
+          ends_at: string
+          fee: string | null
+          id: string
+          is_published: boolean
+          note: string | null
+          participants: number | null
+          place: string | null
+          registered: number | null
+          schedule: Json
+          speakers: Json
+          starts_at: string
+          subtitle: string | null
+          theme: string | null
+          title: string
+        }
+        Insert: {
+          badge?: string | null
+          capacity?: number | null
+          category?: string | null
+          cover?: string
+          created_at?: string
+          deadline?: string | null
+          ends_at: string
+          fee?: string | null
+          id?: string
+          is_published?: boolean
+          note?: string | null
+          participants?: number | null
+          place?: string | null
+          registered?: number | null
+          schedule?: Json
+          speakers?: Json
+          starts_at: string
+          subtitle?: string | null
+          theme?: string | null
+          title: string
+        }
+        Update: {
+          badge?: string | null
+          capacity?: number | null
+          category?: string | null
+          cover?: string
+          created_at?: string
+          deadline?: string | null
+          ends_at?: string
+          fee?: string | null
+          id?: string
+          is_published?: boolean
+          note?: string | null
+          participants?: number | null
+          place?: string | null
+          registered?: number | null
+          schedule?: Json
+          speakers?: Json
+          starts_at?: string
+          subtitle?: string | null
+          theme?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       faculty: {
         Row: {
           about: string | null
@@ -354,6 +423,7 @@ export type Database = {
       auth_is_admin: { Args: never; Returns: boolean }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       increment_post_view: { Args: { p_id: string }; Returns: undefined }
+      is_public_author: { Args: { profile_id: string }; Returns: boolean }
     }
     Enums: {
       faculty_dept: "ot" | "nt" | "st" | "pt" | "ch" | "mn"
