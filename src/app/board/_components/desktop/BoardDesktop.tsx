@@ -8,6 +8,7 @@ import type {
   FeedPost,
   ActiveMember,
   BoardStats,
+  HotThread,
 } from "@/lib/board-data";
 import { type BoardSort } from "@/lib/board-data";
 import { sortFeedPosts } from "@/lib/board";
@@ -36,11 +37,13 @@ export default function BoardDesktop({
   categories,
   members,
   stats,
+  hot,
 }: {
   posts: FeedPost[];
   categories: BoardCategory[];
   members: ActiveMember[];
   stats: BoardStats;
+  hot: HotThread[];
 }) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
@@ -61,7 +64,7 @@ export default function BoardDesktop({
       }}
     >
       <BoardHeader palette={palette} stats={stats} />
-      <HotSection palette={palette} />
+      <HotSection palette={palette} hot={hot} />
 
       <CategoryStickyBar
         palette={palette}

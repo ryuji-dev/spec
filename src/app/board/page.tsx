@@ -23,6 +23,7 @@ export default async function BoardPage() {
           categories={data.categories}
           members={data.members}
           stats={data.stats}
+          hot={data.hot}
         />
       </>
     );
@@ -33,6 +34,7 @@ export default async function BoardPage() {
       posts={data.posts}
       categories={data.categories}
       stats={data.stats}
+      hot={data.hot}
     />
   );
 }

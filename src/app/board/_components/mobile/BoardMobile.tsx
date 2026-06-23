@@ -7,13 +7,13 @@ import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
   BOARD_SORTS,
-  CM_HOT,
   CM_VERSE,
   type BoardCategory,
   type BoardSort,
   type BoardStat,
   type BoardStats,
   type FeedPost,
+  type HotThread,
 } from "@/lib/board-data";
 import { sortFeedPosts } from "@/lib/board";
 import CmAvatar from "../shared/CmAvatar";
@@ -27,6 +27,7 @@ type Props = {
   posts: FeedPost[];
   categories: BoardCategory[];
   stats: BoardStats;
+  hot: HotThread[];
 };
 
 const palette = FOREST_PALETTE;
@@ -40,6 +41,7 @@ export default function BoardMobile({
   posts,
   categories,
   stats,
+  hot,
 }: Props) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
@@ -299,7 +301,7 @@ export default function BoardMobile({
             scrollbarWidth: "none",
           }}
         >
-          {CM_HOT.map((p) => (
+          {hot.map((p) => (
             <div
               key={p.id}
               style={{
