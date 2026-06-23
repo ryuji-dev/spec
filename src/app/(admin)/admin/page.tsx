@@ -23,6 +23,7 @@ export default async function AdminPage() {
       <p style={{ marginTop: 16, display: "flex", gap: 16 }}>
         <Link href="/admin/inquiries">문의 접수함 →</Link>
         <Link href="/notice">공지 관리 →</Link>
+        <Link href="/admin/events">수련회 이벤트 관리 →</Link>
       </p>
 
       <section style={{ marginTop: 40 }}>
