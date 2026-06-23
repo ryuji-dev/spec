@@ -72,7 +72,7 @@ export function toTrainingPostView(row: TrainingRow, now: Date): TrainingPost {
 }
 
 // ── 이벤트 표시값 파생 ──
-const COVER_KINDS: CoverKind[] = [
+export const COVER_KINDS: CoverKind[] = [
   "mountain-dawn", "autumn", "youth", "desert", "pine", "lake", "field",
 ];
 function resolveCover(v: string | null): CoverKind {
