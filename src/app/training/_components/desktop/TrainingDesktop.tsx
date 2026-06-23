@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import type { TrainingPost, TrainingCategory } from "@/lib/training-data";
+import type { TrainingEventsData } from "@/server/services/training";
 import HeroSection from "./HeroSection";
 import UpcomingHero from "./UpcomingHero";
 import ScheduleSection from "./ScheduleSection";
@@ -23,9 +24,10 @@ const palette = FOREST_PALETTE;
 type Props = {
   posts: TrainingPost[];
   categories: TrainingCategory[];
+  events: TrainingEventsData;
 };
 
-export default function TrainingDesktop({ posts, categories }: Props) {
+export default function TrainingDesktop({ posts, categories, events }: Props) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
   const filtered =
@@ -42,11 +44,11 @@ export default function TrainingDesktop({ posts, categories }: Props) {
       }}
     >
       <HeroSection />
-      <UpcomingHero palette={palette} />
-      <ScheduleSection palette={palette} />
-      <SpeakersSection palette={palette} />
-      <NextSection palette={palette} />
-      <PastBento palette={palette} />
+      <UpcomingHero palette={palette} featured={events.featured} speakers={events.speakers} />
+      <ScheduleSection palette={palette} schedule={events.schedule} />
+      <SpeakersSection palette={palette} speakers={events.speakers} />
+      <NextSection palette={palette} next={events.next} />
+      <PastBento palette={palette} past={events.past} />
 
       <section style={{ padding: "80px 80px 0" }}>
         <SectionEyebrow
@@ -134,8 +136,8 @@ export default function TrainingDesktop({ posts, categories }: Props) {
         </main>
 
         <aside style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-          <SideRegister palette={palette} />
-          <SideArchive palette={palette} />
+          <SideRegister palette={palette} featured={events.featured} />
+          <SideArchive palette={palette} archive={events.archive} />
           <SideContact palette={palette} />
         </aside>
       </div>

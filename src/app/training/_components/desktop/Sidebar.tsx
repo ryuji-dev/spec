@@ -1,11 +1,18 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { TR_UPCOMING, TR_ARCHIVE } from "@/lib/training-data";
+import type { UpcomingTraining, ArchiveYear } from "@/lib/training-data";
 
 type Props = { palette: Palette };
 
-export function SideRegister({ palette }: Props) {
-  const u = TR_UPCOMING;
-  const pct = Math.round((u.registered / u.capacity) * 100);
+export function SideRegister({
+  palette,
+  featured,
+}: {
+  palette: Palette;
+  featured: UpcomingTraining | null;
+}) {
+  if (!featured) return null;
+  const u = featured;
+  const pct = u.capacity > 0 ? Math.round((u.registered / u.capacity) * 100) : 0;
   return (
     <div
       style={{
@@ -145,7 +152,13 @@ export function SideRegister({ palette }: Props) {
   );
 }
 
-export function SideArchive({ palette }: Props) {
+export function SideArchive({
+  palette,
+  archive,
+}: {
+  palette: Palette;
+  archive: ArchiveYear[];
+}) {
   return (
     <div>
       <div
@@ -179,7 +192,7 @@ export function SideArchive({ palette }: Props) {
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-        {TR_ARCHIVE.map((g) => (
+        {archive.map((g) => (
           <div key={g.y}>
             <div
               style={{

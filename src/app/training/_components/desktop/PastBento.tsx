@@ -1,12 +1,13 @@
 import type { CSSProperties } from "react";
 import type { Palette } from "@/app/_components/shared/palette";
-import { TR_PAST, type PastTraining } from "@/lib/training-data";
+import type { PastTraining } from "@/lib/training-data";
 import SectionEyebrow from "../shared/SectionEyebrow";
 import CoverArt from "../shared/CoverArt";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; past: PastTraining[] };
 
-export default function PastBento({ palette }: Props) {
+export default function PastBento({ palette, past }: Props) {
+  if (past.length < 4) return null;
   return (
     <section style={{ padding: "80px 80px 0" }}>
       <SectionEyebrow
@@ -27,23 +28,23 @@ export default function PastBento({ palette }: Props) {
       >
         <PastCard
           palette={palette}
-          item={TR_PAST[0]}
+          item={past[0]}
           style={{ gridColumn: "span 2", gridRow: "span 2" }}
           hero
         />
         <PastCard
           palette={palette}
-          item={TR_PAST[1]}
+          item={past[1]}
           style={{ gridColumn: "span 1", gridRow: "span 2" }}
         />
         <PastCard
           palette={palette}
-          item={TR_PAST[2]}
+          item={past[2]}
           style={{ gridColumn: "span 1" }}
         />
         <PastCard
           palette={palette}
-          item={TR_PAST[3]}
+          item={past[3]}
           style={{ gridColumn: "span 1" }}
         />
       </div>

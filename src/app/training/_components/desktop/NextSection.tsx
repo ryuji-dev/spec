@@ -1,11 +1,11 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { TR_NEXT } from "@/lib/training-data";
+import type { NextTraining } from "@/lib/training-data";
 import SectionEyebrow from "../shared/SectionEyebrow";
 import CoverArt from "../shared/CoverArt";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; next: NextTraining[] };
 
-export default function NextSection({ palette }: Props) {
+export default function NextSection({ palette, next }: Props) {
   return (
     <section style={{ padding: "80px 80px 0" }}>
       <SectionEyebrow
@@ -23,7 +23,7 @@ export default function NextSection({ palette }: Props) {
           marginTop: 32,
         }}
       >
-        {TR_NEXT.map((n) => (
+        {next.map((n) => (
           <article
             key={n.id}
             style={{

@@ -1,11 +1,12 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { TR_UPCOMING, TR_SPEAKERS } from "@/lib/training-data";
+import type { UpcomingTraining, TrainingSpeaker } from "@/lib/training-data";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; featured: UpcomingTraining | null; speakers: TrainingSpeaker[] };
 
-export default function UpcomingHero({ palette }: Props) {
-  const u = TR_UPCOMING;
-  const pct = Math.round((u.registered / u.capacity) * 100);
+export default function UpcomingHero({ palette, featured, speakers }: Props) {
+  if (!featured) return null;
+  const u = featured;
+  const pct = u.capacity > 0 ? Math.round((u.registered / u.capacity) * 100) : 0;
   const placeParts = u.place.split(" · ");
   return (
     <section style={{ padding: "40px 80px 0" }}>
@@ -392,7 +393,7 @@ export default function UpcomingHero({ palette }: Props) {
               SPEAKERS · 강사진
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {TR_SPEAKERS.map((s, i) => (
+              {speakers.map((s, i) => (
                 <div
                   key={s.name}
                   style={{

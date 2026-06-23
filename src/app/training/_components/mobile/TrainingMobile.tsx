@@ -6,14 +6,11 @@ import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import CatLabel from "@/app/_components/shared/CatLabel";
 import { PageHeroMobile } from "@/app/_components/PageHero";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
-import {
-  TR_PAST,
-  TR_SCHEDULE,
-  TR_SPEAKERS,
-  TR_UPCOMING,
-  type TrainingPost,
-  type TrainingCategory,
+import type {
+  TrainingPost,
+  TrainingCategory,
 } from "@/lib/training-data";
+import type { TrainingEventsData } from "@/server/services/training";
 import CoverArt from "../shared/CoverArt";
 import { catTone } from "../catTone";
 
@@ -22,17 +19,18 @@ const palette = FOREST_PALETTE;
 type Props = {
   posts: TrainingPost[];
   categories: TrainingCategory[];
+  events: TrainingEventsData;
 };
 
-export default function TrainingMobile({ posts, categories }: Props) {
+export default function TrainingMobile({ posts, categories, events }: Props) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
   const filtered =
     activeCat === 0
       ? posts
       : posts.filter((p) => p.cat === categories[activeCat].ko);
-  const u = TR_UPCOMING;
-  const pct = Math.round((u.registered / u.capacity) * 100);
+  const u = events.featured;
+  const pct = u && u.capacity > 0 ? Math.round((u.registered / u.capacity) * 100) : 0;
 
   return (
     <>
@@ -150,6 +148,7 @@ export default function TrainingMobile({ posts, categories }: Props) {
         />
 
         {/* 카운트다운 + 신청 카드 */}
+        {u && (
         <div style={{ padding: "8px 22px 0" }}>
           <article
             style={{
@@ -386,6 +385,7 @@ export default function TrainingMobile({ posts, categories }: Props) {
             </div>
           </article>
         </div>
+        )}
 
         {/* 강사진 (가로 스크롤) */}
         <div style={{ padding: "24px 0 0" }}>
@@ -427,7 +427,7 @@ export default function TrainingMobile({ posts, categories }: Props) {
                 padding: "0 22px",
               }}
             >
-              {TR_SPEAKERS.map((s, i) => (
+              {events.speakers.map((s, i) => (
                 <div
                   key={s.name}
                   style={{
@@ -543,7 +543,7 @@ export default function TrainingMobile({ posts, categories }: Props) {
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {TR_SCHEDULE.map((d, i) => (
+            {events.schedule.map((d, i) => (
               <div
                 key={d.day}
                 style={{
@@ -948,7 +948,7 @@ export default function TrainingMobile({ posts, categories }: Props) {
             <div
               style={{ display: "inline-flex", gap: 10, padding: "0 22px" }}
             >
-              {TR_PAST.map((p) => (
+              {events.past.map((p) => (
                 <div
                   key={p.id}
                   style={{

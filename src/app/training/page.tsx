@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
-import { getTrainingListData } from "@/server/services/training";
+import { getTrainingListData, getTrainingEventsData } from "@/server/services/training";
 import DesktopNav from "@/app/_components/DesktopNav";
 import TrainingDesktop from "./_components/desktop/TrainingDesktop";
 import TrainingMobile from "./_components/mobile/TrainingMobile";
@@ -15,15 +15,16 @@ export default async function TrainingPage() {
   const h = await headers();
   const device = getDeviceType(h.get("user-agent"));
   const data = await getTrainingListData();
+  const events = await getTrainingEventsData();
   // training 디자인엔 고정(pinned) 슬롯이 없어, pinned 글을 목록 맨 앞에 합친다.
   const posts = data.pinned ? [data.pinned, ...data.posts] : data.posts;
   if (device === "desktop") {
     return (
       <>
         <DesktopNav variant="solid" />
-        <TrainingDesktop posts={posts} categories={data.categories} />
+        <TrainingDesktop posts={posts} categories={data.categories} events={events} />
       </>
     );
   }
-  return <TrainingMobile posts={posts} categories={data.categories} />;
+  return <TrainingMobile posts={posts} categories={data.categories} events={events} />;
 }
