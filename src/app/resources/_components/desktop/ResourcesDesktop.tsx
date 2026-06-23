@@ -8,6 +8,7 @@ import {
   type ResourcesView,
 } from "@/lib/resources-data";
 import type { ResourceFile, ResourceCategory, ResourceTopItem } from "@/lib/resources-data";
+import { sortResourceFiles } from "@/lib/resource";
 import ResourcesHeader from "./ResourcesHeader";
 import CollectionsSection from "./CollectionsSection";
 import FilterStrip from "./FilterStrip";
@@ -32,6 +33,7 @@ export default function ResourcesDesktop({ files, categories, top }: Props) {
 
   const filtered =
     activeCat === 0 ? files : files.filter((f) => f.cat === categories[activeCat].ko);
+  const sorted = sortResourceFiles(filtered, sort);
 
   return (
     <div
@@ -89,13 +91,13 @@ export default function ResourcesDesktop({ files, categories, top }: Props) {
 
           {view === "grid" ? (
             <FileGrid
-              files={filtered}
+              files={sorted}
               palette={palette}
               onOpen={(id) => router.push(`/resources/${id}`)}
             />
           ) : (
             <FileList
-              files={filtered}
+              files={sorted}
               palette={palette}
               onOpen={(id) => router.push(`/resources/${id}`)}
             />
