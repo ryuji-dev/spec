@@ -6,6 +6,11 @@ export function kstDateEndToIso(dateStr: string): string {
   return new Date(`${dateStr}T23:59:59${KST_OFFSET}`).toISOString();
 }
 
+// "YYYY-MM-DD" → 그날 00:00:00(KST)의 ISO. 시작 시각용.
+export function kstDateStartToIso(dateStr: string): string {
+  return new Date(`${dateStr}T00:00:00${KST_OFFSET}`).toISOString();
+}
+
 // ISO timestamptz → KST 기준 "YYYY-MM-DD" (edit 화면 prefill용).
 // en-CA는 ISO 8601 날짜 형식(YYYY-MM-DD)을 반환하는 locale이라 선택(표시 언어와 무관).
 export function isoToKstDate(iso: string): string {
