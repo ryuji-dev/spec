@@ -333,7 +333,11 @@ export type EventEditData = {
   deadline: string; // "YYYY-MM-DD" or ""
   isPublished: boolean;
   speakers: { name: string; role: string; affiliation: string; talks: number }[];
-  schedule: ScheduleDay[];
+  schedule: {
+    day: string;
+    date: string;
+    items: { time: string; what: string; place: string; tag: string; highlight?: boolean }[];
+  }[];
 };
 
 export async function getEventForEdit(id: string): Promise<EventEditData | null> {
@@ -371,6 +375,16 @@ export async function getEventForEdit(id: string): Promise<EventEditData | null>
       affiliation: s.affiliation,
       talks: s.talks,
     })),
-    schedule: parseSchedule(r.schedule),
+    schedule: parseSchedule(r.schedule).map((d) => ({
+      day: d.day,
+      date: d.date,
+      items: d.items.map((it) => ({
+        time: it.time,
+        what: it.what,
+        place: it.place,
+        tag: it.tag,
+        ...(it.highlight !== undefined ? { highlight: it.highlight } : {}),
+      })),
+    })),
   };
 }
