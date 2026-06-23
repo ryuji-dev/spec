@@ -5,6 +5,7 @@ import type {
   ResourceFileType,
   ResourceFileCategory,
   ResourceCategoryEn,
+  ResourcesSort,
 } from "./resources-data";
 
 // 상세 페이지가 @/lib/resource 경로로 import하던 호환 유지
@@ -68,4 +69,19 @@ export function toResourceFileView(row: ResourceRow, now: Date): ResourceFile {
     by: formatAuthor(row.authorName, row.authorTitle),
     isNew: now.getTime() - row.createdAt.getTime() < NEW_WINDOW_MS,
   };
+}
+
+// 자료실 목록 정렬 — recent는 입력 순서(서비스가 created_at desc로 제공) 유지,
+// downloads/name만 복사본을 정렬(안정 정렬이라 동점은 최신순 유지).
+export function sortResourceFiles(
+  files: ResourceFile[],
+  sort: ResourcesSort,
+): ResourceFile[] {
+  if (sort === "downloads") {
+    return [...files].sort((a, b) => b.downloads - a.downloads);
+  }
+  if (sort === "name") {
+    return [...files].sort((a, b) => a.title.localeCompare(b.title, "ko"));
+  }
+  return files;
 }
