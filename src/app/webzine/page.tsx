@@ -26,6 +26,7 @@ export default async function WebzinePage() {
           featured={data.featured}
           articles={data.articles}
           categories={data.categories}
+          backIssues={data.backIssues}
         />
       </>
     );
@@ -39,6 +40,7 @@ export default async function WebzinePage() {
         featured={data.featured}
         articles={data.articles}
         categories={data.categories}
+        backIssues={data.backIssues}
       />
     </>
   );

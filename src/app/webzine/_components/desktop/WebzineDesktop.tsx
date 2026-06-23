@@ -3,11 +3,11 @@
 import { useRouter } from "next/navigation";
 import { PageHeroDesktop } from "@/app/_components/PageHero";
 import {
-  WZ_BACK_ISSUES,
   type WebzinePalette,
   type WebzineFeatured,
   type WebzineArticle,
   type WebzineCategory,
+  type WebzineBackIssue,
 } from "@/lib/webzine-data";
 import { CURRENT_ISSUE } from "@/lib/webzine";
 import CoverArt from "../illustrations/CoverArt";
@@ -18,9 +18,10 @@ type Props = {
   featured: WebzineFeatured | null;
   articles: WebzineArticle[];
   categories: WebzineCategory[];
+  backIssues: WebzineBackIssue[];
 };
 
-export default function WebzineDesktop({ palette, featured, articles, categories }: Props) {
+export default function WebzineDesktop({ palette, featured, articles, categories, backIssues }: Props) {
   const router = useRouter();
   return (
     <div style={{ background: palette.bg, minHeight: "100%" }}>
@@ -448,13 +449,14 @@ export default function WebzineDesktop({ palette, featured, articles, categories
                 fontWeight: 300,
               }}
             >
-              2014년 창간 이후 발행된 23개의 호. 그동안의 글들을 분기별로 모아두었습니다.
+              신학원웹진에 실린 글 가운데 많이 읽힌 글들을 다시 모았습니다.
             </p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 14 }}>
-            {WZ_BACK_ISSUES.map((b, i) => (
+            {backIssues.map((b) => (
               <div
-                key={i}
+                key={b.id}
+                onClick={() => router.push(`/webzine/${b.id}`)}
                 style={{
                   padding: "24px 26px",
                   background: palette.bg,

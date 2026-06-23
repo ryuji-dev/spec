@@ -54,6 +54,7 @@ export type WebzineCategory = {
 };
 
 export type WebzineBackIssue = {
+  id: string;
   vol: string;
   issue: string;
   date: string;
@@ -165,11 +166,4 @@ export const WZ_CATEGORIES: WebzineCategory[] = [
   { en: "ESSAY", ko: "에세이", count: 42 },
   { en: "HISTORY", ko: "교회사", count: 12 },
   { en: "DIALOGUE", ko: "대담", count: 9 },
-];
-
-export const WZ_BACK_ISSUES: WebzineBackIssue[] = [
-  { vol: "Vol. 23", issue: "2026 신년호", date: "2026.01", theme: "다시, 처음의 자리에서" },
-  { vol: "Vol. 22", issue: "2025 겨울호", date: "2025.10", theme: "어둠 속의 작은 등불" },
-  { vol: "Vol. 21", issue: "2025 가을호", date: "2025.07", theme: "추수하는 자의 노래" },
-  { vol: "Vol. 20", issue: "2025 여름호", date: "2025.04", theme: "광야에서 기도하다" },
 ];

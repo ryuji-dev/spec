@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
-  WZ_BACK_ISSUES,
   type WebzinePalette,
   type WebzineFeatured,
   type WebzineArticle,
   type WebzineCategory,
+  type WebzineBackIssue,
 } from "@/lib/webzine-data";
 import { CURRENT_ISSUE } from "@/lib/webzine";
 import CoverArt from "../illustrations/CoverArt";
@@ -20,9 +20,10 @@ type Props = {
   featured: WebzineFeatured | null;
   articles: WebzineArticle[];
   categories: WebzineCategory[];
+  backIssues: WebzineBackIssue[];
 };
 
-export default function WebzineMobile({ palette, featured, articles, categories }: Props) {
+export default function WebzineMobile({ palette, featured, articles, categories, backIssues }: Props) {
   const router = useRouter();
   const [cat, setCat] = useState("전체");
 
@@ -523,9 +524,10 @@ export default function WebzineMobile({ palette, featured, articles, categories 
           지난 호 다시 읽기
         </h3>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          {WZ_BACK_ISSUES.slice(0, 4).map((b, i) => (
+          {backIssues.slice(0, 4).map((b) => (
             <div
-              key={i}
+              key={b.id}
+              onClick={() => router.push(`/webzine/${b.id}`)}
               style={{
                 padding: "16px 14px",
                 background: palette.surface,

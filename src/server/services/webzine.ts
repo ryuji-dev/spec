@@ -3,6 +3,7 @@ import { createSupabaseServer } from "@/server/supabase/server";
 import {
   toWebzineArticleView,
   toWebzineFeaturedView,
+  toWebzineBackIssueView,
   WEBZINE_CATEGORIES_KO,
   WZ_CATEGORY_EN,
   readingTime,
@@ -14,6 +15,7 @@ import type {
   WebzineArticle,
   WebzineFeatured,
   WebzineCategory,
+  WebzineBackIssue,
 } from "@/lib/webzine-data";
 
 const SECTION = "webzine" as const;
@@ -27,6 +29,7 @@ export type WebzineListData = {
   featured: WebzineFeatured | null;
   articles: WebzineArticle[];
   categories: WebzineCategory[];
+  backIssues: WebzineBackIssue[];
 };
 
 export async function getWebzineListData(): Promise<WebzineListData> {
@@ -90,7 +93,17 @@ export async function getWebzineListData(): Promise<WebzineListData> {
     count: byCat.get(ko) ?? 0,
   }));
 
-  return { featured, articles, categories };
+  // "지난 호" = 조회수 상위 4편(동점 시 최신). 이미 조회한 rows 재사용.
+  const backIssues: WebzineBackIssue[] = [...rows]
+    .sort(
+      (a, b) =>
+        b.view_count - a.view_count ||
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    )
+    .slice(0, 4)
+    .map((r) => toWebzineBackIssueView(toWebzineRow(r)));
+
+  return { featured, articles, categories, backIssues };
 }
 
 export type WebzineArticleDetail = {
