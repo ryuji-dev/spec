@@ -4,6 +4,7 @@ import type {
   WebzineArticle,
   WebzineFeatured,
   WebzineArticleCoverType,
+  WebzineBackIssue,
 } from "./webzine-data";
 
 // 외부에서 @/lib/webzine 경로로 import하던 호환 유지
@@ -99,5 +100,18 @@ export function toWebzineFeaturedView(row: WebzineRow): WebzineFeatured {
     date: formatDate(row.createdAt),
     read: readingTime(row.bodyLength),
     cover: "wilderness",
+  };
+}
+
+// 평면 행 → "지난 호" 카드 뷰모델("지난 글"로 재해석).
+// vol=EN 태그, issue=한글 카테고리, theme=제목, date=작성일.
+export function toWebzineBackIssueView(row: WebzineRow): WebzineBackIssue {
+  const cat = resolveCategory(row.category);
+  return {
+    id: row.id,
+    vol: WZ_CATEGORY_EN[cat],
+    issue: cat,
+    theme: row.title,
+    date: formatDate(row.createdAt),
   };
 }
