@@ -1,4 +1,5 @@
 import type { HomeData } from "@/server/services/home";
+import type { HeroSlideView } from "@/lib/hero";
 import HeroMobile from "./HeroMobile";
 import MobileStickyHeader from "@/app/_components/MobileStickyHeader";
 import AnnouncementStrip from "./AnnouncementStrip";
@@ -11,11 +12,11 @@ import BottomTabBar from "./BottomTabBar";
 import styles from "./MobilePage.module.css";
 
 // 모바일 페이지. 디자인 원본 app.jsx 섹션 순서 그대로. 공지·일정·사진은 실데이터(props).
-export default function MobilePage({ home }: { home: HomeData }) {
+export default function MobilePage({ home, heroSlides }: { home: HomeData; heroSlides: HeroSlideView[] }) {
   return (
     <div className={styles.shell}>
       <MobileStickyHeader />
-      <HeroMobile />
+      <HeroMobile slides={heroSlides} />
       <AnnouncementStrip text={home.announcement} />
 
       <SectionHeader
