@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HERO_SLIDES } from "@/lib/main-page-data";
+import type { HeroSlideView } from "@/lib/hero";
 import { HERO_SLIDE_COMPONENTS } from "../HeroSlides";
 import styles from "./DesktopHero.module.css";
 
@@ -9,11 +9,12 @@ const SLIDE_INTERVAL_MS = 5500;
 
 /**
  * 데스크톱 히어로 — 자동 슬라이드(5.5초) + 켄번스 + 점 수동 전환.
- * 디자인 원본 `_design/.../desktop.jsx:4-22` 동작 그대로.
+ * 배경은 관리자 사진(slides)이 있으면 사진, 없으면 기본 SVG 아트로 폴백.
  */
-export default function DesktopHero() {
+export default function DesktopHero({ slides }: { slides: HeroSlideView[] }) {
+  const usePhotos = slides.length > 0;
+  const total = usePhotos ? slides.length : HERO_SLIDE_COMPONENTS.length;
   const [idx, setIdx] = useState(0);
-  const total = HERO_SLIDES.length;
 
   useEffect(() => {
     const t = setInterval(() => setIdx((i) => (i + 1) % total), SLIDE_INTERVAL_MS);
@@ -22,11 +23,18 @@ export default function DesktopHero() {
 
   return (
     <section className={styles.hero}>
-      {HERO_SLIDE_COMPONENTS.map((Component, i) => (
-        <div key={i} className={styles.slide} data-active={i === idx ? "true" : "false"}>
-          <Component />
-        </div>
-      ))}
+      {usePhotos
+        ? slides.map((s, i) => (
+            <div key={i} className={styles.slide} data-active={i === idx ? "true" : "false"}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={s.url} alt={s.alt} className={styles.image} />
+            </div>
+          ))
+        : HERO_SLIDE_COMPONENTS.map((Component, i) => (
+            <div key={i} className={styles.slide} data-active={i === idx ? "true" : "false"}>
+              <Component />
+            </div>
+          ))}
       <div className={styles.overlay} />
 
       <div className={styles.content}>
@@ -49,7 +57,7 @@ export default function DesktopHero() {
 
       <div className={styles.indicator}>
         <div className={styles.dots}>
-          {HERO_SLIDES.map((_, i) => (
+          {Array.from({ length: total }, (_, i) => (
             <span
               key={i}
               className={styles.dot}

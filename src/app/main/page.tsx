@@ -1,5 +1,6 @@
 import styles from "./main.module.css";
 import { getHomeData } from "@/server/services/home";
+import { getHeroSlides } from "@/server/services/hero";
 import DesktopPage from "./_components/desktop/DesktopPage";
 import MobilePage from "./_components/mobile/MobilePage";
 
@@ -8,14 +9,14 @@ import MobilePage from "./_components/mobile/MobilePage";
  * 히어로·메뉴·푸터 등은 정적. 헌법 [7]: 마크업·디자인 불변, 데이터 출처만 연동.
  */
 export default async function MainPage() {
-  const home = await getHomeData();
+  const [home, heroSlides] = await Promise.all([getHomeData(), getHeroSlides()]);
   return (
     <div className={styles.root}>
       <div className={styles.desktopOnly}>
-        <DesktopPage home={home} />
+        <DesktopPage home={home} heroSlides={heroSlides} />
       </div>
       <div className={styles.mobileOnly}>
-        <MobilePage home={home} />
+        <MobilePage home={home} heroSlides={heroSlides} />
       </div>
     </div>
   );
