@@ -171,37 +171,6 @@ export type ResourceCollection = {
   tag: string;
 };
 
-export const LB_COLLECTIONS: ReadonlyArray<ResourceCollection> = [
-  {
-    id: "spring-2026",
-    title: "2026 봄학기 공과 모음",
-    sub: "유년 · 초등 · 중고등 · 청년 4개 학년 일괄",
-    items: 12,
-    downloads: 2840,
-    cover: "spring",
-    badge: "NEW",
-    tag: "교안",
-  },
-  {
-    id: "easter-worship",
-    title: "부활절 연합 예배 패키지",
-    sub: "설교 PPT · 콘티 · 악보 · 영상 매뉴얼",
-    items: 8,
-    downloads: 1623,
-    cover: "easter",
-    badge: "HOT",
-    tag: "예배",
-  },
-  {
-    id: "teacher-essentials",
-    title: "교사 필수 자료 50선",
-    sub: "교사 헌신예배 · 교사대학 · 양육 가이드",
-    items: 50,
-    downloads: 4128,
-    cover: "teacher",
-    tag: "교사",
-  },
-];
 
 export type ResourceTopItem = {
   rank: number;
