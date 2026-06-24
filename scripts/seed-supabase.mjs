@@ -95,6 +95,39 @@ if (!(await hasSection("resource"))) {
   console.log("seeded resource 6 (+attachments)");
 } else console.log("skip resource");
 
+// resource collections (+items) — 위 resource posts를 묶는 큐레이션.
+{
+  const { count: colCount } = await db
+    .from("resource_collections")
+    .select("id", { count: "exact", head: true });
+  if (!colCount) {
+    const { data: rposts } = await db
+      .from("posts")
+      .select("id")
+      .eq("section", "resource")
+      .order("created_at", { ascending: false });
+    const resourcePostIds = (rposts ?? []).map((p) => p.id);
+    const { data: cols } = await db
+      .from("resource_collections")
+      .insert([
+        { title: "2026 봄학기 공과 모음", sub: "유년 · 초등 · 중고등 · 청년 4개 학년 일괄", cover: "spring", badge: "NEW", tag: "교안", sort_order: 0 },
+        { title: "부활절 연합 예배 패키지", sub: "설교 PPT · 콘티 · 악보 · 영상 매뉴얼", cover: "easter", badge: "HOT", tag: "예배", sort_order: 1 },
+        { title: "교사 필수 자료 50선", sub: "교사 헌신예배 · 교사대학 · 양육 가이드", cover: "teacher", tag: "교사", sort_order: 2 },
+      ])
+      .select("id");
+    if (cols && resourcePostIds.length > 0) {
+      const links = [];
+      cols.forEach((col, ci) => {
+        resourcePostIds.slice(ci, ci + 3).forEach((postId, i) => {
+          links.push({ collection_id: col.id, post_id: postId, sort_order: i });
+        });
+      });
+      if (links.length > 0) await db.from("resource_collection_items").insert(links);
+    }
+    console.log("seeded resource_collections 3 (+items)");
+  } else console.log("skip resource_collections");
+}
+
 // board
 if (!(await hasSection("board"))) {
   const bseed = [
