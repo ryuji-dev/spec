@@ -1,7 +1,13 @@
 // 신학원 교수 디렉터리 — 클라이언트 안전 순수 매퍼. DB·server-only 의존 없음.
 // DB 평면 행(FacultyRow)을 디자인 뷰모델(FacultyMember/FacultyCover)로 파생한다.
 import type { Database } from "./database.types";
-import type { FacultyDept, FacultyMember, FacultyCover } from "./faculty-data";
+import type {
+  FacultyDept,
+  FacultyMember,
+  FacultyCover,
+  FacultyQuote,
+  FacultyTimetableItem,
+} from "./faculty-data";
 
 // 부서 코드 → 한국어·영문 라벨 (FilterStrip·목록 카운트용)
 export const FACULTY_DEPT_META: Record<
@@ -65,5 +71,34 @@ export function toFacultyCoverView(row: FacultyRow): FacultyCover {
       { k: String(teaches.length), l: "담당 강좌" },
     ],
     current: teaches,
+  };
+}
+
+// 한마디 — quote가 빈 값이 아닌 교수 최대 4명을 인용 목록으로.
+export function toQuoteList(rows: FacultyRow[]): FacultyQuote[] {
+  return rows
+    .filter((r) => r.quote && r.quote.trim().length > 0)
+    .slice(0, 4)
+    .map((r) => ({ name: r.name, q: r.quote }));
+}
+
+// 시간표 평면 행 → 디자인 뷰모델. host=false면 host 키 생략(타입이 host?).
+export type TimetableRow = {
+  day: string;
+  time: string;
+  course: string;
+  prof: string;
+  room: string;
+  host: boolean;
+};
+
+export function toTimetableItem(row: TimetableRow): FacultyTimetableItem {
+  return {
+    day: row.day,
+    time: row.time,
+    course: row.course,
+    prof: row.prof,
+    room: row.room,
+    ...(row.host ? { host: true } : {}),
   };
 }

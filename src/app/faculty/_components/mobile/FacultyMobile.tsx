@@ -4,11 +4,11 @@ import { useState } from "react";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroMobile } from "@/app/_components/PageHero";
 import {
-  FACULTY_QUOTES,
   type FacultyDept,
   type FacultyCover,
   type FacultyMember,
   type FacultyDeptItem,
+  type FacultyQuote,
 } from "@/lib/faculty-data";
 import type { DeviceType } from "@/lib/device";
 import { deptColor } from "../deptTone";
@@ -21,6 +21,7 @@ type Props = {
   cover: FacultyCover | null;
   members: FacultyMember[];
   depts: FacultyDeptItem[];
+  quotes: FacultyQuote[];
 };
 
 const BOTTOM_TABS: ReadonlyArray<{ ko: string; en: string; active: boolean }> = [
@@ -36,7 +37,7 @@ const BOTTOM_TABS: ReadonlyArray<{ ko: string; en: string; active: boolean }> = 
  * 모바일 bottom tab 은 디자인 원본이 자체 변형(점 인디케이터 + ko/en 듀얼 라벨)을
  * 사용하므로 글로벌 BottomTabBar 재사용 대신 인라인으로 보존.
  */
-export default function FacultyMobile({ deviceType, cover, members, depts }: Props) {
+export default function FacultyMobile({ deviceType, cover, members, depts, quotes }: Props) {
   const [activeDept, setActiveDept] = useState<FacultyDept>("all");
 
   const filtered =
@@ -288,7 +289,7 @@ export default function FacultyMobile({ deviceType, cover, members, depts }: Pro
             scrollbarWidth: "none",
           }}
         >
-          {FACULTY_QUOTES.map((q) => (
+          {quotes.map((q) => (
             <div
               key={q.name}
               style={{

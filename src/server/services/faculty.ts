@@ -3,14 +3,19 @@ import { createSupabaseServer } from "@/server/supabase/server";
 import {
   toFacultyMemberView,
   toFacultyCoverView,
+  toTimetableItem,
+  toQuoteList,
   FACULTY_DEPT_META,
   type FacultyRow,
+  type TimetableRow,
 } from "@/lib/faculty";
 import type {
   FacultyMember,
   FacultyCover,
   FacultyDeptItem,
   FacultyDept,
+  FacultyQuote,
+  FacultyTimetableItem,
 } from "@/lib/faculty-data";
 import type { Database } from "@/lib/database.types";
 
@@ -18,6 +23,7 @@ export type FacultyDirectoryData = {
   cover: FacultyCover | null;
   members: FacultyMember[];
   depts: FacultyDeptItem[];
+  quotes: FacultyQuote[];
 };
 
 // DB Row (snake_case) → admin 페이지가 기대하는 camelCase 구조
@@ -114,7 +120,9 @@ export async function getFacultyDirectoryData(): Promise<FacultyDirectoryData> {
     })),
   ];
 
-  return { cover, members, depts };
+  const quotes = toQuoteList(memberRows);
+
+  return { cover, members, depts, quotes };
 }
 
 // admin 목록 — 전체 교수(커버 포함), 정렬 순서순.
@@ -142,4 +150,71 @@ export async function getFacultyMemberForEdit(
   if (error) throw error;
   if (!data) return null;
   return rowToFaculty(data as FacultyRow);
+}
+
+// 공개 시간표 — sort_order→day→time 순.
+export async function getFacultyTimetable(): Promise<FacultyTimetableItem[]> {
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase
+    .from("faculty_timetable")
+    .select("day, time, course, prof, room, host")
+    .order("sort_order", { ascending: true })
+    .order("day", { ascending: true })
+    .order("time", { ascending: true });
+  if (error) throw error;
+  return ((data ?? []) as TimetableRow[]).map(toTimetableItem);
+}
+
+// admin 목록 — 전체, sort_order순.
+export type TimetableAdminRow = {
+  id: string;
+  day: string;
+  time: string;
+  course: string;
+  prof: string;
+  room: string;
+  host: boolean;
+  sortOrder: number;
+};
+
+export async function listTimetableForAdmin(): Promise<TimetableAdminRow[]> {
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase
+    .from("faculty_timetable")
+    .select("id, day, time, course, prof, room, host, sort_order")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    day: r.day,
+    time: r.time,
+    course: r.course,
+    prof: r.prof,
+    room: r.room,
+    host: r.host,
+    sortOrder: r.sort_order,
+  }));
+}
+
+export async function getTimetableRowForEdit(
+  id: string,
+): Promise<TimetableAdminRow | null> {
+  const supabase = await createSupabaseServer();
+  const { data: r } = await supabase
+    .from("faculty_timetable")
+    .select("id, day, time, course, prof, room, host, sort_order")
+    .eq("id", id)
+    .maybeSingle();
+  if (!r) return null;
+  return {
+    id: r.id,
+    day: r.day,
+    time: r.time,
+    course: r.course,
+    prof: r.prof,
+    room: r.room,
+    host: r.host,
+    sortOrder: r.sort_order,
+  };
 }

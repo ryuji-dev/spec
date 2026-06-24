@@ -8,6 +8,8 @@ import type {
   FacultyDeptItem,
   FacultyDept,
   FacultyView,
+  FacultyQuote,
+  FacultyTimetableItem,
 } from "@/lib/faculty-data";
 import FeaturedHero from "./FeaturedHero";
 import QuoteStrip from "./QuoteStrip";
@@ -28,9 +30,11 @@ type Props = {
   cover: FacultyCover | null;
   members: FacultyMember[];
   depts: FacultyDeptItem[];
+  quotes: FacultyQuote[];
+  timetable: FacultyTimetableItem[];
 };
 
-export default function FacultyDesktop({ cover, members, depts }: Props) {
+export default function FacultyDesktop({ cover, members, depts, quotes, timetable }: Props) {
   const [activeDept, setActiveDept] = useState<FacultyDept>("all");
   const [view, setView] = useState<FacultyView>("grid");
 
@@ -48,7 +52,7 @@ export default function FacultyDesktop({ cover, members, depts }: Props) {
       }}
     >
       <FeaturedHero palette={palette} cover={cover} />
-      <QuoteStrip palette={palette} />
+      <QuoteStrip palette={palette} quotes={quotes} />
       <FilterStrip
         palette={palette}
         depts={depts}
@@ -67,7 +71,7 @@ export default function FacultyDesktop({ cover, members, depts }: Props) {
         )}
       </section>
 
-      <ScheduleSection palette={palette} />
+      <ScheduleSection palette={palette} timetable={timetable} />
       <SeminaryCTA palette={palette} />
       <FacultyFooter palette={palette} />
     </div>
