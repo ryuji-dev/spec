@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import BottomTabBar from "@/app/main/_components/mobile/BottomTabBar";
 import { FOREST_PALETTE } from "@/app/_components/shared/palette";
 import { PageHeroMobile } from "@/app/_components/PageHero";
-import { LB_COLLECTIONS } from "@/lib/resources-data";
 import type {
   ResourceFile,
   ResourceCategory,
   ResourceTopItem,
+  ResourceCollection,
 } from "@/lib/resources-data";
 import CollectionCover from "../shared/CollectionCover";
 import FileIcon from "../shared/FileIcon";
@@ -21,6 +21,7 @@ type Props = {
   files: ResourceFile[];
   categories: ResourceCategory[];
   top: ResourceTopItem[];
+  collections: ResourceCollection[];
 };
 
 const palette = FOREST_PALETTE;
@@ -39,6 +40,7 @@ export default function ResourcesMobile({
   deviceType = "ios",
   files,
   categories,
+  collections,
 }: Props) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
@@ -286,7 +288,7 @@ export default function ResourcesMobile({
             scrollbarWidth: "none",
           }}
         >
-          {LB_COLLECTIONS.map((c) => (
+          {collections.map((c) => (
             <div
               key={c.id}
               style={{

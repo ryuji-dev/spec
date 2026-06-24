@@ -7,7 +7,7 @@ import {
   type ResourcesSort,
   type ResourcesView,
 } from "@/lib/resources-data";
-import type { ResourceFile, ResourceCategory, ResourceTopItem } from "@/lib/resources-data";
+import type { ResourceFile, ResourceCategory, ResourceTopItem, ResourceCollection } from "@/lib/resources-data";
 import { sortResourceFiles } from "@/lib/resource";
 import ResourcesHeader from "./ResourcesHeader";
 import CollectionsSection from "./CollectionsSection";
@@ -23,9 +23,9 @@ const palette = FOREST_PALETTE;
  * 자료공유 데스크톱 — 디자인 원본 library.jsx 의 LibraryDesktop 그대로.
  * 글로벌 DesktopNav(solid)는 page 단에서 노출. 여기선 본문만.
  */
-type Props = { files: ResourceFile[]; categories: ResourceCategory[]; top: ResourceTopItem[] };
+type Props = { files: ResourceFile[]; categories: ResourceCategory[]; top: ResourceTopItem[]; collections: ResourceCollection[] };
 
-export default function ResourcesDesktop({ files, categories, top }: Props) {
+export default function ResourcesDesktop({ files, categories, top, collections }: Props) {
   const router = useRouter();
   const [activeCat, setActiveCat] = useState(0);
   const [view, setView] = useState<ResourcesView>("grid");
@@ -44,7 +44,7 @@ export default function ResourcesDesktop({ files, categories, top }: Props) {
       }}
     >
       <ResourcesHeader palette={palette} />
-      <CollectionsSection palette={palette} />
+      <CollectionsSection palette={palette} collections={collections} />
 
       <FilterStrip
         palette={palette}

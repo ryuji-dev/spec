@@ -21,7 +21,7 @@ export default async function ResourcesPage() {
     return (
       <>
         <DesktopNav variant="solid" />
-        <ResourcesDesktop files={data.files} categories={data.categories} top={data.top} />
+        <ResourcesDesktop files={data.files} categories={data.categories} top={data.top} collections={data.collections} />
       </>
     );
   }
@@ -31,6 +31,7 @@ export default async function ResourcesPage() {
       files={data.files}
       categories={data.categories}
       top={data.top}
+      collections={data.collections}
     />
   );
 }
