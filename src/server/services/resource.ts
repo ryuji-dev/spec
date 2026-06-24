@@ -7,12 +7,17 @@ import {
   RESOURCE_CATEGORIES_KO,
   RESOURCE_CATEGORY_EN,
   formatDate,
+  toCollectionView,
   type ResourceRow,
+  type CollectionRow,
 } from "@/lib/resource";
 import type {
   ResourceFile,
   ResourceCategory,
   ResourceTopItem,
+  ResourceCollection,
+  CollectionCoverKind,
+  CollectionBadge,
 } from "@/lib/resources-data";
 
 const SECTION = "resource" as const;
@@ -26,6 +31,7 @@ export type ResourceListData = {
   files: ResourceFile[];
   categories: ResourceCategory[];
   top: ResourceTopItem[];
+  collections: ResourceCollection[];
 };
 
 export async function getResourceListData(): Promise<ResourceListData> {
@@ -89,7 +95,36 @@ export async function getResourceListData(): Promise<ResourceListData> {
     type: categoryToType(p.category),
   }));
 
-  return { files, categories, top };
+  // 컬렉션 — 공개분 + 연결 자료(view_count)를 임베드해 items/downloads 파생.
+  const { data: colData, error: colError } = await supabase
+    .from("resource_collections")
+    .select(
+      "id, title, sub, cover, badge, tag, items:resource_collection_items(post:posts(view_count))",
+    )
+    .eq("is_published", true)
+    .order("sort_order", { ascending: true });
+  if (colError) throw colError;
+  const collections: ResourceCollection[] = (colData ?? []).map((c) => {
+    const links = (c.items ?? []) as {
+      post: { view_count: number } | { view_count: number }[] | null;
+    }[];
+    const posts = links
+      .map((l) => one(l.post))
+      .filter((p): p is { view_count: number } => p != null);
+    const row: CollectionRow = {
+      id: c.id,
+      title: c.title,
+      sub: c.sub,
+      cover: c.cover as CollectionCoverKind,
+      badge: (c.badge as CollectionBadge | null) ?? null,
+      tag: c.tag,
+      items: posts.length,
+      downloads: posts.reduce((sum, p) => sum + (p.view_count ?? 0), 0),
+    };
+    return toCollectionView(row);
+  });
+
+  return { files, categories, top, collections };
 }
 
 export type ResourceDetail = {
@@ -143,6 +178,91 @@ export async function getResourcePost(id: string): Promise<ResourceDetail | null
 export async function incrementResourceDownload(postId: string): Promise<void> {
   const supabase = await createSupabaseServer();
   await supabase.rpc("increment_post_view", { p_id: postId });
+}
+
+export type CollectionAdminRow = {
+  id: string;
+  title: string;
+  tag: string;
+  cover: string;
+  badge: string | null;
+  isPublished: boolean;
+  sortOrder: number;
+  itemCount: number;
+};
+
+export async function listCollectionsForAdmin(): Promise<CollectionAdminRow[]> {
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase
+    .from("resource_collections")
+    .select(
+      "id, title, tag, cover, badge, is_published, sort_order, resource_collection_items(count)",
+    )
+    .order("sort_order", { ascending: true });
+  if (error) throw error;
+  return (data ?? []).map((c) => {
+    const countRel = c.resource_collection_items as { count: number }[] | null;
+    return {
+      id: c.id,
+      title: c.title,
+      tag: c.tag,
+      cover: c.cover,
+      badge: c.badge,
+      isPublished: c.is_published,
+      sortOrder: c.sort_order,
+      itemCount: countRel?.[0]?.count ?? 0,
+    };
+  });
+}
+
+export type CollectionEditData = {
+  id: string;
+  title: string;
+  sub: string;
+  cover: string;
+  badge: string | null;
+  tag: string;
+  isPublished: boolean;
+  sortOrder: number;
+  postIds: string[];
+};
+
+export async function getCollectionForEdit(id: string): Promise<CollectionEditData | null> {
+  const supabase = await createSupabaseServer();
+  const { data: c } = await supabase
+    .from("resource_collections")
+    .select("id, title, sub, cover, badge, tag, is_published, sort_order")
+    .eq("id", id)
+    .maybeSingle();
+  if (!c) return null;
+  const { data: items } = await supabase
+    .from("resource_collection_items")
+    .select("post_id")
+    .eq("collection_id", id);
+  return {
+    id: c.id,
+    title: c.title,
+    sub: c.sub,
+    cover: c.cover,
+    badge: c.badge,
+    tag: c.tag,
+    isPublished: c.is_published,
+    sortOrder: c.sort_order,
+    postIds: (items ?? []).map((i) => i.post_id),
+  };
+}
+
+export type ResourcePickerItem = { id: string; title: string; category: string | null };
+
+export async function listResourcePostsForPicker(): Promise<ResourcePickerItem[]> {
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("id, title, category")
+    .eq("section", SECTION)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((p) => ({ id: p.id, title: p.title, category: p.category }));
 }
 
 export type ResourceEditData = {
