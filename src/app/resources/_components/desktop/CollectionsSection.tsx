@@ -1,17 +1,17 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { LB_COLLECTIONS } from "@/lib/resources-data";
+import type { ResourceCollection } from "@/lib/resources-data";
 import CollectionCover from "../shared/CollectionCover";
 import LbCatLabel from "../shared/LbCatLabel";
 import DownloadStat from "../shared/DownloadStat";
 import DownloadBtn from "../shared/DownloadBtn";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; collections: ResourceCollection[] };
 
 /**
  * 큐레이션 컬렉션 섹션 — 3장 그리드(첫 카드만 더 큼).
  * 원본 library.jsx 의 'FEATURED COLLECTIONS' 섹션 그대로.
  */
-export default function CollectionsSection({ palette }: Props) {
+export default function CollectionsSection({ palette, collections }: Props) {
   return (
     <section style={{ padding: "56px 80px 24px" }}>
       <div
@@ -79,7 +79,7 @@ export default function CollectionsSection({ palette }: Props) {
           gap: 18,
         }}
       >
-        {LB_COLLECTIONS.map((c, i) => (
+        {collections.map((c, i) => (
           <div
             key={c.id}
             style={{
