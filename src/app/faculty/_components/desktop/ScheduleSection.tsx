@@ -1,12 +1,12 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { FACULTY_TIMETABLE } from "@/lib/faculty-data";
+import type { FacultyTimetableItem } from "@/lib/faculty-data";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; timetable: FacultyTimetableItem[] };
 
 const COLS = "60px 80px 1fr 110px 80px";
 
 // 시간표 미리보기 — 디자인 원본 TimetablePreview 그대로.
-export default function ScheduleSection({ palette }: Props) {
+export default function ScheduleSection({ palette, timetable }: Props) {
   return (
     <section
       style={{
@@ -132,7 +132,7 @@ export default function ScheduleSection({ palette }: Props) {
             <div>PROFESSOR</div>
             <div style={{ textAlign: "right" }}>ROOM</div>
           </div>
-          {FACULTY_TIMETABLE.map((row, i) => (
+          {timetable.map((row, i) => (
             <div
               key={`${row.day}-${row.time}-${row.course}`}
               style={{

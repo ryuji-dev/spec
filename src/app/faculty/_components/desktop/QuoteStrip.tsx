@@ -1,9 +1,9 @@
 import type { Palette } from "@/app/_components/shared/palette";
-import { FACULTY_QUOTES } from "@/lib/faculty-data";
+import type { FacultyQuote } from "@/lib/faculty-data";
 
-type Props = { palette: Palette };
+type Props = { palette: Palette; quotes: FacultyQuote[] };
 
-export default function QuoteStrip({ palette }: Props) {
+export default function QuoteStrip({ palette, quotes }: Props) {
   return (
     <section
       style={{
@@ -33,7 +33,7 @@ export default function QuoteStrip({ palette }: Props) {
           gap: 36,
         }}
       >
-        {FACULTY_QUOTES.map((q) => (
+        {quotes.map((q) => (
           <div
             key={q.name}
             style={{

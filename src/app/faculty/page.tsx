@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
-import { getFacultyDirectoryData } from "@/server/services/faculty";
+import { getFacultyDirectoryData, getFacultyTimetable } from "@/server/services/faculty";
 import DesktopNav from "@/app/_components/DesktopNav";
 import FacultyDesktop from "./_components/desktop/FacultyDesktop";
 import FacultyMobile from "./_components/mobile/FacultyMobile";
@@ -16,6 +16,7 @@ export default async function FacultyPage() {
   const device = getDeviceType(h.get("user-agent"));
   const data = await getFacultyDirectoryData();
   if (device === "desktop") {
+    const timetable = await getFacultyTimetable();
     return (
       <>
         <DesktopNav variant="solid" />
@@ -23,6 +24,8 @@ export default async function FacultyPage() {
           cover={data.cover}
           members={data.members}
           depts={data.depts}
+          quotes={data.quotes}
+          timetable={timetable}
         />
       </>
     );
@@ -33,6 +36,7 @@ export default async function FacultyPage() {
       cover={data.cover}
       members={data.members}
       depts={data.depts}
+      quotes={data.quotes}
     />
   );
 }

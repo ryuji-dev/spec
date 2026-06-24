@@ -332,23 +332,4 @@ export type FacultyTimetableItem = {
   host?: boolean;
 };
 
-// 이번 학기 강의 시간표 발췌 — prof 는 FACULTY_MEMBERS / FACULTY_COVER 의 name 과 일치
-export const FACULTY_TIMETABLE: ReadonlyArray<FacultyTimetableItem> = [
-  { day: "월", time: "10:00", course: "설교학 개론", prof: "김찬우", room: "대강당" },
-  { day: "월", time: "14:00", course: "예언서 강해", prof: "문성재", room: "301호" },
-  { day: "화", time: "10:00", course: "로마서 강해", prof: "한도윤", room: "대강당" },
-  { day: "수", time: "14:00", course: "삼위일체론", prof: "윤주환", room: "402호" },
-  { day: "수", time: "14:00", course: "교회론과 공동체", prof: "강민준", host: true, room: "대강당" },
-  { day: "목", time: "13:00", course: "한국교회사", prof: "이혜성", room: "215호" },
-  { day: "금", time: "10:00", course: "예배학 개론", prof: "정아라", room: "교육관 102" },
-];
-
 export type FacultyQuote = { name: string; q: string };
-
-// 인터뷰 인용 스트립 — name 은 FACULTY_MEMBERS 의 name 과 일치
-export const FACULTY_QUOTES: ReadonlyArray<FacultyQuote> = [
-  { name: "문성재", q: "본문이 입을 다물 때까지 끈질기게 듣는 일" },
-  { name: "한도윤", q: "바울이 빌립보에 보낸 안부가 오늘 우리에게도" },
-  { name: "정현우", q: "복음은 언제나 길 위에서 자랐습니다" },
-  { name: "정아라", q: "예배는 시간 속에 짜이는 옷감입니다" },
-];
