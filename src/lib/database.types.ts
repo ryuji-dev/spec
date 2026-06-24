@@ -451,6 +451,75 @@ export type Database = {
         }
         Relationships: []
       }
+      resource_collection_items: {
+        Row: {
+          collection_id: string
+          post_id: string
+          sort_order: number
+        }
+        Insert: {
+          collection_id: string
+          post_id: string
+          sort_order?: number
+        }
+        Update: {
+          collection_id?: string
+          post_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_collection_items_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "resource_collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resource_collection_items_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resource_collections: {
+        Row: {
+          badge: string | null
+          cover: string
+          created_at: string
+          id: string
+          is_published: boolean
+          sort_order: number
+          sub: string
+          tag: string
+          title: string
+        }
+        Insert: {
+          badge?: string | null
+          cover: string
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          sort_order?: number
+          sub: string
+          tag: string
+          title: string
+        }
+        Update: {
+          badge?: string | null
+          cover?: string
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          sort_order?: number
+          sub?: string
+          tag?: string
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
