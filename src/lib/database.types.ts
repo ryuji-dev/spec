@@ -279,6 +279,33 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_slides: {
+        Row: {
+          alt: string
+          created_at: string
+          id: string
+          image_path: string
+          is_published: boolean
+          sort_order: number
+        }
+        Insert: {
+          alt?: string
+          created_at?: string
+          id?: string
+          image_path: string
+          is_published?: boolean
+          sort_order?: number
+        }
+        Update: {
+          alt?: string
+          created_at?: string
+          id?: string
+          image_path?: string
+          is_published?: boolean
+          sort_order?: number
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           answer: string | null
