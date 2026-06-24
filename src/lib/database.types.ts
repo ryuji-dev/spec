@@ -243,6 +243,42 @@ export type Database = {
         }
         Relationships: []
       }
+      faculty_timetable: {
+        Row: {
+          course: string
+          created_at: string
+          day: string
+          host: boolean
+          id: string
+          prof: string
+          room: string
+          sort_order: number
+          time: string
+        }
+        Insert: {
+          course: string
+          created_at?: string
+          day: string
+          host?: boolean
+          id?: string
+          prof: string
+          room: string
+          sort_order?: number
+          time: string
+        }
+        Update: {
+          course?: string
+          created_at?: string
+          day?: string
+          host?: boolean
+          id?: string
+          prof?: string
+          room?: string
+          sort_order?: number
+          time?: string
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           answer: string | null
