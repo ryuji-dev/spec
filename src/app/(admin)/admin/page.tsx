@@ -25,6 +25,7 @@ export default async function AdminPage() {
         <Link href="/notice">공지 관리 →</Link>
         <Link href="/admin/events">수련회 이벤트 관리 →</Link>
         <Link href="/admin/timetable">강의 시간표 관리 →</Link>
+        <Link href="/admin/collections">자료실 컬렉션 관리 →</Link>
       </p>
 
       <section style={{ marginTop: 40 }}>
