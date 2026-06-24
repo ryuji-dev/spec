@@ -6,6 +6,9 @@ import type {
   ResourceFileCategory,
   ResourceCategoryEn,
   ResourcesSort,
+  ResourceCollection,
+  CollectionCoverKind,
+  CollectionBadge,
 } from "./resources-data";
 
 // 상세 페이지가 @/lib/resource 경로로 import하던 호환 유지
@@ -84,4 +87,34 @@ export function sortResourceFiles(
     return [...files].sort((a, b) => a.title.localeCompare(b.title, "ko"));
   }
   return files;
+}
+
+// 컬렉션 — admin 폼·zod·DB check 제약이 공유하는 enum.
+export const COLLECTION_COVERS: CollectionCoverKind[] = ["spring", "easter", "teacher"];
+export const COLLECTION_BADGES: CollectionBadge[] = ["NEW", "HOT"];
+
+// 서비스가 만드는 평면 행(파생 수치 포함).
+export type CollectionRow = {
+  id: string;
+  title: string;
+  sub: string;
+  cover: CollectionCoverKind;
+  badge: CollectionBadge | null;
+  tag: string;
+  items: number;
+  downloads: number;
+};
+
+// 평면 행 → 디자인 뷰 타입. badge가 null이면 키를 생략한다.
+export function toCollectionView(row: CollectionRow): ResourceCollection {
+  return {
+    id: row.id,
+    title: row.title,
+    sub: row.sub,
+    items: row.items,
+    downloads: row.downloads,
+    cover: row.cover,
+    tag: row.tag,
+    ...(row.badge ? { badge: row.badge } : {}),
+  };
 }
