@@ -192,3 +192,29 @@ export async function getWebzineArticleForEdit(
     isPinned: r.is_pinned,
   };
 }
+
+export type WebzineAdminRow = {
+  id: string;
+  title: string;
+  category: string | null;
+  createdAt: string;
+  isPublished: boolean;
+};
+
+// admin 전용: webzine 섹션 글(미공개 포함) 최신순.
+export async function listWebzineArticlesForAdmin(): Promise<WebzineAdminRow[]> {
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("id, title, category, created_at, is_published")
+    .eq("section", SECTION)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    title: r.title,
+    category: r.category,
+    createdAt: r.created_at,
+    isPublished: r.is_published,
+  }));
+}
