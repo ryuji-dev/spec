@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { requireAdmin } from "@/server/auth/current-user";
 import { listCommitteePostsForAdmin } from "@/server/services/committee";
-import { deletePost } from "@/server/actions/committee";
+import { deletePost, togglePublished } from "@/server/actions/committee";
 import { isoToKstDate } from "@/lib/datetime";
 import DeletePostButton from "../_components/DeletePostButton";
+import PublishToggle from "../_components/PublishToggle";
 
 // proxy가 1차 가드, 여기서 서버 권한 재확인(헌법: 권한 체크는 서버에서).
 export default async function AdminCommitteePage() {
@@ -35,7 +36,9 @@ export default async function AdminCommitteePage() {
               <td style={{ padding: "8px 6px" }}>{r.title}</td>
               <td style={{ padding: "8px 6px" }}>{r.category ?? "-"}</td>
               <td style={{ padding: "8px 6px" }}>{isoToKstDate(r.createdAt)}</td>
-              <td style={{ padding: "8px 6px" }}>{r.isPublished ? "✓" : ""}</td>
+              <td style={{ padding: "8px 6px" }}>
+                <PublishToggle action={togglePublished.bind(null, r.id, !r.isPublished)} isPublished={r.isPublished} />
+              </td>
               <td style={{ padding: "8px 6px" }}>
                 <span style={{ display: "inline-flex", gap: 12 }}>
                   <Link href={`/admin/committee/${r.id}/edit`} style={{ color: "#06c" }}>수정</Link>
