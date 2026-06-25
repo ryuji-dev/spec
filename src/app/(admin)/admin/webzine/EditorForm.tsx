@@ -9,6 +9,7 @@ type Initial = {
   excerpt?: string;
   body?: string;
   isPinned?: boolean;
+  isPublished?: boolean;
 };
 
 const inputStyle = { padding: 10, border: "1px solid #ccc", borderRadius: 6, width: "100%" } as const;
@@ -35,6 +36,9 @@ export default function EditorForm({
       <textarea name="body" defaultValue={initial?.body ?? ""} placeholder="본문" rows={16} style={inputStyle} />
       <label style={{ fontSize: 14 }}>
         <input type="checkbox" name="isPinned" defaultChecked={initial?.isPinned ?? false} /> 커버 기사로 고정
+      </label>
+      <label style={{ fontSize: 14 }}>
+        <input type="checkbox" name="isPublished" defaultChecked={initial?.isPublished ?? true} /> 공개
       </label>
       {state.error && <p role="alert" style={{ color: "#c00", margin: 0 }}>{state.error}</p>}
       <button type="submit" disabled={pending} style={{ padding: 10, borderRadius: 6 }}>

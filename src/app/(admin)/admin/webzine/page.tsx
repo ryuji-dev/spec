@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { requireAdmin } from "@/server/auth/current-user";
 import { listWebzineArticlesForAdmin } from "@/server/services/webzine";
-import { deletePost } from "@/server/actions/webzine";
+import { deletePost, togglePublished } from "@/server/actions/webzine";
 import { isoToKstDate } from "@/lib/datetime";
 import DeletePostButton from "../_components/DeletePostButton";
+import PublishToggle from "../_components/PublishToggle";
 
 export default async function AdminWebzinePage() {
   await requireAdmin();
@@ -34,7 +35,9 @@ export default async function AdminWebzinePage() {
               <td style={{ padding: "8px 6px" }}>{r.title}</td>
               <td style={{ padding: "8px 6px" }}>{r.category ?? "-"}</td>
               <td style={{ padding: "8px 6px" }}>{isoToKstDate(r.createdAt)}</td>
-              <td style={{ padding: "8px 6px" }}>{r.isPublished ? "✓" : ""}</td>
+              <td style={{ padding: "8px 6px" }}>
+                <PublishToggle action={togglePublished.bind(null, r.id, !r.isPublished)} isPublished={r.isPublished} />
+              </td>
               <td style={{ padding: "8px 6px" }}>
                 <span style={{ display: "inline-flex", gap: 12 }}>
                   <Link href={`/admin/webzine/${r.id}/edit`} style={{ color: "#06c" }}>수정</Link>
