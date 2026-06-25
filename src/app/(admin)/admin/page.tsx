@@ -20,9 +20,13 @@ export default async function AdminPage() {
           로그아웃
         </button>
       </form>
-      <p style={{ marginTop: 16, display: "flex", gap: 16 }}>
+      <p style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}>
         <Link href="/admin/inquiries">문의 접수함 →</Link>
-        <Link href="/notice">공지 관리 →</Link>
+        <Link href="/admin/notice">공지 관리 →</Link>
+        <Link href="/admin/training">강습회 글 관리 →</Link>
+        <Link href="/admin/committee">위원회 소식 관리 →</Link>
+        <Link href="/admin/webzine">웹진 관리 →</Link>
+        <Link href="/admin/resources">자료실 관리 →</Link>
         <Link href="/admin/events">수련회 이벤트 관리 →</Link>
         <Link href="/admin/timetable">강의 시간표 관리 →</Link>
         <Link href="/admin/collections">자료실 컬렉션 관리 →</Link>
