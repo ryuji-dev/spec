@@ -32,6 +32,7 @@ export default async function EditCommitteePostPage({
           excerpt: post.excerpt ?? undefined,
           body: post.body ?? undefined,
           isPinned: post.isPinned,
+          isPublished: post.isPublished,
           eventDate: post.eventDate ?? undefined,
           location: post.location ?? undefined,
         }}

@@ -9,6 +9,7 @@ type Initial = {
   excerpt?: string;
   body?: string;
   isPinned?: boolean;
+  isPublished?: boolean;
   eventDate?: string;
   location?: string;
 };
@@ -54,6 +55,9 @@ export default function EditorForm({
         maxLength={200}
         style={inputStyle}
       />
+      <label style={{ fontSize: 14 }}>
+        <input type="checkbox" name="isPublished" defaultChecked={initial?.isPublished ?? true} /> 공개
+      </label>
       {state.error && <p role="alert" style={{ color: "#c00", margin: 0 }}>{state.error}</p>}
       <button type="submit" disabled={pending} style={{ padding: 10, borderRadius: 6 }}>
         {pending ? "저장 중…" : submitLabel}
