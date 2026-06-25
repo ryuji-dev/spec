@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { requireAdmin } from "@/server/auth/current-user";
 import { listNoticesForAdmin } from "@/server/services/notice";
-import { deletePost } from "@/server/actions/notice";
+import { deletePost, togglePublished } from "@/server/actions/notice";
 import { isoToKstDate } from "@/lib/datetime";
 import DeletePostButton from "../_components/DeletePostButton";
+import PublishToggle from "../_components/PublishToggle";
 
 export default async function AdminNoticePage() {
   await requireAdmin();
@@ -34,7 +35,9 @@ export default async function AdminNoticePage() {
               <td style={{ padding: "8px 6px" }}>{r.title}</td>
               <td style={{ padding: "8px 6px" }}>{r.isPinned ? "📌" : ""}</td>
               <td style={{ padding: "8px 6px" }}>{isoToKstDate(r.createdAt)}</td>
-              <td style={{ padding: "8px 6px" }}>{r.isPublished ? "✓" : ""}</td>
+              <td style={{ padding: "8px 6px" }}>
+                <PublishToggle action={togglePublished.bind(null, r.id, !r.isPublished)} isPublished={r.isPublished} />
+              </td>
               <td style={{ padding: "8px 6px" }}>
                 <span style={{ display: "inline-flex", gap: 12 }}>
                   <Link href={`/admin/notice/${r.id}/edit`} style={{ color: "#06c" }}>수정</Link>

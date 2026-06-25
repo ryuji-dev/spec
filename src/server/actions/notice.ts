@@ -23,6 +23,7 @@ const noticeSchema = z.object({
     .optional()
     .transform((v) => v || null),
   isPinned: z.coerce.boolean(),
+  isPublished: z.coerce.boolean(),
 });
 
 export interface PostFormState {
@@ -35,6 +36,7 @@ function parseNotice(formData: FormData) {
     excerpt: formData.get("excerpt"),
     body: formData.get("body"),
     isPinned: formData.get("isPinned") === "on" || formData.get("isPinned") === "true",
+    isPublished: formData.get("isPublished") === "on" || formData.get("isPublished") === "true",
   });
 }
 
@@ -54,6 +56,7 @@ export async function createPost(
       excerpt: r.data.excerpt,
       body: r.data.body,
       is_pinned: r.data.isPinned,
+      is_published: r.data.isPublished,
       author_id: user.id,
     })
     .select("id")
@@ -80,6 +83,7 @@ export async function updatePost(
       excerpt: r.data.excerpt,
       body: r.data.body,
       is_pinned: r.data.isPinned,
+      is_published: r.data.isPublished,
     })
     .eq("id", id)
     .eq("section", "notice");
@@ -97,4 +101,13 @@ export async function deletePost(id: string): Promise<void> {
   revalidatePath("/notice");
   revalidatePath("/main");
   redirect("/notice");
+}
+
+export async function togglePublished(id: string, next: boolean): Promise<void> {
+  await requireAdmin();
+  const supabase = await createSupabaseServer();
+  await supabase.from("posts").update({ is_published: next }).eq("id", id).eq("section", "notice");
+  revalidatePath("/notice");
+  revalidatePath("/main");
+  revalidatePath("/admin/notice");
 }
