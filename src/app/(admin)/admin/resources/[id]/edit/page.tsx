@@ -26,7 +26,7 @@ export default async function EditResourcePage({
       <h1 style={{ fontSize: 22 }}>자료 수정</h1>
       <ResourceEditorForm
         action={update}
-        initial={{ title: resource.title, category: resource.category ?? undefined, sub: resource.sub }}
+        initial={{ title: resource.title, category: resource.category ?? undefined, sub: resource.sub, isPublished: resource.isPublished }}
         submitLabel="수정 저장"
       />
       <AttachmentManager

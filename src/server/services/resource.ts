@@ -270,6 +270,7 @@ export type ResourceEditData = {
   category: string | null;
   title: string;
   sub: string;
+  isPublished: boolean;
   attachments: { id: string; name: string; sizeBytes: number; mime: string }[];
 };
 
@@ -278,7 +279,7 @@ export async function getResourcePostForEdit(id: string): Promise<ResourceEditDa
 
   const { data: r } = await supabase
     .from("posts")
-    .select("id, category, title, excerpt")
+    .select("id, category, title, excerpt, is_published")
     .eq("id", id)
     .eq("section", SECTION)
     .maybeSingle();
@@ -294,6 +295,7 @@ export async function getResourcePostForEdit(id: string): Promise<ResourceEditDa
     category: r.category,
     title: r.title,
     sub: r.excerpt ?? "",
+    isPublished: r.is_published,
     attachments: (atts ?? []).map((a) => ({
       id: a.id,
       name: a.original_name,
