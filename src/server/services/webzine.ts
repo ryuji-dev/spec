@@ -168,6 +168,7 @@ export type WebzineEditData = {
   excerpt: string | null;
   body: string | null;
   isPinned: boolean;
+  isPublished: boolean;
 };
 
 export async function getWebzineArticleForEdit(
@@ -177,7 +178,7 @@ export async function getWebzineArticleForEdit(
 
   const { data: r } = await supabase
     .from("posts")
-    .select("id, category, title, excerpt, body, is_pinned")
+    .select("id, category, title, excerpt, body, is_pinned, is_published")
     .eq("id", id)
     .eq("section", SECTION)
     .maybeSingle();
@@ -190,6 +191,7 @@ export async function getWebzineArticleForEdit(
     excerpt: r.excerpt,
     body: r.body,
     isPinned: r.is_pinned,
+    isPublished: r.is_published,
   };
 }
 

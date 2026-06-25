@@ -30,6 +30,7 @@ export default async function EditWebzineArticlePage({
           excerpt: article.excerpt ?? undefined,
           body: article.body ?? undefined,
           isPinned: article.isPinned,
+          isPublished: article.isPublished,
         }}
         submitLabel="수정 저장"
       />
