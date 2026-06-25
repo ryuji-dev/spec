@@ -116,3 +116,29 @@ export async function getNoticePostForEdit(id: string): Promise<NoticeEditData |
     isPinned: r.is_pinned,
   };
 }
+
+export type NoticeAdminRow = {
+  id: string;
+  title: string;
+  isPinned: boolean;
+  createdAt: string;
+  isPublished: boolean;
+};
+
+// admin 전용: 미공개 포함 전체, 최신순.
+export async function listNoticesForAdmin(): Promise<NoticeAdminRow[]> {
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase
+    .from("posts")
+    .select("id, title, is_pinned, created_at, is_published")
+    .eq("section", SECTION)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    title: r.title,
+    isPinned: r.is_pinned,
+    createdAt: r.created_at,
+    isPublished: r.is_published,
+  }));
+}
