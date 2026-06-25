@@ -1,6 +1,7 @@
 "use server";
 // 교역자수련회 글 작성/수정/삭제. admin 전용(RLS admin 정책 + requireAdmin 재확인), zod 검증.
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createSupabaseServer } from "@/server/supabase/server";
 import { requireAdmin } from "@/server/auth/current-user";
@@ -22,6 +23,7 @@ const postSchema = z.object({
     .optional()
     .transform((v) => v || null),
   isPinned: z.coerce.boolean(),
+  isPublished: z.coerce.boolean(),
   eventDate: z
     .string()
     .trim()
@@ -46,6 +48,7 @@ function parse(formData: FormData) {
     excerpt: formData.get("excerpt"),
     body: formData.get("body"),
     isPinned: formData.get("isPinned") === "on" || formData.get("isPinned") === "true",
+    isPublished: formData.get("isPublished") === "on" || formData.get("isPublished") === "true",
     eventDate: formData.get("eventDate"),
     location: formData.get("location"),
   });
@@ -68,6 +71,7 @@ export async function createPost(
       excerpt: r.data.excerpt,
       body: r.data.body,
       is_pinned: r.data.isPinned,
+      is_published: r.data.isPublished,
       event_date: r.data.eventDate ? kstDateEndToIso(r.data.eventDate) : null,
       meta: r.data.location ? { location: r.data.location } : null,
       author_id: user.id,
@@ -110,6 +114,7 @@ export async function updatePost(
       excerpt: r.data.excerpt,
       body: r.data.body,
       is_pinned: r.data.isPinned,
+      is_published: r.data.isPublished,
       event_date: r.data.eventDate ? kstDateEndToIso(r.data.eventDate) : null,
       meta,
     })
@@ -125,4 +130,13 @@ export async function deletePost(id: string): Promise<void> {
   const supabase = await createSupabaseServer();
   await supabase.from("posts").delete().eq("id", id);
   redirect("/training");
+}
+
+export async function togglePublished(id: string, next: boolean): Promise<void> {
+  await requireAdmin();
+  const supabase = await createSupabaseServer();
+  await supabase.from("posts").update({ is_published: next }).eq("id", id).eq("section", "training");
+  revalidatePath("/training");
+  revalidatePath("/main");
+  revalidatePath("/admin/training");
 }

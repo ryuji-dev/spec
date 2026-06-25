@@ -173,6 +173,7 @@ export type TrainingEditData = {
   excerpt: string | null;
   body: string | null;
   isPinned: boolean;
+  isPublished: boolean;
   eventDate: string | null;
   location: string | null;
   attachments: { id: string; name: string; sizeBytes: number; mime: string }[];
@@ -183,7 +184,7 @@ export async function getTrainingPostForEdit(id: string): Promise<TrainingEditDa
 
   const { data: r } = await supabase
     .from("posts")
-    .select("id, category, title, excerpt, body, is_pinned, event_date, meta")
+    .select("id, category, title, excerpt, body, is_pinned, event_date, meta, is_published")
     .eq("id", id)
     .eq("section", SECTION)
     .maybeSingle();
@@ -201,6 +202,7 @@ export async function getTrainingPostForEdit(id: string): Promise<TrainingEditDa
     excerpt: r.excerpt,
     body: r.body,
     isPinned: r.is_pinned,
+    isPublished: r.is_published,
     eventDate: r.event_date ? isoToKstDate(r.event_date) : null,
     location:
       r.meta && typeof r.meta === "object" && !Array.isArray(r.meta)
