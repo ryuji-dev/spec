@@ -29,6 +29,7 @@ export default async function EditNoticePage({
           excerpt: post.excerpt ?? undefined,
           body: post.body ?? undefined,
           isPinned: post.isPinned,
+          isPublished: post.isPublished,
         }}
         submitLabel="수정 저장"
       />

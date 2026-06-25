@@ -97,13 +97,14 @@ export type NoticeEditData = {
   excerpt: string | null;
   body: string | null;
   isPinned: boolean;
+  isPublished: boolean;
 };
 
 export async function getNoticePostForEdit(id: string): Promise<NoticeEditData | null> {
   const supabase = await createSupabaseServer();
   const { data: r } = await supabase
     .from("posts")
-    .select("id, title, excerpt, body, is_pinned")
+    .select("id, title, excerpt, body, is_pinned, is_published")
     .eq("id", id)
     .eq("section", SECTION)
     .maybeSingle();
@@ -114,6 +115,7 @@ export async function getNoticePostForEdit(id: string): Promise<NoticeEditData |
     excerpt: r.excerpt,
     body: r.body,
     isPinned: r.is_pinned,
+    isPublished: r.is_published,
   };
 }
 
