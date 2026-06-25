@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { requireAdmin } from "@/server/auth/current-user";
 import { listResourcePostsForAdmin } from "@/server/services/resource";
-import { deleteResource } from "@/server/actions/resource";
+import { deleteResource, togglePublished } from "@/server/actions/resource";
 import { isoToKstDate } from "@/lib/datetime";
 import DeletePostButton from "../_components/DeletePostButton";
+import PublishToggle from "../_components/PublishToggle";
 
 export default async function AdminResourcesPage() {
   await requireAdmin();
@@ -34,7 +35,9 @@ export default async function AdminResourcesPage() {
               <td style={{ padding: "8px 6px" }}>{r.title}</td>
               <td style={{ padding: "8px 6px" }}>{r.category ?? "-"}</td>
               <td style={{ padding: "8px 6px" }}>{isoToKstDate(r.createdAt)}</td>
-              <td style={{ padding: "8px 6px" }}>{r.isPublished ? "✓" : ""}</td>
+              <td style={{ padding: "8px 6px" }}>
+                <PublishToggle action={togglePublished.bind(null, r.id, !r.isPublished)} isPublished={r.isPublished} />
+              </td>
               <td style={{ padding: "8px 6px" }}>
                 <span style={{ display: "inline-flex", gap: 12 }}>
                   <Link href={`/admin/resources/${r.id}/edit`} style={{ color: "#06c" }}>수정</Link>

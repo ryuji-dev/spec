@@ -1,6 +1,7 @@
 "use server";
 // 자료 작성/수정/삭제. admin 전용(RLS admin 정책 + requireAdmin 재확인), zod 검증.
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createSupabaseServer } from "@/server/supabase/server";
 import { requireAdmin } from "@/server/auth/current-user";
@@ -15,6 +16,7 @@ const schema = z.object({
     .trim()
     .optional()
     .transform((v) => v || null),
+  isPublished: z.coerce.boolean(),
 });
 
 export interface ResourceFormState {
@@ -26,6 +28,7 @@ function parse(formData: FormData) {
     title: formData.get("title"),
     category: formData.get("category"),
     sub: formData.get("sub"),
+    isPublished: formData.get("isPublished") === "on" || formData.get("isPublished") === "true",
   });
 }
 
@@ -44,6 +47,7 @@ export async function createResource(
       category: r.data.category,
       title: r.data.title,
       excerpt: r.data.sub,
+      is_published: r.data.isPublished,
       author_id: user.id,
     })
     .select("id")
@@ -63,7 +67,7 @@ export async function updateResource(
   const supabase = await createSupabaseServer();
   const { error } = await supabase
     .from("posts")
-    .update({ category: r.data.category, title: r.data.title, excerpt: r.data.sub })
+    .update({ category: r.data.category, title: r.data.title, excerpt: r.data.sub, is_published: r.data.isPublished })
     .eq("id", id);
   if (error) return { error: "수정에 실패했습니다." };
   redirect(`/resources/${id}`);
@@ -75,4 +79,12 @@ export async function deleteResource(id: string): Promise<void> {
   const supabase = await createSupabaseServer();
   await supabase.from("posts").delete().eq("id", id);
   redirect("/resources");
+}
+
+export async function togglePublished(id: string, next: boolean): Promise<void> {
+  await requireAdmin();
+  const supabase = await createSupabaseServer();
+  await supabase.from("posts").update({ is_published: next }).eq("id", id).eq("section", "resource");
+  revalidatePath("/resources");
+  revalidatePath("/admin/resources");
 }
