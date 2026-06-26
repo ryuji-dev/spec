@@ -3,10 +3,13 @@ import { requireAdmin } from "@/server/auth/current-user";
 import { logout } from "@/server/actions/auth";
 import CreateUserForm from "./CreateUserForm";
 import AdminResetPasswordForm from "./AdminResetPasswordForm";
+import { getAdminContentStats } from "@/server/services/admin-stats";
+import StatCard from "./_components/StatCard";
 
 // proxy가 1차 가드, 여기서 서버 권한을 재확인한다(헌법: 권한 체크는 서버에서).
 export default async function AdminPage() {
   const user = await requireAdmin();
+  const stats = await getAdminContentStats();
 
   return (
     <main style={{ maxWidth: 640, margin: "40px auto", padding: "0 24px" }}>
@@ -20,13 +23,23 @@ export default async function AdminPage() {
           로그아웃
         </button>
       </form>
-      <p style={{ marginTop: 16, display: "flex", gap: 16, flexWrap: "wrap" }}>
+      <section style={{ marginTop: 32 }}>
+        <h2 style={{ fontSize: 18, marginBottom: 12 }}>콘텐츠 현황</h2>
+        <div
+          style={{
+            display: "grid",
+            gap: 12,
+            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+          }}
+        >
+          {stats.map((s) => (
+            <StatCard key={s.section} stat={s} />
+          ))}
+        </div>
+      </section>
+
+      <p style={{ marginTop: 24, display: "flex", gap: 16, flexWrap: "wrap" }}>
         <Link href="/admin/inquiries">문의 접수함 →</Link>
-        <Link href="/admin/notice">공지 관리 →</Link>
-        <Link href="/admin/training">강습회 글 관리 →</Link>
-        <Link href="/admin/committee">위원회 소식 관리 →</Link>
-        <Link href="/admin/webzine">웹진 관리 →</Link>
-        <Link href="/admin/resources">자료실 관리 →</Link>
         <Link href="/admin/events">수련회 이벤트 관리 →</Link>
         <Link href="/admin/timetable">강의 시간표 관리 →</Link>
         <Link href="/admin/collections">자료실 컬렉션 관리 →</Link>
