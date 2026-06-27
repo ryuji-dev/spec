@@ -4,14 +4,9 @@ import {
   adminResetPassword,
   type AdminResetPasswordState,
 } from "@/server/actions/admin";
+import styles from "./_components/ui.module.css";
 
 const initialState: AdminResetPasswordState = {};
-
-const inputStyle = {
-  padding: 10,
-  border: "1px solid #ccc",
-  borderRadius: 6,
-} as const;
 
 export default function AdminResetPasswordForm() {
   const [state, formAction, pending] = useActionState(
@@ -20,50 +15,23 @@ export default function AdminResetPasswordForm() {
   );
 
   return (
-    <form action={formAction} style={{ display: "grid", gap: 12 }}>
-      <input
-        name="email"
-        type="email"
-        required
-        autoComplete="off"
-        placeholder="회원 이메일"
-        style={inputStyle}
-      />
-      <input
-        name="password"
-        type="password"
-        required
-        minLength={8}
-        autoComplete="new-password"
-        placeholder="임시 비밀번호 (8자 이상)"
-        style={inputStyle}
-      />
-      <input
-        name="passwordConfirm"
-        type="password"
-        required
-        minLength={8}
-        autoComplete="new-password"
-        placeholder="임시 비밀번호 확인"
-        style={inputStyle}
-      />
+    <form action={formAction} className={styles.formGrid}>
+      <input name="email" type="email" required autoComplete="off" placeholder="회원 이메일" className={styles.input} />
+      <input name="password" type="password" required minLength={8} autoComplete="new-password" placeholder="임시 비밀번호 (8자 이상)" className={styles.input} />
+      <input name="passwordConfirm" type="password" required minLength={8} autoComplete="new-password" placeholder="임시 비밀번호 확인" className={styles.input} />
 
       {state.error && (
-        <p role="alert" style={{ color: "#c00", margin: 0 }}>
+        <p role="alert" className={styles.error}>
           {state.error}
         </p>
       )}
       {state.success && (
-        <p role="status" style={{ color: "#0a0", margin: 0 }}>
+        <p role="status" className={styles.success}>
           {state.success}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        style={{ padding: 10, borderRadius: 6 }}
-      >
+      <button type="submit" disabled={pending} className={styles.btnPrimary}>
         {pending ? "재설정 중…" : "비밀번호 재설정"}
       </button>
     </form>
