@@ -4,12 +4,14 @@ import { logout } from "@/server/actions/auth";
 import CreateUserForm from "./CreateUserForm";
 import AdminResetPasswordForm from "./AdminResetPasswordForm";
 import { getAdminContentStats } from "@/server/services/admin-stats";
+import { countUnansweredInquiries } from "@/server/services/inquiry";
 import StatCard from "./_components/StatCard";
 
 // proxy가 1차 가드, 여기서 서버 권한을 재확인한다(헌법: 권한 체크는 서버에서).
 export default async function AdminPage() {
   const user = await requireAdmin();
   const stats = await getAdminContentStats();
+  const unansweredInquiries = await countUnansweredInquiries();
 
   return (
     <main style={{ maxWidth: 640, margin: "40px auto", padding: "0 24px" }}>
@@ -39,7 +41,24 @@ export default async function AdminPage() {
       </section>
 
       <p style={{ marginTop: 24, display: "flex", gap: 16, flexWrap: "wrap" }}>
-        <Link href="/admin/inquiries">문의 접수함 →</Link>
+        <Link href="/admin/inquiries">
+          문의 접수함
+          {unansweredInquiries > 0 && (
+            <span
+              style={{
+                marginLeft: 6,
+                background: "#c00",
+                color: "#fff",
+                borderRadius: 999,
+                fontSize: 12,
+                padding: "1px 7px",
+              }}
+            >
+              {unansweredInquiries}
+            </span>
+          )}
+          {" →"}
+        </Link>
         <Link href="/admin/events">수련회 이벤트 관리 →</Link>
         <Link href="/admin/timetable">강의 시간표 관리 →</Link>
         <Link href="/admin/collections">자료실 컬렉션 관리 →</Link>

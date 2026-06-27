@@ -23,3 +23,13 @@ export async function listInquiries(): Promise<InquiryRow[]> {
     .order("created_at", { ascending: false });
   return (data as InquiryRow[]) ?? [];
 }
+
+// admin 전용: 미답변(접수됨) 문의 건수. answer is null 기준.
+export async function countUnansweredInquiries(): Promise<number> {
+  const supabase = await createSupabaseServer();
+  const { count } = await supabase
+    .from("inquiries")
+    .select("id", { count: "exact", head: true })
+    .is("answer", null);
+  return count ?? 0;
+}
