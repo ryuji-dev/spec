@@ -1,0 +1,132 @@
+.page {
+  max-width: 980px;
+}
+
+.pageHeader {
+  margin-bottom: 20px;
+}
+.pageTitle {
+  font-size: 21px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--admin-text);
+}
+.pageDesc {
+  font-size: 13px;
+  color: var(--admin-text-2);
+  margin: 4px 0 0;
+}
+
+.sectionLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--admin-text-2);
+  margin: 0 0 10px;
+}
+
+.cardGrid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.card {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.cardTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--admin-text);
+  margin: 0 0 4px;
+}
+.cardDesc {
+  font-size: 12px;
+  color: var(--admin-text-2);
+  margin: 0 0 12px;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: var(--admin-text-2);
+}
+.statValue {
+  font-size: 24px;
+  font-weight: 500;
+  margin-top: 3px;
+  color: var(--admin-text);
+}
+.statUnit {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--admin-text-3);
+}
+.statDraft {
+  font-size: 12px;
+  margin-top: 3px;
+  color: var(--admin-text-3);
+}
+.statDraftActive {
+  color: var(--admin-danger-text);
+}
+
+.formGrid {
+  display: grid;
+  gap: 12px;
+}
+.input {
+  padding: 10px 12px;
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border-input);
+  border-radius: 8px;
+  color: var(--admin-text);
+  font: inherit;
+  width: 100%;
+}
+.input::placeholder {
+  color: var(--admin-text-3);
+}
+.input:focus {
+  outline: none;
+  border-color: var(--admin-gold);
+}
+
+.btnPrimary {
+  background: var(--admin-gold);
+  color: var(--admin-gold-text);
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.btnPrimary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.error {
+  color: var(--admin-danger-text);
+  margin: 0;
+  font-size: 13px;
+}
+.success {
+  color: #8fb98a;
+  margin: 0;
+  font-size: 13px;
+}
+
+.sectionGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 768px) {
+  .sectionGrid2 {
+    grid-template-columns: 1fr;
+  }
+}
