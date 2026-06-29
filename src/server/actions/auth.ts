@@ -8,7 +8,6 @@ import {
   signupSchema,
 } from "@/lib/dto/auth";
 import { createSupabaseServer } from "@/server/supabase/server";
-import { readUserRole } from "@/lib/jwt-role";
 import { safeNext } from "@/lib/safe-redirect";
 
 export interface LoginState {
@@ -35,13 +34,12 @@ export async function login(
     return { error: "이메일 또는 비밀번호가 올바르지 않습니다." };
   }
 
-  // 리다이렉트: 유효한 내부 next 우선, 없으면 역할별 기본(admin→/admin, member→/main).
-  // 역할은 방금 발급된 세션 JWT의 user_role 클레임에서 직접 읽는다(추가 getUser 왕복·쿠키 가시성 의존 제거).
+  // 도착지: 유효한 내부 next 우선, 없으면 역할 무관 기본 /main.
+  // (관리자도 사이트에 먼저 도착하고 헤더의 "관리자" 링크로 대시보드에 진입한다.
+  //  proxy가 /admin 진입 시 붙이는 next=/admin은 그대로 우선 적용된다.)
   const nextRaw = formData.get("next");
   const requested = typeof nextRaw === "string" ? safeNext(nextRaw, "") : "";
-  const role = readUserRole(data.session.access_token);
-  const fallback = role === "admin" ? "/admin" : "/main";
-  redirect(requested || fallback);
+  redirect(requested || "/main");
 }
 
 export async function logout(): Promise<void> {
