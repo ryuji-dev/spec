@@ -1,6 +1,7 @@
 "use server";
 // 로그인·로그아웃·회원가입 Server Action. 입력은 zod 검증, 세션은 Supabase Auth(@supabase/ssr 쿠키).
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import {
   loginSchema,
   newPasswordSchema,
@@ -121,4 +122,37 @@ export async function updatePassword(
   }
 
   redirect("/main");
+}
+
+const ALLOWED_PROVIDERS = ["google", "kakao"] as const;
+type OAuthProvider = (typeof ALLOWED_PROVIDERS)[number];
+
+// 소셜 로그인 시작 — 폼 액션. provider 화이트리스트 검증 후 공급자 인증 URL로 보낸다.
+// redirectTo는 현재 요청 origin 기준 /auth/callback(+next). 콜백이 세션을 발급한다.
+export async function signInWithProvider(formData: FormData): Promise<void> {
+  const provider = String(formData.get("provider") ?? "");
+  const fail = (msg: string) =>
+    redirect(`/login?notice=${encodeURIComponent(msg)}`);
+
+  if (!ALLOWED_PROVIDERS.includes(provider as OAuthProvider)) {
+    fail("지원하지 않는 로그인 방식입니다.");
+  }
+
+  const next = safeNext(String(formData.get("next") ?? ""), "/main");
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "127.0.0.1:3000";
+  const proto = h.get("x-forwarded-proto") ?? "http";
+  const redirectTo = `${proto}://${host}/auth/callback?next=${encodeURIComponent(next)}`;
+
+  const supabase = await createSupabaseServer();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: provider as OAuthProvider,
+    options: { redirectTo },
+  });
+
+  if (error || !data.url) {
+    fail("로그인을 시작하지 못했습니다. 잠시 후 다시 시도해주세요.");
+  }
+
+  redirect(data!.url!);
 }
