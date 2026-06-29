@@ -1,4 +1,5 @@
 "use client";
+import styles from "./ui.module.css";
 
 // 바인딩된 서버 삭제 액션을 confirm 후 호출하는 공용 버튼. admin 목록들이 공유.
 export default function DeletePostButton({
@@ -16,10 +17,7 @@ export default function DeletePostButton({
       }}
       style={{ display: "inline" }}
     >
-      <button
-        type="submit"
-        style={{ color: "#c00", background: "none", border: "none", cursor: "pointer", padding: 0, font: "inherit" }}
-      >
+      <button type="submit" className={styles.rowDanger}>
         삭제
       </button>
     </form>
