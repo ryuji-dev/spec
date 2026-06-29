@@ -210,6 +210,15 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
+.oauthKakao {
+  background: #fee500;
+  border-color: #fee500;
+  color: #191600;
+}
+.oauthKakao:hover:not(:disabled) {
+  background: #f4dc00;
+  border-color: #f4dc00;
+}
 
 /* 구분선 */
 .divider {
