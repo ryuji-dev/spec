@@ -12,9 +12,9 @@ export default async function AdminHeroPage() {
     <div className={styles.page}>
       <div className={styles.headerRow}>
         <div>
-          <h1 className={styles.pageTitle}>메인 히어로 관리</h1>
+          <h1 className={styles.pageTitle}>메인 배너 관리</h1>
           <p className={styles.pageDesc}>
-            사진이 없으면 메인 히어로는 기본 아트 배경으로 표시됩니다.
+            사진이 없으면 메인 배너는 기본 아트 배경으로 표시됩니다.
           </p>
         </div>
         <Link href="/admin/hero/new" className={styles.btnGhost}>

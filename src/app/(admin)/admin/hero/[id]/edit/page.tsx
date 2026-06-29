@@ -23,7 +23,7 @@ export default async function EditHeroPage({
     <div className={styles.page}>
       <Link href="/admin/hero" className={styles.backLink}>← 목록</Link>
       <div className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>히어로 슬라이드 수정</h1>
+        <h1 className={styles.pageTitle}>배너 슬라이드 수정</h1>
       </div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={row.url} alt={row.alt} style={{ width: "100%", maxWidth: 360, borderRadius: 8, marginBottom: 12, display: "block" }} />
