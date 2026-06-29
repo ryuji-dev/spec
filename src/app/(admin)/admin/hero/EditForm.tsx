@@ -1,9 +1,9 @@
 "use client";
 import { useActionState } from "react";
 import type { HeroFormState } from "@/server/actions/hero";
+import styles from "../_components/ui.module.css";
 
 type Initial = { alt: string; isPublished: boolean; sortOrder: number };
-const inputStyle = { padding: 10, border: "1px solid #ccc", borderRadius: 6, width: "100%" } as const;
 
 export default function EditForm({
   action,
@@ -14,17 +14,17 @@ export default function EditForm({
 }) {
   const [state, formAction, pending] = useActionState(action, {});
   return (
-    <form action={formAction} style={{ display: "grid", gap: 12, maxWidth: 480 }}>
-      <input name="alt" defaultValue={initial.alt} placeholder="대체 텍스트(접근성, 선택)" style={inputStyle} />
-      <label style={{ fontSize: 13, color: "#666", display: "grid", gap: 4 }}>
+    <form action={formAction} className={styles.formGrid} style={{ maxWidth: 480 }}>
+      <input name="alt" defaultValue={initial.alt} placeholder="대체 텍스트(접근성, 선택)" className={styles.input} />
+      <label className={styles.field}>
         정렬 순서
-        <input type="number" name="sortOrder" defaultValue={initial.sortOrder} min={0} style={inputStyle} />
+        <input type="number" name="sortOrder" defaultValue={initial.sortOrder} min={0} className={styles.input} />
       </label>
-      <label style={{ fontSize: 14 }}>
+      <label className={styles.checkLabel}>
         <input type="checkbox" name="isPublished" defaultChecked={initial.isPublished} /> 공개
       </label>
-      {state.error && <p role="alert" style={{ color: "#c00", margin: 0 }}>{state.error}</p>}
-      <button type="submit" disabled={pending} style={{ padding: 10, borderRadius: 6 }}>
+      {state.error && <p role="alert" className={styles.error}>{state.error}</p>}
+      <button type="submit" disabled={pending} className={styles.btnPrimary} style={{ justifySelf: "start" }}>
         {pending ? "저장 중…" : "수정 저장"}
       </button>
     </form>

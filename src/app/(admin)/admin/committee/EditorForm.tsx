@@ -2,6 +2,7 @@
 import { useActionState } from "react";
 import { COMMITTEE_CATEGORIES_KO } from "@/lib/committee";
 import type { PostFormState } from "@/server/actions/committee";
+import styles from "../_components/ui.module.css";
 
 type Initial = {
   title?: string;
@@ -14,8 +15,6 @@ type Initial = {
   location?: string;
 };
 
-const inputStyle = { padding: 10, border: "1px solid #ccc", borderRadius: 6, width: "100%" } as const;
-
 export default function EditorForm({
   action,
   initial,
@@ -27,39 +26,34 @@ export default function EditorForm({
 }) {
   const [state, formAction, pending] = useActionState(action, {});
   return (
-    <form action={formAction} style={{ display: "grid", gap: 12, maxWidth: 640 }}>
-      <input name="title" defaultValue={initial?.title ?? ""} required placeholder="제목" style={inputStyle} />
-      <select name="category" defaultValue={initial?.category ?? COMMITTEE_CATEGORIES_KO[0]} style={inputStyle}>
+    <form action={formAction} className={styles.formGrid} style={{ maxWidth: 640 }}>
+      <input name="title" defaultValue={initial?.title ?? ""} required placeholder="제목" className={styles.input} />
+      <select name="category" defaultValue={initial?.category ?? COMMITTEE_CATEGORIES_KO[0]} className={styles.input}>
         {COMMITTEE_CATEGORIES_KO.map((c) => (
           <option key={c} value={c}>{c}</option>
         ))}
       </select>
-      <input name="excerpt" defaultValue={initial?.excerpt ?? ""} placeholder="요약 (선택)" style={inputStyle} />
-      <textarea name="body" defaultValue={initial?.body ?? ""} placeholder="본문" rows={12} style={inputStyle} />
-      <label style={{ fontSize: 14 }}>
+      <input name="excerpt" defaultValue={initial?.excerpt ?? ""} placeholder="요약 (선택)" className={styles.input} />
+      <textarea name="body" defaultValue={initial?.body ?? ""} placeholder="본문" rows={12} className={styles.textarea} />
+      <label className={styles.checkLabel}>
         <input type="checkbox" name="isPinned" defaultChecked={initial?.isPinned ?? false} /> 상단 고정
       </label>
-      <label style={{ fontSize: 13, color: "#666", display: "grid", gap: 4 }}>
+      <label className={styles.field}>
         행사 일정 (선택)
-        <input
-          type="date"
-          name="eventDate"
-          defaultValue={initial?.eventDate ?? ""}
-          style={inputStyle}
-        />
+        <input type="date" name="eventDate" defaultValue={initial?.eventDate ?? ""} className={styles.input} />
       </label>
       <input
         name="location"
         defaultValue={initial?.location ?? ""}
         placeholder="장소 (선택)"
         maxLength={200}
-        style={inputStyle}
+        className={styles.input}
       />
-      <label style={{ fontSize: 14 }}>
+      <label className={styles.checkLabel}>
         <input type="checkbox" name="isPublished" defaultChecked={initial?.isPublished ?? true} /> 공개
       </label>
-      {state.error && <p role="alert" style={{ color: "#c00", margin: 0 }}>{state.error}</p>}
-      <button type="submit" disabled={pending} style={{ padding: 10, borderRadius: 6 }}>
+      {state.error && <p role="alert" className={styles.error}>{state.error}</p>}
+      <button type="submit" disabled={pending} className={styles.btnPrimary} style={{ justifySelf: "start" }}>
         {pending ? "저장 중…" : submitLabel}
       </button>
     </form>

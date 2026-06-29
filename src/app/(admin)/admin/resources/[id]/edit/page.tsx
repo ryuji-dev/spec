@@ -6,6 +6,7 @@ import { updateResource, deleteResource } from "@/server/actions/resource";
 import ResourceEditorForm from "../../ResourceEditorForm";
 import AttachmentManager from "@/app/_components/AttachmentManager";
 import { RESOURCE_UPLOAD } from "@/lib/resource-upload";
+import styles from "../../../_components/ui.module.css";
 
 export default async function EditResourcePage({
   params,
@@ -21,9 +22,11 @@ export default async function EditResourcePage({
   const remove = deleteResource.bind(null, id);
 
   return (
-    <main style={{ maxWidth: 680, margin: "40px auto", padding: "0 24px" }}>
-      <Link href={`/resources/${id}`} style={{ fontSize: 13, color: "#666" }}>← 자료 보기</Link>
-      <h1 style={{ fontSize: 22 }}>자료 수정</h1>
+    <div className={styles.page}>
+      <Link href={`/resources/${id}`} className={styles.backLink}>← 자료 보기</Link>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>자료 수정</h1>
+      </div>
       <ResourceEditorForm
         action={update}
         initial={{ title: resource.title, category: resource.category ?? undefined, sub: resource.sub, isPublished: resource.isPublished }}
@@ -36,8 +39,8 @@ export default async function EditResourcePage({
         policy={RESOURCE_UPLOAD}
       />
       <form action={remove} style={{ marginTop: 32 }}>
-        <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>자료 삭제</button>
+        <button type="submit" className={styles.btnDanger}>자료 삭제</button>
       </form>
-    </main>
+    </div>
   );
 }

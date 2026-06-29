@@ -4,6 +4,7 @@ import { requireAdmin } from "@/server/auth/current-user";
 import { getEventForEdit } from "@/server/services/training";
 import { updateEvent, deleteEvent } from "@/server/actions/events";
 import EditorForm from "../../EditorForm";
+import styles from "../../../_components/ui.module.css";
 
 export default async function EditEventPage({
   params,
@@ -19,9 +20,11 @@ export default async function EditEventPage({
   const remove = deleteEvent.bind(null, id);
 
   return (
-    <main style={{ maxWidth: 800, margin: "40px auto", padding: "0 24px" }}>
-      <Link href="/admin/events" style={{ fontSize: 13, color: "#666" }}>← 목록</Link>
-      <h1 style={{ fontSize: 22 }}>이벤트 수정</h1>
+    <div className={styles.page}>
+      <Link href="/admin/events" className={styles.backLink}>← 목록</Link>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>이벤트 수정</h1>
+      </div>
       <EditorForm
         action={update}
         initial={{
@@ -47,10 +50,8 @@ export default async function EditEventPage({
         submitLabel="수정 저장"
       />
       <form action={remove} style={{ marginTop: 32 }}>
-        <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>
-          이벤트 삭제
-        </button>
+        <button type="submit" className={styles.btnDanger}>이벤트 삭제</button>
       </form>
-    </main>
+    </div>
   );
 }

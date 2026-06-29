@@ -7,6 +7,7 @@ import {
 } from "@/server/services/resource";
 import { updateCollection, deleteCollection } from "@/server/actions/collections";
 import EditorForm from "../../EditorForm";
+import styles from "../../../_components/ui.module.css";
 
 export default async function EditCollectionPage({
   params,
@@ -25,9 +26,11 @@ export default async function EditCollectionPage({
   const remove = deleteCollection.bind(null, id);
 
   return (
-    <main style={{ maxWidth: 600, margin: "40px auto", padding: "0 24px" }}>
-      <Link href="/admin/collections" style={{ fontSize: 13, color: "#666" }}>← 목록</Link>
-      <h1 style={{ fontSize: 22 }}>컬렉션 수정</h1>
+    <div className={styles.page}>
+      <Link href="/admin/collections" className={styles.backLink}>← 목록</Link>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>컬렉션 수정</h1>
+      </div>
       <EditorForm
         action={update}
         picker={picker}
@@ -44,10 +47,8 @@ export default async function EditCollectionPage({
         submitLabel="수정 저장"
       />
       <form action={remove} style={{ marginTop: 32 }}>
-        <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>
-          컬렉션 삭제
-        </button>
+        <button type="submit" className={styles.btnDanger}>컬렉션 삭제</button>
       </form>
-    </main>
+    </div>
   );
 }
