@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { login, type LoginState } from "@/server/actions/auth";
+import { login, signInWithProvider, type LoginState } from "@/server/actions/auth";
 import BrandLockup from "../_components/auth/BrandLockup";
 import PasswordInput from "../_components/auth/PasswordInput";
 import GoogleMark from "../_components/auth/GoogleMark";
+import KakaoMark from "../_components/auth/KakaoMark";
 import styles from "../_components/auth/auth.module.css";
 
 const initialState: LoginState = {};
@@ -25,9 +26,20 @@ export default function LoginForm({
         <BrandLockup />
       </div>
 
-      <button type="button" className={styles.oauth} disabled aria-disabled="true">
-        <GoogleMark /> Google로 계속하기
-      </button>
+      <form action={signInWithProvider}>
+        {next ? <input type="hidden" name="next" value={next} /> : null}
+        <input type="hidden" name="provider" value="google" />
+        <button type="submit" className={styles.oauth}>
+          <GoogleMark /> Google로 계속하기
+        </button>
+      </form>
+      <form action={signInWithProvider} style={{ marginTop: 8 }}>
+        {next ? <input type="hidden" name="next" value={next} /> : null}
+        <input type="hidden" name="provider" value="kakao" />
+        <button type="submit" className={`${styles.oauth} ${styles.oauthKakao}`}>
+          <KakaoMark /> 카카오로 계속하기
+        </button>
+      </form>
 
       <div className={styles.divider}>
         <span className={styles.dividerLine} />
