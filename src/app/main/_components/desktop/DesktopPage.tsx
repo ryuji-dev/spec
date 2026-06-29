@@ -1,6 +1,6 @@
 import type { HomeData } from "@/server/services/home";
 import type { HeroSlideView } from "@/lib/hero";
-import DesktopNav from "@/app/_components/DesktopNav";
+import SiteDesktopNav from "@/app/_components/SiteDesktopNav";
 import DesktopHero from "./DesktopHero";
 import DesktopMenuGrid from "./DesktopMenuGrid";
 import DesktopSchedule from "./DesktopSchedule";
@@ -13,7 +13,7 @@ export default function DesktopPage({ home, heroSlides }: { home: HomeData; hero
   return (
     <div className={styles.shell}>
       <div className={styles.heroWrap}>
-        <DesktopNav />
+        <SiteDesktopNav />
         <DesktopHero slides={heroSlides} />
       </div>
       <DesktopMenuGrid />

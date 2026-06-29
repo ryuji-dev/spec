@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
 import { getTrainingListData, getTrainingEventsData } from "@/server/services/training";
-import DesktopNav from "@/app/_components/DesktopNav";
+import SiteDesktopNav from "@/app/_components/SiteDesktopNav";
 import TrainingDesktop from "./_components/desktop/TrainingDesktop";
 import TrainingMobile from "./_components/mobile/TrainingMobile";
 
@@ -21,7 +21,7 @@ export default async function TrainingPage() {
   if (device === "desktop") {
     return (
       <>
-        <DesktopNav variant="solid" />
+        <SiteDesktopNav variant="solid" />
         <TrainingDesktop posts={posts} categories={data.categories} events={events} />
       </>
     );

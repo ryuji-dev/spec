@@ -1,7 +1,7 @@
 import type { HomeData } from "@/server/services/home";
 import type { HeroSlideView } from "@/lib/hero";
 import HeroMobile from "./HeroMobile";
-import MobileStickyHeader from "@/app/_components/MobileStickyHeader";
+import SiteMobileHeader from "@/app/_components/SiteMobileHeader";
 import AnnouncementStrip from "./AnnouncementStrip";
 import SectionHeader from "./SectionHeader";
 import MenuCardGrid from "./MenuCardGrid";
@@ -15,7 +15,7 @@ import styles from "./MobilePage.module.css";
 export default function MobilePage({ home, heroSlides }: { home: HomeData; heroSlides: HeroSlideView[] }) {
   return (
     <div className={styles.shell}>
-      <MobileStickyHeader />
+      <SiteMobileHeader />
       <HeroMobile slides={heroSlides} />
       <AnnouncementStrip text={home.announcement} />
 
