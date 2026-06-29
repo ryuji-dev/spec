@@ -4,6 +4,7 @@ import {
   deleteInquiry,
   type DeleteInquiryState,
 } from "@/server/actions/inquiry";
+import styles from "../_components/ui.module.css";
 
 const initialState: DeleteInquiryState = {};
 
@@ -22,22 +23,11 @@ export default function DeleteInquiryButton({ inquiryId }: { inquiryId: string }
       style={{ marginTop: 8 }}
     >
       <input type="hidden" name="id" value={inquiryId} />
-      <button
-        type="submit"
-        disabled={pending}
-        style={{
-          padding: "6px 12px",
-          borderRadius: 6,
-          border: "1px solid #c0392b",
-          background: "#fff",
-          color: "#c0392b",
-          cursor: "pointer",
-        }}
-      >
+      <button type="submit" disabled={pending} className={styles.btnDanger}>
         {pending ? "삭제 중…" : "삭제"}
       </button>
       {state.error && (
-        <span role="alert" style={{ color: "#c00", marginLeft: 8, fontSize: 13 }}>
+        <span role="alert" className={styles.error} style={{ marginLeft: 8 }}>
           {state.error}
         </span>
       )}

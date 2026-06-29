@@ -5,6 +5,7 @@ import { deletePost, togglePublished } from "@/server/actions/committee";
 import { isoToKstDate } from "@/lib/datetime";
 import DeletePostButton from "../_components/DeletePostButton";
 import PublishToggle from "../_components/PublishToggle";
+import styles from "../_components/ui.module.css";
 
 // proxy가 1차 가드, 여기서 서버 권한 재확인(헌법: 권한 체크는 서버에서).
 export default async function AdminCommitteePage() {
@@ -12,48 +13,50 @@ export default async function AdminCommitteePage() {
   const rows = await listCommitteePostsForAdmin();
 
   return (
-    <main style={{ maxWidth: 860, margin: "40px auto", padding: "0 24px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 style={{ fontSize: 22 }}>위원회 소식 관리</h1>
-        <Link href="/admin/committee/new" style={{ fontSize: 14, padding: "8px 14px", borderRadius: 6, border: "1px solid #ccc" }}>
-          새 글
+    <div className={styles.page}>
+      <div className={styles.headerRow}>
+        <h1 className={styles.pageTitle}>위원회 소식 관리</h1>
+        <Link href="/admin/committee/new" className={styles.btnGhost}>
+          + 새 글
         </Link>
       </div>
 
-      <table style={{ width: "100%", marginTop: 24, borderCollapse: "collapse", fontSize: 14 }}>
-        <thead>
-          <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
-            <th style={{ padding: "8px 6px" }}>제목</th>
-            <th style={{ padding: "8px 6px" }}>분류</th>
-            <th style={{ padding: "8px 6px" }}>작성일</th>
-            <th style={{ padding: "8px 6px" }}>공개</th>
-            <th style={{ padding: "8px 6px" }}></th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.id} style={{ borderBottom: "1px solid #eee" }}>
-              <td style={{ padding: "8px 6px" }}>{r.title}</td>
-              <td style={{ padding: "8px 6px" }}>{r.category ?? "-"}</td>
-              <td style={{ padding: "8px 6px" }}>{isoToKstDate(r.createdAt)}</td>
-              <td style={{ padding: "8px 6px" }}>
-                <PublishToggle action={togglePublished.bind(null, r.id, !r.isPublished)} isPublished={r.isPublished} />
-              </td>
-              <td style={{ padding: "8px 6px" }}>
-                <span style={{ display: "inline-flex", gap: 12 }}>
-                  <Link href={`/admin/committee/${r.id}/edit`} style={{ color: "#06c" }}>수정</Link>
-                  <DeletePostButton action={deletePost.bind(null, r.id)} />
-                </span>
-              </td>
-            </tr>
-          ))}
-          {rows.length === 0 && (
+      <div className={styles.tableWrap}>
+        <table className={styles.table}>
+          <thead>
             <tr>
-              <td colSpan={5} style={{ padding: "16px 6px", color: "#888" }}>등록된 글이 없습니다.</td>
+              <th>제목</th>
+              <th>분류</th>
+              <th>작성일</th>
+              <th>공개</th>
+              <th></th>
             </tr>
-          )}
-        </tbody>
-      </table>
-    </main>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.id}>
+                <td className={styles.cellTitle}>{r.title}</td>
+                <td className={styles.cellMuted}>{r.category ?? "-"}</td>
+                <td className={styles.cellMuted}>{isoToKstDate(r.createdAt)}</td>
+                <td>
+                  <PublishToggle action={togglePublished.bind(null, r.id, !r.isPublished)} isPublished={r.isPublished} />
+                </td>
+                <td>
+                  <span className={styles.rowActions}>
+                    <Link href={`/admin/committee/${r.id}/edit`} className={styles.rowLink}>수정</Link>
+                    <DeletePostButton action={deletePost.bind(null, r.id)} />
+                  </span>
+                </td>
+              </tr>
+            ))}
+            {rows.length === 0 && (
+              <tr>
+                <td colSpan={5} className={styles.emptyCell}>등록된 글이 없습니다.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }

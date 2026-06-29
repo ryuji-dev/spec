@@ -125,8 +125,223 @@
   gap: 14px;
 }
 
+/* 목록 페이지 헤더: 제목 + 우측 액션 버튼 */
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--admin-gold-active-text);
+  border: 1px solid var(--admin-border-input);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btnGhost:hover {
+  border-color: var(--admin-gold);
+  background: var(--admin-gold-tint);
+}
+
+/* 표 */
+.tableWrap {
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--admin-surface);
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+@media (max-width: 768px) {
+  .table {
+    min-width: 620px;
+  }
+}
+.table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--admin-text-2);
+  padding: 11px 14px;
+  background: var(--admin-bg);
+  border-bottom: 1px solid var(--admin-border);
+  white-space: nowrap;
+}
+.table td {
+  padding: 11px 14px;
+  color: var(--admin-text);
+  border-bottom: 1px solid var(--admin-divider);
+  vertical-align: middle;
+}
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+.table tbody tr:hover td {
+  background: var(--admin-gold-tint);
+}
+.cellTitle {
+  font-weight: 500;
+}
+.cellMuted {
+  color: var(--admin-text-3);
+}
+.emptyCell {
+  padding: 22px 14px;
+  color: var(--admin-text-3);
+  text-align: center;
+}
+
+/* 행 내 액션 */
+.rowActions {
+  display: inline-flex;
+  gap: 14px;
+  align-items: center;
+  white-space: nowrap;
+}
+.rowLink {
+  color: var(--admin-gold-active-text);
+  text-decoration: none;
+  font-size: 13px;
+}
+.rowLink:hover {
+  text-decoration: underline;
+}
+.rowDanger {
+  color: var(--admin-danger-text);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+}
+.rowDanger:hover {
+  text-decoration: underline;
+}
+
+/* 공개 토글 */
+.toggleBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+}
+.toggleOn {
+  color: var(--admin-gold-active-text);
+}
+.toggleOff {
+  color: var(--admin-text-3);
+}
+
+.pin {
+  color: var(--admin-gold);
+}
+
+/* 문의 접수함 아코디언 */
+.backLink {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--admin-text-2);
+  text-decoration: none;
+  font-size: 13px;
+}
+.backLink:hover {
+  color: var(--admin-gold-active-text);
+}
+.inquiryItem {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.inquirySummary {
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--admin-text);
+  list-style: none;
+}
+.inquirySummary::-webkit-details-marker {
+  display: none;
+}
+.statusDone {
+  color: var(--admin-gold-active-text);
+  font-weight: 700;
+}
+.statusNew {
+  color: var(--admin-danger-text);
+  font-weight: 700;
+}
+.inquiryBody {
+  margin-top: 12px;
+  font-size: 13.5px;
+  color: var(--admin-text);
+  border-top: 1px solid var(--admin-divider);
+  padding-top: 12px;
+}
+
+.fieldLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--admin-text-2);
+}
+.textarea {
+  padding: 10px 12px;
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border-input);
+  border-radius: 8px;
+  color: var(--admin-text);
+  font: inherit;
+  width: 100%;
+  min-height: 90px;
+  resize: vertical;
+}
+.textarea::placeholder {
+  color: var(--admin-text-3);
+}
+.textarea:focus {
+  outline: none;
+  border-color: var(--admin-gold);
+}
+
+/* 위험 동작 아웃라인 버튼 */
+.btnDanger {
+  background: transparent;
+  color: var(--admin-danger-text);
+  border: 1px solid var(--admin-danger-text);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btnDanger:hover {
+  background: rgba(224, 133, 123, 0.12);
+}
+.btnDanger:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 @media (max-width: 768px) {
   .sectionGrid2 {
     grid-template-columns: 1fr;
+  }
+  .tableWrap {
+    overflow-x: auto;
   }
 }
