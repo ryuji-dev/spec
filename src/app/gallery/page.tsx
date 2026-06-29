@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
 import { getGalleryData } from "@/server/services/gallery";
-import DesktopNav from "@/app/_components/DesktopNav";
+import SiteDesktopNav from "@/app/_components/SiteDesktopNav";
 import GalleryDesktop from "./_components/desktop/GalleryDesktop";
 import GalleryMobile from "./_components/mobile/GalleryMobile";
 
@@ -14,7 +14,7 @@ export default async function GalleryPage() {
   if (device === "desktop") {
     return (
       <>
-        <DesktopNav variant="solid" />
+        <SiteDesktopNav variant="solid" />
         <GalleryDesktop tiles={tiles} />
       </>
     );

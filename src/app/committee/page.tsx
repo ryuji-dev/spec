@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
 import { getCommitteeListData } from "@/server/services/committee";
-import DesktopNav from "@/app/_components/DesktopNav";
+import SiteDesktopNav from "@/app/_components/SiteDesktopNav";
 import CommitteeDesktop from "./_components/desktop/CommitteeDesktop";
 import CommitteeMobile from "./_components/mobile/CommitteeMobile";
 
@@ -16,7 +16,7 @@ export default async function CommitteePage() {
   if (device === "desktop") {
     return (
       <>
-        <DesktopNav variant="solid" />
+        <SiteDesktopNav variant="solid" />
         <CommitteeDesktop
           pinned={data.pinned}
           posts={data.posts}

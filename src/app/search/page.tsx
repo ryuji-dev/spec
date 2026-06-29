@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
 import { searchPosts } from "@/server/services/search";
-import DesktopNav from "@/app/_components/DesktopNav";
+import SiteDesktopNav from "@/app/_components/SiteDesktopNav";
 import SearchDesktop from "./_components/desktop/SearchDesktop";
 import SearchMobile from "./_components/mobile/SearchMobile";
 
@@ -21,7 +21,7 @@ export default async function SearchPage({
   if (device === "desktop") {
     return (
       <>
-        <DesktopNav variant="solid" />
+        <SiteDesktopNav variant="solid" />
         <SearchDesktop query={query} results={results} />
       </>
     );

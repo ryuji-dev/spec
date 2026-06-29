@@ -19,7 +19,12 @@ export default function Sidebar({
   const pathname = usePathname();
 
   const groups: NavGroup[] = [
-    { items: [{ href: "/admin", label: "대시보드" }] },
+    {
+      items: [
+        { href: "/admin", label: "대시보드" },
+        { href: "/main", label: "사이트 보기" },
+      ],
+    },
     {
       title: "콘텐츠",
       items: [

@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
 import { getBoardListData } from "@/server/services/board";
-import DesktopNav from "@/app/_components/DesktopNav";
+import SiteDesktopNav from "@/app/_components/SiteDesktopNav";
 import BoardDesktop from "./_components/desktop/BoardDesktop";
 import BoardMobile from "./_components/mobile/BoardMobile";
 
@@ -17,7 +17,7 @@ export default async function BoardPage() {
   if (device === "desktop") {
     return (
       <>
-        <DesktopNav variant="solid" />
+        <SiteDesktopNav variant="solid" />
         <BoardDesktop
           posts={data.posts}
           categories={data.categories}

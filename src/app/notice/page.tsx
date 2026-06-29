@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
 import { getNoticeListData } from "@/server/services/notice";
 import { getCurrentUser } from "@/server/auth/current-user";
-import DesktopNav from "@/app/_components/DesktopNav";
+import SiteDesktopNav from "@/app/_components/SiteDesktopNav";
 import NoticeDesktop from "./_components/desktop/NoticeDesktop";
 import NoticeMobile from "./_components/mobile/NoticeMobile";
 
@@ -17,7 +17,7 @@ export default async function NoticePage() {
   if (device === "desktop") {
     return (
       <>
-        <DesktopNav variant="solid" />
+        <SiteDesktopNav variant="solid" />
         <NoticeDesktop pinned={pinned} posts={posts} isAdmin={isAdmin} />
       </>
     );

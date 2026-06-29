@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { getDeviceType } from "@/lib/device";
-import DesktopNav from "@/app/_components/DesktopNav";
+import SiteDesktopNav from "@/app/_components/SiteDesktopNav";
 import styles from "./DocPage.module.css";
 
 // 문서형 공용 레이아웃 — 디자인 원본이 없는 안내·약관 페이지용(고객지원·이용약관·개인정보).
@@ -21,7 +21,7 @@ export default async function DocPage({
   return (
     <div className={styles.page}>
       {device === "desktop" ? (
-        <DesktopNav variant="solid" />
+        <SiteDesktopNav variant="solid" />
       ) : (
         <div className={styles.mobileBar}>
           <Link href="/main" className={styles.mobileBrand} aria-label="메인페이지로 이동">

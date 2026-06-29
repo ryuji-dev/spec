@@ -2,8 +2,8 @@ import { headers } from "next/headers";
 import { getDeviceType } from "@/lib/device";
 import { WEBZINE_PALETTE } from "@/lib/webzine-data";
 import { getWebzineListData } from "@/server/services/webzine";
-import DesktopNav from "@/app/_components/DesktopNav";
-import MobileStickyHeader from "@/app/_components/MobileStickyHeader";
+import SiteDesktopNav from "@/app/_components/SiteDesktopNav";
+import SiteMobileHeader from "@/app/_components/SiteMobileHeader";
 import WebzineDesktop from "./_components/desktop/WebzineDesktop";
 import WebzineMobile from "./_components/mobile/WebzineMobile";
 
@@ -20,7 +20,7 @@ export default async function WebzinePage() {
   if (device === "desktop") {
     return (
       <>
-        <DesktopNav variant="solid" />
+        <SiteDesktopNav variant="solid" />
         <WebzineDesktop
           palette={WEBZINE_PALETTE}
           featured={data.featured}
@@ -33,7 +33,7 @@ export default async function WebzinePage() {
   }
   return (
     <>
-      <MobileStickyHeader />
+      <SiteMobileHeader />
       <WebzineMobile
         palette={WEBZINE_PALETTE}
         deviceType={device}
