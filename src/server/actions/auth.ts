@@ -135,7 +135,7 @@ export async function signInWithProvider(formData: FormData): Promise<void> {
     redirect(`/login?notice=${encodeURIComponent(msg)}`);
 
   if (!ALLOWED_PROVIDERS.includes(provider as OAuthProvider)) {
-    fail("지원하지 않는 로그인 방식입니다.");
+    return fail("지원하지 않는 로그인 방식입니다.");
   }
 
   const next = safeNext(String(formData.get("next") ?? ""), "/main");
@@ -151,7 +151,7 @@ export async function signInWithProvider(formData: FormData): Promise<void> {
   });
 
   if (error || !data.url) {
-    fail("로그인을 시작하지 못했습니다. 잠시 후 다시 시도해주세요.");
+    return fail("로그인을 시작하지 못했습니다. 잠시 후 다시 시도해주세요.");
   }
 
   redirect(data!.url!);
