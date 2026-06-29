@@ -6,6 +6,7 @@ import { updatePost, deletePost } from "@/server/actions/training";
 import EditorForm from "../../EditorForm";
 import AttachmentManager from "@/app/_components/AttachmentManager";
 import { TRAINING_UPLOAD } from "@/lib/training-upload";
+import styles from "../../../_components/ui.module.css";
 
 export default async function EditTrainingPostPage({
   params,
@@ -21,9 +22,11 @@ export default async function EditTrainingPostPage({
   const remove = deletePost.bind(null, id);
 
   return (
-    <main style={{ maxWidth: 680, margin: "40px auto", padding: "0 24px" }}>
-      <Link href={`/training/${id}`} style={{ fontSize: 13, color: "#666" }}>← 글 보기</Link>
-      <h1 style={{ fontSize: 22 }}>글 수정</h1>
+    <div className={styles.page}>
+      <Link href={`/training/${id}`} className={styles.backLink}>← 글 보기</Link>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>글 수정</h1>
+      </div>
       <EditorForm
         action={update}
         initial={{
@@ -45,10 +48,8 @@ export default async function EditTrainingPostPage({
         policy={TRAINING_UPLOAD}
       />
       <form action={remove} style={{ marginTop: 32 }}>
-        <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>
-          글 삭제
-        </button>
+        <button type="submit" className={styles.btnDanger}>글 삭제</button>
       </form>
-    </main>
+    </div>
   );
 }

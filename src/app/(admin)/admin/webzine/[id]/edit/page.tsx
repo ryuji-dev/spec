@@ -4,6 +4,7 @@ import { requireAdmin } from "@/server/auth/current-user";
 import { getWebzineArticleForEdit } from "@/server/services/webzine";
 import { updatePost, deletePost } from "@/server/actions/webzine";
 import EditorForm from "../../EditorForm";
+import styles from "../../../_components/ui.module.css";
 
 export default async function EditWebzineArticlePage({
   params,
@@ -19,9 +20,11 @@ export default async function EditWebzineArticlePage({
   const remove = deletePost.bind(null, id);
 
   return (
-    <main style={{ maxWidth: 680, margin: "40px auto", padding: "0 24px" }}>
-      <Link href={`/webzine/${id}`} style={{ fontSize: 13, color: "#666" }}>← 기사 보기</Link>
-      <h1 style={{ fontSize: 22 }}>기사 수정</h1>
+    <div className={styles.page}>
+      <Link href={`/webzine/${id}`} className={styles.backLink}>← 기사 보기</Link>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>기사 수정</h1>
+      </div>
       <EditorForm
         action={update}
         initial={{
@@ -35,10 +38,8 @@ export default async function EditWebzineArticlePage({
         submitLabel="수정 저장"
       />
       <form action={remove} style={{ marginTop: 32 }}>
-        <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>
-          기사 삭제
-        </button>
+        <button type="submit" className={styles.btnDanger}>기사 삭제</button>
       </form>
-    </main>
+    </div>
   );
 }

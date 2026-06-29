@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { apiPostForm, apiDelete, ApiError } from "@/lib/api";
 import { preCheck, type UploadPolicy } from "@/lib/upload-policy";
+import styles from "@/app/(admin)/admin/_components/ui.module.css";
 
 type Att = { id: string; name: string; sizeBytes: number; mime: string };
 
@@ -52,17 +53,19 @@ export default function AttachmentManager({ postId, initial, apiBase, policy }: 
   }
 
   return (
-    <div style={{ marginTop: 24, maxWidth: 640 }}>
-      <h2 style={{ fontSize: 16 }}>첨부 파일 ({items.length})</h2>
-      <input type="file" multiple onChange={onPick} disabled={busy} />
-      {busy && <span style={{ marginLeft: 8, fontSize: 13 }}>업로드 중…</span>}
-      {error && <p role="alert" style={{ color: "#c00", whiteSpace: "pre-wrap" }}>{error}</p>}
-      <ul>
+    <div className={styles.fieldset} style={{ marginTop: 24, maxWidth: 640 }}>
+      <strong className={styles.fieldsetTitle}>첨부 파일 ({items.length})</strong>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <input type="file" multiple onChange={onPick} disabled={busy} className={styles.input} style={{ width: "auto" }} />
+        {busy && <span className={styles.hint}>업로드 중…</span>}
+      </div>
+      {error && <p role="alert" className={styles.error} style={{ whiteSpace: "pre-wrap" }}>{error}</p>}
+      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
         {items.map((a) => (
-          <li key={a.id} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <a href={`${apiBase}/files/${a.id}`} target="_blank" rel="noreferrer">{a.name}</a>
-            <span style={{ fontSize: 12, color: "#888" }}>({Math.round(a.sizeBytes / 1024)} KB)</span>
-            <button type="button" onClick={() => onDelete(a.id)} style={{ fontSize: 12 }}>삭제</button>
+          <li key={a.id} style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <a href={`${apiBase}/files/${a.id}`} target="_blank" rel="noreferrer" className={styles.rowLink}>{a.name}</a>
+            <span className={styles.cellMuted} style={{ fontSize: 12 }}>({Math.round(a.sizeBytes / 1024)} KB)</span>
+            <button type="button" onClick={() => onDelete(a.id)} className={styles.rowDanger}>삭제</button>
           </li>
         ))}
       </ul>

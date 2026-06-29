@@ -1,14 +1,17 @@
 import { requireAdmin } from "@/server/auth/current-user";
 import { createPost } from "@/server/actions/committee";
 import EditorForm from "../EditorForm";
+import styles from "../../_components/ui.module.css";
 
 export default async function NewCommitteePostPage() {
   await requireAdmin();
   return (
-    <main style={{ maxWidth: 680, margin: "40px auto", padding: "0 24px" }}>
-      <h1 style={{ fontSize: 22 }}>새 글 작성</h1>
-      <p style={{ color: "#666", fontSize: 13 }}>저장 후 편집 화면에서 파일을 첨부할 수 있습니다.</p>
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>새 글 작성</h1>
+        <p className={styles.pageDesc}>저장 후 편집 화면에서 파일을 첨부할 수 있습니다.</p>
+      </div>
       <EditorForm action={createPost} submitLabel="저장하고 첨부하기" />
-    </main>
+    </div>
   );
 }

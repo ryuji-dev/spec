@@ -1,6 +1,7 @@
 "use client";
 import { useActionState } from "react";
 import type { PostFormState } from "@/server/actions/notice";
+import styles from "../_components/ui.module.css";
 
 type Initial = {
   title?: string;
@@ -9,8 +10,6 @@ type Initial = {
   isPinned?: boolean;
   isPublished?: boolean;
 };
-
-const inputStyle = { padding: 10, border: "1px solid #ccc", borderRadius: 6, width: "100%" } as const;
 
 export default function EditorForm({
   action,
@@ -23,18 +22,18 @@ export default function EditorForm({
 }) {
   const [state, formAction, pending] = useActionState(action, {});
   return (
-    <form action={formAction} style={{ display: "grid", gap: 12, maxWidth: 640 }}>
-      <input name="title" defaultValue={initial?.title ?? ""} required placeholder="제목" style={inputStyle} />
-      <input name="excerpt" defaultValue={initial?.excerpt ?? ""} placeholder="요약 (선택)" style={inputStyle} />
-      <textarea name="body" defaultValue={initial?.body ?? ""} placeholder="본문" rows={12} style={inputStyle} />
-      <label style={{ fontSize: 14 }}>
+    <form action={formAction} className={styles.formGrid} style={{ maxWidth: 640 }}>
+      <input name="title" defaultValue={initial?.title ?? ""} required placeholder="제목" className={styles.input} />
+      <input name="excerpt" defaultValue={initial?.excerpt ?? ""} placeholder="요약 (선택)" className={styles.input} />
+      <textarea name="body" defaultValue={initial?.body ?? ""} placeholder="본문" rows={12} className={styles.textarea} />
+      <label className={styles.checkLabel}>
         <input type="checkbox" name="isPinned" defaultChecked={initial?.isPinned ?? false} /> 상단 고정
       </label>
-      <label style={{ fontSize: 14 }}>
+      <label className={styles.checkLabel}>
         <input type="checkbox" name="isPublished" defaultChecked={initial?.isPublished ?? true} /> 공개
       </label>
-      {state.error && <p role="alert" style={{ color: "#c00", margin: 0 }}>{state.error}</p>}
-      <button type="submit" disabled={pending} style={{ padding: 10, borderRadius: 6 }}>
+      {state.error && <p role="alert" className={styles.error}>{state.error}</p>}
+      <button type="submit" disabled={pending} className={styles.btnPrimary} style={{ justifySelf: "start" }}>
         {pending ? "저장 중…" : submitLabel}
       </button>
     </form>

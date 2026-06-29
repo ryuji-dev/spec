@@ -319,6 +319,119 @@
   border-color: var(--admin-gold);
 }
 
+/* 편집/신규 폼 키트 */
+.input,
+.textarea {
+  accent-color: var(--admin-gold);
+}
+.inputSm {
+  padding: 8px 10px;
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border-input);
+  border-radius: 6px;
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 13px;
+  width: 100%;
+}
+.inputSm::placeholder {
+  color: var(--admin-text-3);
+}
+.inputSm:focus {
+  outline: none;
+  border-color: var(--admin-gold);
+}
+
+/* 라벨이 입력 위에 쌓이는 필드 */
+.field {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--admin-text-2);
+}
+
+/* 체크박스 라벨 */
+.checkLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--admin-text);
+}
+.checkLabel input {
+  accent-color: var(--admin-gold);
+}
+
+/* 섹션(fieldset 대용) */
+.fieldset {
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+  background: var(--admin-surface);
+}
+.legend {
+  font-size: 13px;
+  color: var(--admin-text-2);
+  padding: 0 6px;
+}
+.fieldsetTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--admin-text);
+}
+.subPanel {
+  border: 1px solid var(--admin-divider);
+  border-radius: 8px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+.checkItem {
+  display: block;
+  font-size: 14px;
+  padding: 4px 0;
+  color: var(--admin-text);
+}
+.checkItem input {
+  accent-color: var(--admin-gold);
+}
+.hint {
+  color: var(--admin-text-3);
+  margin: 0;
+  font-size: 13px;
+}
+
+/* 소형 추가/삭제 버튼 */
+.btnAdd {
+  justify-self: start;
+  width: fit-content;
+  background: transparent;
+  color: var(--admin-gold-active-text);
+  border: 1px solid var(--admin-border-input);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btnAdd:hover {
+  border-color: var(--admin-gold);
+  background: var(--admin-gold-tint);
+}
+.btnRemove {
+  background: transparent;
+  color: var(--admin-danger-text);
+  border: 1px solid var(--admin-border-input);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btnRemove:hover {
+  border-color: var(--admin-danger-text);
+}
+
 /* 위험 동작 아웃라인 버튼 */
 .btnDanger {
   background: transparent;

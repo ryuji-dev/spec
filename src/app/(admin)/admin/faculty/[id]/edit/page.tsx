@@ -4,6 +4,7 @@ import { requireAdmin } from "@/server/auth/current-user";
 import { getFacultyMemberForEdit } from "@/server/services/faculty";
 import { updateFaculty, deleteFaculty } from "@/server/actions/faculty";
 import EditorForm from "../../EditorForm";
+import styles from "../../../_components/ui.module.css";
 
 export default async function EditFacultyPage({
   params,
@@ -19,9 +20,11 @@ export default async function EditFacultyPage({
   const remove = deleteFaculty.bind(null, id);
 
   return (
-    <main style={{ maxWidth: 680, margin: "40px auto", padding: "0 24px" }}>
-      <Link href="/admin/faculty" style={{ fontSize: 13, color: "#666" }}>← 교수 목록</Link>
-      <h1 style={{ fontSize: 22 }}>교수 수정</h1>
+    <div className={styles.page}>
+      <Link href="/admin/faculty" className={styles.backLink}>← 교수 목록</Link>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>교수 수정</h1>
+      </div>
       <EditorForm
         action={update}
         initial={{
@@ -45,10 +48,8 @@ export default async function EditFacultyPage({
         submitLabel="수정 저장"
       />
       <form action={remove} style={{ marginTop: 32 }}>
-        <button type="submit" style={{ padding: "8px 14px", borderRadius: 6, color: "#c00" }}>
-          교수 삭제
-        </button>
+        <button type="submit" className={styles.btnDanger}>교수 삭제</button>
       </form>
-    </main>
+    </div>
   );
 }

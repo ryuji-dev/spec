@@ -1,13 +1,16 @@
 import { requireAdmin } from "@/server/auth/current-user";
 import { createHeroSlide } from "@/server/actions/hero";
 import NewForm from "../NewForm";
+import styles from "../../_components/ui.module.css";
 
 export default async function NewHeroPage() {
   await requireAdmin();
   return (
-    <main style={{ maxWidth: 540, margin: "40px auto", padding: "0 24px" }}>
-      <h1 style={{ fontSize: 22 }}>새 히어로 슬라이드</h1>
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>새 히어로 슬라이드</h1>
+      </div>
       <NewForm action={createHeroSlide} />
-    </main>
+    </div>
   );
 }
