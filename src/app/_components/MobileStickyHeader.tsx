@@ -10,7 +10,7 @@ const SCROLL_THRESHOLD = 80;
  * 사이트 모바일 상단 sticky 헤더 — 80px 이상 스크롤 시 페이드인.
  * 디자인 원본 `_design/.../app.jsx:1238-1294` (StickyHeader_DISABLED) 마크업·스타일을 그대로 옮겼다.
  */
-export default function MobileStickyHeader() {
+export default function MobileStickyHeader({ isAdmin = false }: { isAdmin?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -41,6 +41,11 @@ export default function MobileStickyHeader() {
             <path d="M13 13 L17 17" stroke="var(--palette-ink)" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </Link>
+        {isAdmin && (
+          <Link href="/admin" className={styles.adminLink}>
+            관리자
+          </Link>
+        )}
         <Link href="/login" className={styles.loginBtn}>
           로그인
         </Link>

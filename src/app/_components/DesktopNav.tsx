@@ -7,6 +7,7 @@ import styles from "./DesktopNav.module.css";
 
 type Props = {
   variant?: "transparent" | "solid";
+  isAdmin?: boolean;
 };
 
 /**
@@ -16,7 +17,7 @@ type Props = {
  *
  * 현재 경로(`usePathname`)와 메뉴 href가 일치하면 active 강조.
  */
-export default function DesktopNav({ variant = "transparent" }: Props) {
+export default function DesktopNav({ variant = "transparent", isAdmin = false }: Props) {
   const pathname = usePathname();
 
   return (
@@ -59,6 +60,11 @@ export default function DesktopNav({ variant = "transparent" }: Props) {
             <path d="M13 13 L17 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
         </Link>
+        {isAdmin && (
+          <Link href="/admin" className={styles.adminLink} style={{ textDecoration: "none" }}>
+            관리자
+          </Link>
+        )}
         <Link href="/login" className={styles.loginBtn} style={{ textDecoration: "none" }}>
           로그인
         </Link>
