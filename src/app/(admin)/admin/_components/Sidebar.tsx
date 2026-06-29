@@ -37,7 +37,7 @@ export default function Sidebar({
         { href: "/admin/events", label: "수련회 이벤트" },
         { href: "/admin/timetable", label: "강의 시간표" },
         { href: "/admin/collections", label: "자료실 컬렉션" },
-        { href: "/admin/hero", label: "메인 히어로" },
+        { href: "/admin/hero", label: "메인 배너" },
       ],
     },
   ];

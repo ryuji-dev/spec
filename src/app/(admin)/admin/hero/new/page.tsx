@@ -8,7 +8,7 @@ export default async function NewHeroPage() {
   return (
     <div className={styles.page}>
       <div className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>새 히어로 슬라이드</h1>
+        <h1 className={styles.pageTitle}>새 배너 슬라이드</h1>
       </div>
       <NewForm action={createHeroSlide} />
     </div>
